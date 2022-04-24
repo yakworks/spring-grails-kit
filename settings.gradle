@@ -6,6 +6,8 @@ include 'grails-jasper'
 // tests will be included in main runs but not deploy tasks and doc tasks
 include 'examples/grails-kit-app'
 include 'examples/grails-kit-plugin'
+include 'examples/jasper-app'
 
 findProject(':examples/grails-kit-app').name = 'grails-kit-app'
 findProject(':examples/grails-kit-plugin').name = 'grails-kit-plugin'
+findProject(':examples/jasper-app').name = 'jasper-app'

@@ -9,11 +9,11 @@ dependencies {
     // provided "org.grails:grails-plugin-domain-class"
 
     provided "org.codehaus.groovy:groovy-ant"
-    compile "commons-io:commons-io:2.5"
+    compile "commons-io:commons-io:2.6"
 
     api("org.yakworks:commons:7.0.8-v.70")
 
-    api "org.grails.plugins:external-config:$vExternalConfig"
+    // api "org.grails.plugins:external-config:$vExternalConfig"
 
     compile "org.springframework:spring-test"
 }
