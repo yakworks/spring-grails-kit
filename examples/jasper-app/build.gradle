@@ -1,0 +1,36 @@
+
+version "0.1"
+
+apply plugin: "groovy"
+apply plugin: "war"
+apply plugin: "org.grails.grails-web"
+apply plugin: "org.grails.grails-gsp"
+
+dependencies {
+    profile "org.grails.profiles:web"
+
+    provided "org.grails:grails-plugin-domain-class"
+    provided "org.grails:grails-plugin-services"
+
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
+
+    provided "org.codehaus.groovy:groovy-ant"
+
+    compile "org.grails.plugins:hibernate5"
+    compile "org.hibernate:hibernate-core:$versionHibernate"
+    compile "org.hibernate:hibernate-ehcache:$versionHibernate"
+}
+
+bootRun {
+    jvmArgs('-Dspring.output.ansi.enabled=always')
+    addResources = true
+}
+
+grails {
+    exploded = true
+    plugins {
+        println "Inside grails: $rootProject.name"
+        compile project(':jasper-reports')
+    }
+}
