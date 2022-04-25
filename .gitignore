@@ -156,4 +156,4 @@ Session.vim
 /site/*
 .env
 .DS_Store
-
+grails-jasper/src/test/resources/jasper
