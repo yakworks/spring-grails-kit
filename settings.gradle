@@ -1,4 +1,4 @@
-rootProject.name = 'gorm-tools-root'
+rootProject.name = 'spring-grails-kit'
 //the releasable plugins
 include 'grails-kit'
 include 'grails-jasper'
