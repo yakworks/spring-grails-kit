@@ -13,16 +13,16 @@ import groovy.util.logging.Slf4j
 import org.springframework.web.servlet.View
 import org.springframework.web.servlet.view.AbstractUrlBasedView
 
-import grails.plugin.viewtools.LoaderUrlBasedViewResolver
 import net.sf.jasperreports.engine.JasperReport
+import yakworks.grails.mvc.LoaderUrlBasedViewResolver
 
 /**
- * Uses Springs ViewResolver design concepts. The primary lookup uses {@link grails.plugin.viewtools.ViewResourceLocator}
+ * Uses Springs ViewResolver design concepts. The primary lookup uses {@link yakworks.grails.mvc.ViewResourceLocator}
  * The main DispatcherServlet spins through and calls the ViewResolvers ViewResolver.resolveViewName(String viewName, Locale locale)
  * The inheritance chain here is FreeMarkerViewResolver -> AbstractTemplateViewResolver -> UrlBasedViewResolver -> AbstractCachingViewResolver
  * AbstractCachingViewResolver holds the resolveViewName() which calls createView() then loadView() and buildView()
  *
- * This uses the {@link grails.plugin.viewtools.ViewResourceLocator} to locate the resource
+ * This uses the {@link yakworks.grails.mvc.ViewResourceLocator} to locate the resource
  *
  * This gets used simply by registering it as a spring bean
  *   jasperViewResolver(JasperViewResolver){*      viewResourceLocator = ref("viewResourceLocator")

@@ -1,0 +1,16 @@
+apply plugin: "yakworks.grails-plugin"
+
+dependencies {
+    // compile "org.springframework.boot:spring-boot-starter-actuator"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
+
+    profile "org.grails.profiles:web-plugin"
+    provided "org.grails:grails-plugin-services"
+    // provided "org.grails:grails-plugin-domain-class"
+
+    provided "org.codehaus.groovy:groovy-ant"
+
+    api("org.yakworks:commons:7.0.8-v.70")
+
+    api project(':grails-kit')
+}

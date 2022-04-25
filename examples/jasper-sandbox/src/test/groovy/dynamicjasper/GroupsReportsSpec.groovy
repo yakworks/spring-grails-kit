@@ -18,7 +18,7 @@ import domain.Product
 import domain.TestRepositoryProducts
 import foo.ReportsController
 import grails.converters.JSON
-import grails.plugin.viewtools.ViewResourceLocator
+import yakworks.grails.mvc.ViewResourceLocator
 import grails.testing.spring.AutowiredTest
 import grails.testing.web.controllers.ControllerUnitTest
 import groovy.util.logging.Slf4j

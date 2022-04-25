@@ -2,12 +2,13 @@ rootProject.name = 'gorm-tools-root'
 //the releasable plugins
 include 'grails-kit'
 include 'grails-jasper'
+include 'grails-view-tools'
 
 // tests will be included in main runs but not deploy tasks and doc tasks
-include 'examples/grails-kit-app'
-include 'examples/grails-kit-plugin'
+include 'examples/grails-views-app'
+include 'examples/grails-views-plugin'
 include 'examples/jasper-app'
 
-findProject(':examples/grails-kit-app').name = 'grails-kit-app'
-findProject(':examples/grails-kit-plugin').name = 'grails-kit-plugin'
+findProject(':examples/grails-views-app').name = 'grails-views-app'
+findProject(':examples/grails-views-plugin').name = 'grails-views-plugin'
 findProject(':examples/jasper-app').name = 'jasper-app'

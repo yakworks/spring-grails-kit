@@ -1,6 +1,6 @@
 package yakworks.jasper
 
-import grails.plugin.viewtools.ViewResourceLocator
+import yakworks.grails.mvc.ViewResourceLocator
 import grails.testing.web.GrailsWebUnitTest
 import grails.util.BuildSettings
 import yakworks.jasper.spring.JasperViewResolver

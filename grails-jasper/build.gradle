@@ -12,6 +12,8 @@ dependencies {
     provided "org.grails:grails-plugin-services"
     provided "org.grails:grails-plugin-domain-class"
 
+    compile project(':grails-view-tools')
+
     compile 'org.apache.poi:poi:'+versionPoi
     compile('org.apache.poi:poi-ooxml:'+versionPoi) {
       //  exclude module:"poi-ooxml-schemas"
@@ -38,7 +40,7 @@ dependencies {
         exclude module: 'batik-bridge' //don't need the barcode stuff
     }
 
-    compile "org.grails.plugins:view-tools:$versionViewTools"
+    // compile "org.grails.plugins:view-tools:$versionViewTools"
 
     // testCompile "org.grails:grails-plugin-testing"
     // runtime "com.h2database:h2"
