@@ -10,7 +10,7 @@ import org.springframework.web.context.request.RequestContextHolder
 //import org.codehaus.groovy.grails.commons.GrailsApplication
 //import org.codehaus.groovy.grails.web.servlet.WrappedResponseHolder
 import spock.lang.Specification
-import yakworks.grails.mvc.GrailsWebEnvironment
+import yakworks.grails.web.GrailsWebEnvironment
 
 //import grails.test.spock.IntegrationSpec
 
