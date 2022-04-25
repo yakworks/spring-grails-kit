@@ -9,7 +9,7 @@ import org.springframework.core.io.Resource
 import org.springframework.util.StringUtils
 import spock.lang.Ignore
 import spock.lang.Specification
-import yakworks.grails.mvc.GrailsWebEnvironment
+import yakworks.grails.web.GrailsWebEnvironment
 import yakworks.grails.mvc.ViewResourceLocator
 
 //import org.codehaus.groovy.grails.web.servlet.mvc.GrailsWebRequest
