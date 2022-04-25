@@ -16,9 +16,6 @@ beans = {
         //resourceLoaders to use right after searchLocations above are scanned
         searchLoaders = [ref('tenantViewResourceLoader'), ref("configKeyAppResourceLoader")]
 
-        searchBinaryPlugins = true //whether to look in binary plugins, does not work in grails2
-        scanAllPluginsWhenNotFound = false
-
         // in dev mode there will be a groovyPageResourceLoader
         // with base dir set to the running project
         //if(Environment.isDevelopmentEnvironmentAvailable()) <- better for Grails 3

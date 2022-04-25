@@ -12,7 +12,6 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-import org.grails.gsp.GroovyPageResourceLoader
 import org.grails.io.support.GrailsResourceUtils
 import org.grails.plugins.BinaryGrailsPlugin
 import org.grails.web.servlet.mvc.GrailsWebRequest
@@ -41,9 +40,9 @@ import grails.util.GrailsWebUtil
  * development mode.
  *
  * GroovyPageResourceLoader bean exists in dev/test mode and deals with plugin paths, inplace etc... will not be here in deplyed war
- * @see GroovyPageResourceLoader
+ * see GroovyPageResourceLoader
  * GroovyPagesGrailsPlugin is where the original beans are setup, take a look at the source to see how they are setup
- * @see org.grails.plugins.web.GroovyPagesGrailsPlugin
+ * see org.grails.plugins.web.GroovyPagesGrailsPlugin
  *
  * Used @see org.grails.gsp.io.DefaultGroovyPageLocator heavily as a starting point
  *
@@ -55,11 +54,8 @@ import grails.util.GrailsWebUtil
 class ViewResourceLocator implements ResourceLoader, ResourceLoaderAware,
         ApplicationContextAware, PluginManagerAware {
 
-    Boolean searchBinaryPlugins = true //keep at false for grails2, true for grails3
-
     //static final String PATH_TO_WEB_INF_VIEWS = "/WEB-INF/grails-app/views"
     static final String GRAILS_APP_VIEWS_PATH = "/grails-app/views"
-    static final String PLUGINS_PATH = "/plugins/"
     String webInfPrefix = "/WEB-INF/"
 
     List<String> grailsViewPaths = ["/WEB-INF/grails-app/views"]
@@ -80,11 +76,6 @@ class ViewResourceLocator implements ResourceLoader, ResourceLoaderAware,
     List<ResourceLoader> searchLoaders
 
     //Collection<String> initialResourceLoaders = new ConcurrentLinkedQueue<String>();
-
-    /**
-     * This is the nuclear approach
-     */
-    Boolean scanAllPluginsWhenNotFound = true
 
     ResourceLoader devResourceLoader
 
@@ -152,14 +143,6 @@ class ViewResourceLocator implements ResourceLoader, ResourceLoaderAware,
         res = findInGrailsViewPaths(uri)
         if(res?.exists()) return res
 
-        //if path starts with "/plugins/"
-        if (uri.startsWith(PLUGINS_PATH)){
-            res = findResourceWithPluginPath(uri)
-            if(res?.exists()) {
-                return res
-            }
-        }
-
         //try it based on what plugin the current controller resides in
         res = findWithPluginController(uri)
         if(res?.exists()) {
@@ -171,12 +154,6 @@ class ViewResourceLocator implements ResourceLoader, ResourceLoaderAware,
         res = findInClassPath(uri)
         if(res?.exists()) return res
 
-        //go nuclear and scan all the plugin paths,
-        // in grails3, I don't see how this would ever get a hit if classpath did not
-        log.debug("....going nuclear with findResourceInPlugins $uri")
-        //if (!res) {
-            //res = scanPluginsForResource(uri)
-        //}
         if(!res) log.debug("...FAIL Did not find $uri")
         return res
     }
@@ -308,92 +285,18 @@ class ViewResourceLocator implements ResourceLoader, ResourceLoaderAware,
     }
 
     /**
-     * The nuclear approach that scans every plugin to find the view
-     */
-    //Grails 2 only
-    @CompileDynamic
-    Resource scanPluginsForResource(String uri) {
-        //GrailsPluginManager pluginManager = pluginManager
-        if (!pluginManager) return null
-        log.debug("*** scanning all plugins *****")
-        String pluginBuildSettings = GrailsPluginUtils.getPluginBaseDirectories()
-        for (GrailsPlugin plugin : pluginManager.getAllPlugins()) {
-            log.debug("SEARCHING PLUGIN: [${plugin.name}] for [$uri]")
-//            String pluginPath = pluginManager.getPluginPath(plugin.getName());
-//            String pluginUri = GrailsResourceUtils.appendPiecesForUri(pluginPath, uri);
-//            log.debug("pluginPath:[$pluginPath], pluginUri: ${pluginUri}")
-            Resource resource = findResourceInPlugin( plugin, uri)
-            if (resource) {
-                log.debug("found in binary plugin: pluginPath ${resource}")
-                return resource
-            }
-        }
-
-        return null
-    }
-
-    /**
-     * if uri starts with "/plugin/" then this attempts to resolve it
-     */
-    Resource findResourceWithPluginPath(String uri) {
-        if (!uri.startsWith(PLUGINS_PATH)) return
-
-        Resource res
-        PluginViewPathInfo pathInfo = getPluginViewPathInfo(uri)
-
-        for (GrailsPlugin plugin : pluginManager.getAllPlugins()) {
-            log.debug("pathInfo.pluginName:[$pathInfo.pluginName], plugin.fileSystemName: ${plugin.fileSystemName}")
-            if(pathInfo.pluginName == plugin.fileSystemName){
-                res = findResourceInPlugin(plugin, pathInfo.path)
-                if (res) return res
-            }
-        }
-        return res
-    }
-
-    /**
      * find the uri in the plugin
      */
     Resource findResourceInPlugin(GrailsPlugin plugin, String uri) {
-        //log.debug("xx findResourceInPlugin: ['${uri}']")
-        //if its binary, probably a grails 3 plugins
-        if (plugin instanceof BinaryGrailsPlugin ) {
-            if(!searchBinaryPlugins) return
-            Resource resource = findResourceInBinaryPlugin(plugin as BinaryGrailsPlugin, uri)
-            if (resource) {
-                log.debug("found in binary plugin: pluginPath ${resource}")
-                return resource
-            }
-        } else {
-//            Object res = plugin.@pluginDescriptor
-//            log.debug("PLUGIN findResource: [${plugin.name}] for getDescriptor exists  [${res?.exists()}]")
-//            if(!(res?.exists())) return
-//            uri = concatPaths(res.URI.toString(), GRAILS_APP_VIEWS_PATH,uri)
-//            log.debug("PLUGIN findResource: [${plugin.name}] for [$uri]")
-            uri = concatPaths(plugin.getPluginPath(), GRAILS_APP_VIEWS_PATH, uri)
-            //if(warDeployed) uri = concatPaths("/WEB-INF/",uri)
-            log.debug("PLUGIN findResource: [${plugin.name}] for [$uri]")
-            Resource resource
-            if(devResourceLoader){
-                resource = devResourceLoader.getResource(uri)
-            }else{
-                uri = concatPaths('/WEB-INF/', uri)
-                resource = findResource(uri)
-            }
-            //Resource resource = findResource(uri)
-            if (resource?.exists()){
-                log.debug("FOUND IN PLUGIN : [${plugin.name}] for [$uri]")
-                return resource
-            }
+        Resource resource = findResourceInBinaryPlugin(plugin as BinaryGrailsPlugin, uri)
+        if (resource) {
+            log.debug("found in binary plugin: pluginPath ${resource}")
+            return resource
         }
+
         return null
     }
 
-    /**
-     * this will not work in Grails2.
-     * checks the
-     */
-    //@CompileDynamic
     Resource findResourceInBinaryPlugin(BinaryGrailsPlugin plugin, String uri) {
         File projectDirectory = plugin.projectDirectory
         //if it has a projectDirectory then its inplace exploded multi project builds in grails 3
@@ -443,26 +346,6 @@ class ViewResourceLocator implements ResourceLoader, ResourceLoaderAware,
         return null
     }
 
-    static PluginViewPathInfo getPluginViewPathInfo(String uri) {
-        return new PluginViewPathInfo(uri)
-    }
-
-    @CompileStatic
-    static class PluginViewPathInfo {
-        String basePath  //without the "/plugins/ prefix
-        String pluginName //the file system name "xxx-plugin-0.1"
-        String path //path with out the "/plugins/xxx-plugin-0.1" such as foo/index.ftl
-
-        PluginViewPathInfo(String uri) {
-            basePath = uri.substring(PLUGINS_PATH.length(), uri.length())
-            int i = basePath.indexOf("/")
-            if (i > -1) {
-                pluginName = basePath.substring(0, i)
-                path = basePath.substring(i, basePath.length())
-            }
-        }
-    }
-
     /**
      * a simple resource that build from a URI and adds the base path the resource used to find it
      */
@@ -502,7 +385,6 @@ class ViewResourceLocator implements ResourceLoader, ResourceLoaderAware,
     //     srl.setBaseResource(new FileSystemResource("."))
     //     instance.with{
     //         resourceLoader = srl
-    //         searchBinaryPlugins = false //whether to look in binary plugins, does not work in grails2
     //         grailsViewPaths = ["/grails-app/views"]
     //         webInfPrefix = ""
     //     }

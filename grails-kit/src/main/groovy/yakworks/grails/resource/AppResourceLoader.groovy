@@ -30,7 +30,7 @@ import yakworks.commons.lang.Validate
  *
  */
 @Slf4j
-@CompileDynamic
+@CompileStatic
 class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     public static final String ATTACHMENT_LOCATION_KEY = "attachments.location"
 
@@ -103,9 +103,9 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
      * get resource dir relative to the config key
      * if key is null then it return the root location
      */
-    Resource getResourceDirFromKey(String key) {
-        return getResource("file:${file.canonicalPath}")
-    }
+    // Resource getResourceDirFromKey(String key) {
+    //     return getResource("file:${file.canonicalPath}")
+    // }
 
     ClassLoader getClassLoader() {
         resourceLoader.getClassLoader()
@@ -168,9 +168,10 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
         String baseName = FilenameUtils.getBaseName(originalFileName)
         if (baseName.length() < 3) baseName = baseName + "tmp"
         String extension = FilenameUtils.getExtension(originalFileName)
+        extension = extension ? ".${extension}" : ''
         File tempDir = getTempDir()
 
-        File tmpFile = File.createTempFile(baseName, (extension ? ".${extension}" : ''), tempDir)
+        File tmpFile = File.createTempFile(baseName, extension, tempDir)
 
         if (data) {
             if (data instanceof String) {
@@ -179,7 +180,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
                 FileUtils.writeByteArrayToFile(tmpFile, data)
             } else if (data instanceof ByteArrayOutputStream) {
                 tmpFile.withOutputStream {
-                    data.writeTo(it)
+                    (data as ByteArrayOutputStream).writeTo(it)
                 }
             }
         }
@@ -187,6 +188,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     }
 
     @SuppressWarnings(['NoDef'])
+    @CompileDynamic
     File getTempDir() {
         File tempDir
         def tmpDirPath = getResourceConfig("tempDir")
@@ -207,16 +209,16 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     /** Deletes any files in the temp directory which are in the list. */
     void deleteTempUploadedFiles(String attachmentListJson) {
         if (attachmentListJson) {
-            List fileDetailsList = JsonEngine.parseJson(attachmentListJson)
+            List fileDetailsList = JsonEngine.parseJson(attachmentListJson, List)
             fileDetailsList.each { fileDetails ->
-                FileUtils.forceDelete(new File(tempDir, fileDetails.tempFilename))
+                FileUtils.forceDelete(new File(tempDir, fileDetails['tempFilename'] as String))
             }
         }
     }
 
     void deleteTempUploadedFiles(List attachmentList) {
         attachmentList.each { file ->
-            FileUtils.forceDelete(new File(tempDir, file.tempFilename))
+            FileUtils.forceDelete(new File(tempDir, file['tempFilename'] as String))
         }
     }
 
@@ -242,7 +244,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     @SuppressWarnings("NoDef")
     public String getTenantUniqueKey() {
         def client = currentTenant
-        return "${client.num}-${client.id}"
+        return "${client['num']}-${client['id']}"
     }
 
     void forceMkdir(String path) {
@@ -288,11 +290,11 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     /** Get a list of script locations as absolute files. */
     List getScripts(Map args = [:]) {
         String key = 'scripts.locations'
-        Closure closure = getResourceConfig(key)
+        Closure closure = getResourceConfig(key) as Closure
         AppResourceLoader.log.debug "getScripts:  closure is ${closure}"
         if (!closure) throw new IllegalArgumentException("Application resource key '${key}' is not defined or returns an empty value.")
         List files = []
-        closure(mergeClientValues(args)).each { name -> files << getProperFile(name, key, true) }
+        closure(mergeClientValues(args)).each { name -> files << getProperFile(name as String, key, true) }
         return files
     }
 
@@ -355,7 +357,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     @SuppressWarnings(["NoDef"])
     Map mergeClientValues(Map args = [:]) {
         def client = currentTenant
-        Map localEnv = [tenantId: client.id, tenantSubDomain: client.num] << args
+        Map localEnv = [tenantId: client['id'], tenantSubDomain: client['num']] << args
     }
 
     /** Gets a month directory for a configuration key.

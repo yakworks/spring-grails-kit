@@ -110,10 +110,7 @@ Define ConfigKeyAppResourceLoader as a bean in grails-app/conf/spring/resources.
     viewResourceLocator(yakworks.grails.mvc.ViewResourceLocator) { bean ->
         searchPaths = []
         searchLoaders = [ref("configKeyAppResourceLoader")]
-
-        searchBinaryPlugins = true //whether to look in binary plugins, does not work in grails2
-        scanAllPluginsWhenNotFound = false
-        
+      
     }
 
     configKeyAppResourceLoader(ConfigKeyAppResourceLoader) {

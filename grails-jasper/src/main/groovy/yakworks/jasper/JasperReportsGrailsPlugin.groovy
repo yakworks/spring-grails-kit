@@ -45,7 +45,6 @@ class JasperReportsGrailsPlugin extends Plugin {
 
             log.info "initializing jasper reports plugin"
             jasperViewResourceLocator(yakworks.grails.mvc.ViewResourceLocator) { bean ->
-                searchBinaryPlugins = true //whether to look in binary plugins, does not work in grails2
 
                 //initial searchLocations
                 searchPaths = []//jconfig.viewResourceLocator.searchPaths

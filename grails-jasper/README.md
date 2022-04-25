@@ -110,9 +110,7 @@ jasperViewResourceLocator(grails.plugin.viewtools.ViewResourceLocator) { bean ->
     searchPaths = [
         "file:/someLoc/my-templates/" //the directory which contains the jasper templates
     ] 
-
-   searchBinaryPlugins = true
-
+  
    if (!application.warDeployed) { // <- grails2
 		grailsViewPaths = ["/grails-app/views"]
 		webInfPrefix = ""

@@ -71,8 +71,6 @@ viewResourceLocator(yakworks.grails.mvc.ViewResourceLocator) { bean ->
         "file:/someLoc/my-templates/"
     ] 
 
-    searchBinaryPlugins = false //whether to look in binary plugins, does not work in grails2
-
     // in dev mode there will be a groovyPageResourceLoader 
     // with base dir set to the running project
     //if(Environment.isDevelopmentEnvironmentAvailable()) <- better for Grails 3
