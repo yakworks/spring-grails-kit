@@ -2,13 +2,18 @@ rootProject.name = 'spring-grails-kit'
 //the releasable plugins
 include 'grails-kit'
 include 'grails-jasper'
+include 'grails-freemarker'
 include 'grails-view-tools'
 
 // tests will be included in main runs but not deploy tasks and doc tasks
 include 'examples/grails-views-app'
 include 'examples/grails-views-plugin'
 include 'examples/jasper-app'
+include 'examples/free-app'
+include 'examples/free-plugin'
 
 findProject(':examples/grails-views-app').name = 'grails-views-app'
 findProject(':examples/grails-views-plugin').name = 'grails-views-plugin'
 findProject(':examples/jasper-app').name = 'jasper-app'
+findProject(':examples/free-app').name = 'free-app'
+findProject(':examples/free-plugin').name = 'free-plugin'

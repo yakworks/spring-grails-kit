@@ -1,0 +1,24 @@
+apply plugin: 'yakworks.grails-plugin'
+apply plugin:"org.grails.grails-gsp"
+
+dependencies {
+    profile "org.grails.profiles:web-plugin"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    provided "org.grails:grails-plugin-services"
+    //provided "org.grails:grails-plugin-domain-class"
+    compile "org.grails:grails-core"
+    compile "org.grails:grails-dependencies"
+    compile "org.grails:grails-web-boot"
+
+    provided "org.codehaus.groovy:groovy-ant"
+
+    // compile "org.springframework:spring-test"
+
+    // compile "commons-io:commons-io:2.5"
+    compile "no.api.freemarker:freemarker-java8:1.3.0"
+    compile "org.freemarker:freemarker:2.3.29"
+    // compile "org.grails.plugins:view-tools:1.2.0"
+
+    compile project(':grails-view-tools')
+}

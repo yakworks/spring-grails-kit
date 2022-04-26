@@ -14,6 +14,7 @@ compile "org.grails.plugins:jasper-reports:3.2.0"
 <!-- this is using the Sublime MarkdownTOC plugin to auto update it -->
 <!-- MarkdownTOC autolink="true" bracket="round" depth="3" style="unordered" indent="  " autoanchor="false" -->
 
+- [Table of Contents](#table-of-contents)
 - [Summary](#summary)
 - [Quick Start](#quick-start)
 - [Usage](#usage)
@@ -105,7 +106,7 @@ Here is an example of how to use an external directory to store jasper report te
 grails-app/conf/spring/resources.groovy
 
 ```groovy
-jasperViewResourceLocator(grails.plugin.viewtools.ViewResourceLocator) { bean ->
+jasperViewResourceLocator(yakworks.grails.mvc.ViewResourceLocator) { bean ->
    
     searchPaths = [
         "file:/someLoc/my-templates/" //the directory which contains the jasper templates
