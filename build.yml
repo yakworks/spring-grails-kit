@@ -15,7 +15,6 @@ project:
 
 bot:
   email: 9cibot@9ci.com
-  user: 9cibot
   sign_commits: true
 
 vault:

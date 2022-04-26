@@ -14,7 +14,7 @@ check:
 
 # should run vault.decrypt before this,
 # sets up github, kubernetes and docker login
-ship.authorize: git.config-bot-user kubectl.config dockerhub.login
+ship.authorize: git.config-bot-user
 	$(logr.done)
 
 ## publish the java jar lib to repo.9ci for snapshot and to both for prod Sonatype Maven Central
