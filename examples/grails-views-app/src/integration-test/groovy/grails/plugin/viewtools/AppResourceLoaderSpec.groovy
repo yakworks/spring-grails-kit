@@ -1,5 +1,8 @@
 package grails.plugin.viewtools
 
+import java.nio.file.Files
+import java.nio.file.Path
+
 import grails.testing.mixin.integration.Integration
 import org.apache.commons.io.FileUtils
 import org.springframework.core.io.Resource
@@ -152,18 +155,16 @@ class AppResourceLoaderSpec extends Specification {
         !file2.exists()
     }
 
-    def testGetRootLocation1() {
+    def testGetRootPath() {
         when:
-        def dir = appResourceLoader.rootLocation
+        Path rootPath = appResourceLoader.rootPath
 
         then:
-        dir != null
-        //File base = new File('target/resources/virgin-2/')
-        // This next line will fail if you change nine.attachments.directory in Config.groovy OR the test data for id=2
-        dir.path.endsWith(new File('/root-location').path)
-        dir.exists()
-        dir.isDirectory()
-        dir.canWrite()
+        rootPath != null
+        Files.exists(rootPath)
+        Files.isDirectory(rootPath)
+
+        rootPath.endsWith('root-location')
     }
 
     def testGetTempDir() {

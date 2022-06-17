@@ -4,6 +4,9 @@
 */
 package yakworks.grails.resource
 
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import javax.annotation.PostConstruct
 
 import groovy.transform.CompileDynamic
@@ -12,6 +15,7 @@ import groovy.util.logging.Slf4j
 
 import org.apache.commons.io.FileUtils
 import org.apache.commons.io.FilenameUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 
@@ -20,6 +24,7 @@ import grails.core.GrailsApplication
 import grails.core.support.GrailsConfigurationAware
 import yakworks.commons.json.JsonEngine
 import yakworks.commons.lang.Validate
+import yakworks.commons.util.BuildSupport
 
 /**
  * A place for file resource related functionality which may required an application context or logged-in user.
@@ -34,6 +39,7 @@ import yakworks.commons.lang.Validate
 class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     public static final String ATTACHMENT_LOCATION_KEY = "attachments.location"
 
+    @Autowired
     GrailsApplication grailsApplication
 
     ResourceLoader resourceLoader
@@ -45,6 +51,8 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
 
     private Closure rootLocationClosure
     private Closure currentTenantClosure
+
+    private Path rootPath
 
     @PostConstruct
     public void init() {
@@ -62,7 +70,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     Resource getResource(String location) {
         String urlToUse = location
         if ((!location.startsWith('/')) && !(location.startsWith('file:'))) {
-            urlToUse = "file:${rootLocation.canonicalPath}/${location}/"
+            urlToUse = "file:${rootPath.resolve(location).toString()}/"
         }
         log.debug "appResourceLoader.getResource with $urlToUse"
         resourceLoader.getResource(urlToUse)
@@ -85,7 +93,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
             return getResource(location)
         }
 
-        String locationKey = location
+        String locationKey
 
         if (locationBase?.startsWith('config:')) {
             String configKey = locationBase.substring('config:'.length())
@@ -198,6 +206,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
             } else {
                 tempDir = new File(tmpDirPath)
             }
+            if (!tempDir.exists()) tempDir.mkdirs()
         } else {
             tempDir = new File(System.getProperty('java.io.tmpdir'))
         }
@@ -262,9 +271,17 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
      * @throws FileNotFoundException , IllegalArgumentException
      */
     File getRootLocation() {
-        String rootName = rootLocationClosure(mergeClientValues()) // rootLocation exists by default
-        File rootLocation = new File(rootName)
-        return verifyOrCreateLocation(rootLocation, 'rootLocation', false) // Ensure that it exists on the filesystem.
+        if(rootLocationClosure){
+            String rootName = rootLocationClosure(mergeClientValues()) // rootLocation exists by default
+            File rootLocation = new File(rootName)
+            return verifyOrCreateLocation(rootLocation, 'rootLocation', true) // Ensure that it exists on the filesystem.
+        } else {
+            return this.rootPath.toFile()
+        }
+    }
+
+    Path getRootPath() {
+        return this.rootPath
     }
 
     /** Get a configured directory location from a nine.resources key.
@@ -292,9 +309,12 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
         String key = 'scripts.locations'
         Closure closure = getResourceConfig(key) as Closure
         AppResourceLoader.log.debug "getScripts:  closure is ${closure}"
-        if (!closure) throw new IllegalArgumentException("Application resource key '${key}' is not defined or returns an empty value.")
         List files = []
-        closure(mergeClientValues(args)).each { name -> files << getProperFile(name as String, key, true) }
+        if (closure){
+            closure(mergeClientValues(args)).each { name -> files << getProperFile(name as String, key, true) }
+        } else {
+            files << getProperFile('scripts', key, true)
+        }
         return files
     }
 
@@ -304,7 +324,8 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
         return verifyOrCreateLocation(subDirectory, key, create, false)
     }
 
-    /** getProperFile builds a File from a name and ensures it exists, or throws an error.
+    /**
+     * getProperFile builds a File from a name and ensures it exists, or throws an error.
      * If the name is absolute then it builds based on just that name.
      * If the name is relative then it is built relative to rootLocation.
      * @return the canonical File which exists.
@@ -312,7 +333,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     File getProperFile(String fileName, String key, boolean create = true) {
         boolean wasAbsolute = false
         if (!fileName) throw new IllegalArgumentException("Application resource key '${key}' is not defined or returns an empty value.")
-        File dir = new File(getRootLocation(), fileName)
+        File dir = rootPath.resolve(fileName).toFile()
         File justName = new File(fileName)
         if (justName.isAbsolute()) {
             dir = justName
@@ -408,9 +429,22 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
         return resourcesConfigRootKey + "." + subKey
     }
 
+    //creates the dir for file path
+    void createParentDirs(Path filePath){
+        // Files.createFile(Files.createDirectories(confDir).resolve(confFile.getFileName()))
+        if(Files.notExists(filePath.getParent())) Files.createDirectories(filePath.getParent())
+    }
+
     @Override
     void setConfiguration(Config co) {
         rootLocationClosure = co.getProperty(buildResourceKey('rootLocation'), Closure)
+        if(!rootLocationClosure) {
+            String rootLoc = co.getProperty(buildResourceKey('rootLocation'), String)
+            if(rootLoc){
+                rootPath = Paths.get(rootLoc)
+                if(Files.notExists(rootPath)) Files.createDirectories(rootPath)
+            }
+        }
         currentTenantClosure = co.getProperty(buildResourceKey('currentTenant'), Closure)
     }
 }
