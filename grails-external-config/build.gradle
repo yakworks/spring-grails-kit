@@ -1,0 +1,24 @@
+
+apply plugin: "yakworks.grails-plugin"
+
+dependencies {
+
+    implementation "org.springframework.boot:spring-boot-starter-logging"
+    implementation "org.springframework.boot:spring-boot-autoconfigure"
+    implementation "org.grails:grails-core"
+    implementation "org.grails:grails-dependencies"
+
+    console "org.grails:grails-console"
+    profile "org.grails.profiles:plugin"
+
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    runtimeOnly 'com.virtualdogbert:GroovyConfigWriter:1.1'
+
+    api 'org.yaml:snakeyaml:1.30'
+
+    api project(':grails-kit')
+
+    testImplementation "org.grails:grails-web-testing-support"
+
+
+}

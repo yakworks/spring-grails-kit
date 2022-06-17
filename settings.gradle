@@ -4,6 +4,7 @@ include 'grails-kit'
 include 'grails-jasper'
 include 'grails-freemarker'
 include 'grails-view-tools'
+include 'grails-external-config'
 
 // tests will be included in main runs but not deploy tasks and doc tasks
 include 'examples/grails-views-app'

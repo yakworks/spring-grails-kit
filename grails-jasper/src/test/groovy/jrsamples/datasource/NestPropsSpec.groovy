@@ -2,10 +2,10 @@ package jrsamples.datasource
 
 import net.sf.jasperreports.engine.*
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource
-import net.sf.jasperreports.engine.export.JRXhtmlExporter
-import net.sf.jasperreports.engine.util.JRLoader
-import net.sf.jasperreports.export.SimpleExporterInput
-import net.sf.jasperreports.export.SimpleHtmlExporterOutput
+// import net.sf.jasperreports.engine.export.JRXhtmlExporter
+// import net.sf.jasperreports.engine.util.JRLoader
+// import net.sf.jasperreports.export.SimpleExporterInput
+// import net.sf.jasperreports.export.SimpleHtmlExporterOutput
 import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
 
@@ -23,7 +23,7 @@ class NestPropsSpec extends Specification implements GrailsUnitTest {
         pdf()
         html()
         xml()
-        xhtml()
+        // xhtml()
         //xlsx()
     }
 
@@ -80,21 +80,21 @@ class NestPropsSpec extends Specification implements GrailsUnitTest {
     }
 
 
-    public void xhtml() throws JRException
-    {
-        File sourceFile = new File("$TEST_JASPER_DIR/NestProps.jrprint");
-
-        JasperPrint jasperPrint = (JasperPrint)JRLoader.loadObject(sourceFile);
-
-        File destFile = new File(sourceFile.getParent(), jasperPrint.getName() + ".xhtml");
-
-        JRXhtmlExporter exporter =new JRXhtmlExporter();
-
-        exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-        exporter.setExporterOutput(new SimpleHtmlExporterOutput(destFile));
-
-        exporter.exportReport();
-
-    }
+    // public void xhtml() throws JRException
+    // {
+    //     File sourceFile = new File("$TEST_JASPER_DIR/NestProps.jrprint");
+    //
+    //     JasperPrint jasperPrint = (JasperPrint)JRLoader.loadObject(sourceFile);
+    //
+    //     File destFile = new File(sourceFile.getParent(), jasperPrint.getName() + ".xhtml");
+    //
+    //     JRXhtmlExporter exporter =new JRXhtmlExporter();
+    //
+    //     exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+    //     exporter.setExporterOutput(new SimpleHtmlExporterOutput(destFile));
+    //
+    //     exporter.exportReport();
+    //
+    // }
 
 }
