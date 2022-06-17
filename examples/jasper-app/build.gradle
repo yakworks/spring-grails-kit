@@ -9,23 +9,27 @@ apply plugin: "org.grails.grails-gsp"
 dependencies {
     profile "org.grails.profiles:web"
 
-    provided "org.grails:grails-plugin-domain-class"
-    provided "org.grails:grails-plugin-services"
+    implementation "org.grails:grails-plugin-domain-class"
+    implementation "org.grails:grails-plugin-services"
 
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
 
-    provided "org.codehaus.groovy:groovy-ant"
+    implementation "org.codehaus.groovy:groovy-ant"
 
-    compileOnly "org.grails.plugins:hibernate5:$vGormHibernate"
-    compileOnly "org.hibernate:hibernate-core:$vHibernate"
+    implementation "org.grails.plugins:hibernate5:$vGormHibernate"
+    implementation "org.hibernate:hibernate-core:$vHibernate"
 
-     compile project(':grails-jasper')
+    implementation project(':grails-jasper')
 }
 
 bootRun {
-  //  ignoreExitValue true
-  jvmArgs('-Dspring.output.ansi.enabled=always', '-noverify', '-XX:TieredStopAtLevel=1', '-Xmx1024m')
+  ignoreExitValue true
+  jvmArgs(
+    '-Dspring.output.ansi.enabled=always',
+    '-noverify',
+    '-XX:TieredStopAtLevel=1',
+    '-Xmx1024m')
   sourceResources sourceSets.main
   String springProfilesActive = 'spring.profiles.active'
   systemProperty springProfilesActive, System.getProperty(springProfilesActive)

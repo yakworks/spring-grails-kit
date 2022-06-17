@@ -9,12 +9,12 @@ apply plugin: "org.grails.grails-gsp"
 dependencies {
     profile "org.grails.profiles:web"
 
-    compile "org.springframework.boot:spring-boot-starter-actuator"
-    provided "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation "org.springframework.boot:spring-boot-starter-actuator"
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
 
-    provided "org.codehaus.groovy:groovy-ant"
+  implementation "org.codehaus.groovy:groovy-ant"
 
-    compile('ar.com.fdvs:DynamicJasper:5.0.10'){
+  implementation('ar.com.fdvs:DynamicJasper:5.0.10'){
         exclude(module:'jasperreports')
     }
 

@@ -16,7 +16,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
     def "when getting config without grails.config.location set, the config does not change"() {
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null,environment)
 
         then:
         environment.properties == old(environment.properties)
@@ -27,7 +27,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ['boguslocation', '/otherboguslocation', 'classpath:bogusclasspath', '~/bogus', 'file://bogusfile', 'http://bogus.server'])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         environment.properties == old(environment.properties)
@@ -38,7 +38,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('environments.test.grails.config.locations':["classpath:/externalConfig.yml"])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty("yml.config") == 'yml-expected-value'
@@ -50,7 +50,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': [ConfigWithoutEnvironmentBlock])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('test.external.config') == 'expected-value'
@@ -61,7 +61,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': [ConfigWithEnvironmentBlock])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('test.external.config') == 'expected-value-test'
@@ -75,7 +75,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('test.external.config') == 'global-value'
@@ -89,7 +89,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
 
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('test.external.config') == 'global-value'
@@ -112,7 +112,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ['~/.grails/external-config-temp-config.groovy'])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('config.value') == 'expected-value'
@@ -138,7 +138,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ['file:${user.home}/.grails/external-config-temp-config.groovy'])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('config.value') == 'expected-value'
@@ -160,7 +160,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ["file:${file.absolutePath}"])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('config.value') == 'expected-value'
@@ -176,7 +176,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ["classpath:/externalConfig.${configExtension}"])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty("${configExtension}.config") == expectedValue
@@ -196,7 +196,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
                 'grails.config.locations': ["classpath:/externalConfigWithReferencedValue.${configExtension}"])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty("external.config") == expectedValue
@@ -214,7 +214,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ['classpath:/externalConfigEnvironments.yml'])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty('yml.config') == 'expected-value-test'
@@ -235,7 +235,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ["file:${tmp}/file-*-config.groovy"])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then: "Two values are set from two config files"
         getConfigProperty('config.value1') == 'from-a'
@@ -263,7 +263,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('grails.config.locations': ["~/file-*-config.groovy"])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then: "Two values are set from two config files"
         getConfigProperty('config.value1') == 'from-a'
@@ -281,7 +281,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         addToEnvironment('environments.test.grails.config.locations':["classpath:/externalConfigMultipleDocs.yml"])
 
         when:
-        listener.environmentPrepared(environment)
+        listener.environmentPrepared(null, environment)
 
         then:
         getConfigProperty("yml.config") == 'yml-expected-value'

@@ -93,9 +93,8 @@ class ViewResourceLocatorIntegrationSpec extends Specification  {
 
         then:
         String uri = StringUtils.cleanPath(res.getURI().toString())
-        String toCompare = "grails-views-plugin/grails-app/views/fooPlugin/index.md"
-        String toCompare2 = "grails-views-plugin-0.1.jar!/fooPlugin/index.md"
-        uri.endsWith( toCompare) || uri.endsWith( toCompare2)
+        String toCompare2 = "jar!/fooPlugin/index.md"
+        uri.endsWith( toCompare2) || uri.endsWith( toCompare2)
     }
 
     @Ignore

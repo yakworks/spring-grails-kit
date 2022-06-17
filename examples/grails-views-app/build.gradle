@@ -7,14 +7,14 @@ apply plugin:"org.grails.grails-gsp"
 
 dependencies {
 
-  compile "org.grails.profiles:web"
-  compile("org.springframework.boot:spring-boot-starter-actuator"){ exclude module: 'micrometer-core' }
-  compile "org.springframework.boot:spring-boot-starter-tomcat"
+  profile "org.grails.profiles:web"
+  implementation("org.springframework.boot:spring-boot-starter-actuator"){ exclude module: 'micrometer-core' }
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
 
-  provided "org.codehaus.groovy:groovy-ant"
+  implementation "org.codehaus.groovy:groovy-ant"
 
-  compile project(':grails-views-plugin')
-  compile project(':grails-view-tools')
+  implementation project(':grails-views-plugin')
+  implementation project(':grails-view-tools')
 }
 /****** GEB *******
 Pass system properties through to the integrationTest task so we can pass in the 'geb.env' property to run tests
@@ -38,8 +38,12 @@ integrationTest {
 }
 
 bootRun {
-  //  ignoreExitValue true
-  jvmArgs('-Dspring.output.ansi.enabled=always', '-noverify', '-XX:TieredStopAtLevel=1', '-Xmx1024m')
+  ignoreExitValue true
+  jvmArgs(
+    '-Dspring.output.ansi.enabled=always',
+    '-noverify',
+    '-XX:TieredStopAtLevel=1',
+    '-Xmx1024m')
   sourceResources sourceSets.main
   String springProfilesActive = 'spring.profiles.active'
   systemProperty springProfilesActive, System.getProperty(springProfilesActive)

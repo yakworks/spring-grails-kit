@@ -15,6 +15,7 @@ import org.grails.config.PropertySourcesConfig
 import org.grails.config.yaml.YamlPropertySourceLoader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.springframework.boot.ConfigurableBootstrapContext
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.SpringApplicationRunListener
 import org.springframework.context.ConfigurableApplicationContext
@@ -40,7 +41,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     ExternalConfigRunListener(SpringApplication application, String[] args) {}
 
     @Override
-    void environmentPrepared(ConfigurableEnvironment environment) {
+    void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
         List<Object> locations = getLocations(environment)
 
         String encoding = environment.getProperty('grails.config.encoding', String, 'UTF-8')

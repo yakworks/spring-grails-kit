@@ -21,7 +21,7 @@ class MergedConfigSpec extends Specification implements GrailsUnitTest {
                     'classpath:/mergeExternalConfig.properties'
             ])
         when:
-            listener.environmentPrepared(environment)
+            listener.environmentPrepared(null, environment)
 
         then:
             getConfigProperty('base.config.yml') == 'yml-expected-value'
@@ -37,7 +37,7 @@ class MergedConfigSpec extends Specification implements GrailsUnitTest {
                     'classpath:/mergeExternalConfig2.groovy',
             ])
         when:
-            listener.environmentPrepared(environment)
+            listener.environmentPrepared(null, environment)
 
         then:
             getConfigProperty('base.config.global') == 'global-expected-value'
