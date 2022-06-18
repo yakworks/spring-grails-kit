@@ -5,6 +5,11 @@ import org.grails.config.NavigableMap
 import org.grails.config.NavigableMapPropertySource
 import org.grails.testing.GrailsUnitTest
 import org.springframework.core.env.ConfigurableEnvironment
+import org.springframework.core.io.Resource
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.springframework.core.io.support.ResourcePatternResolver
+import org.springframework.util.AntPathMatcher
+import spock.lang.IgnoreRest
 import spock.lang.Issue
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -286,6 +291,43 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         then:
         getConfigProperty("yml.config") == 'yml-expected-value'
         getConfigProperty("yml.second") == 'yml-second-value'
+    }
+
+    def "class path yml wildcard"() {
+        given:
+        addToEnvironment('grails.config.locations': ["classpath:wilds/*.yml"])
+
+        when:
+        listener.environmentPrepared(null, environment)
+
+        then:
+        getConfigProperty("yml.prop1") == "got 1"
+        getConfigProperty("yml.prop2") == "got 2"
+        getConfigProperty("yml.prop3") == "got 3"
+    }
+
+    def "class path yml wildcard classpath*"() {
+        given:
+        addToEnvironment('grails.config.locations': ["classpath*:wilds/*.yml"])
+
+        when:
+        listener.environmentPrepared(null, environment)
+
+        then:
+        getConfigProperty("yml.prop1") == "got 1"
+        getConfigProperty("yml.prop2") == "got 2"
+        getConfigProperty("yml.prop3") == "got 3"
+    }
+
+    def "class path yml wildcard nothing"() {
+        given:
+        addToEnvironment('grails.config.locations': ["classpath*:nothingToSeeHere/*.yml"])
+
+        when:
+        listener.environmentPrepared(null, environment)
+
+        then:
+        getConfigProperty("yml.prop1") == null
     }
 
 

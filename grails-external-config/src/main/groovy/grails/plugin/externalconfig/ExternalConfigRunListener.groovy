@@ -13,19 +13,19 @@ import groovy.util.logging.Slf4j
 
 import org.grails.config.PropertySourcesConfig
 import org.grails.config.yaml.YamlPropertySourceLoader
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import org.springframework.boot.ConfigurableBootstrapContext
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.SpringApplicationRunListener
 import org.springframework.boot.env.PropertiesPropertySourceLoader
-import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.MapPropertySource
 import org.springframework.core.env.PropertySource
 import org.springframework.core.io.DefaultResourceLoader
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.springframework.core.io.support.ResourcePatternResolver
+import org.springframework.util.AntPathMatcher
 
 import grails.util.Environment
 
@@ -35,14 +35,18 @@ import grails.util.Environment
 @Slf4j(category = 'grails.plugin.externalconfig.ExternalConfig')
 class ExternalConfigRunListener implements SpringApplicationRunListener {
 
-    private ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
+    ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
     private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
     private PropertiesPropertySourceLoader propertiesPropertySourceLoader = new PropertiesPropertySourceLoader()
 
     private String userHome = System.properties.getProperty('user.home')
     private String separator = System.properties.getProperty('file.separator')
 
-    ExternalConfigRunListener(SpringApplication application, String[] args) {}
+    final SpringApplication application
+
+    ExternalConfigRunListener(SpringApplication application, String[] args) {
+        this.application = application
+    }
 
     @Override
     void environmentPrepared(ConfigurableBootstrapContext bootstrapContext, ConfigurableEnvironment environment) {
@@ -56,14 +60,20 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
             if (location instanceof Class) {
                 propertySources = loadClassConfig(location as Class, currentProperties)
             } else {
-                // Replace placeholders from known locations
-                String finalLocation = environment.resolvePlaceholders(location as String)
+                Resource resource
+                if( location instanceof Resource ){
+                    resource = location
+                } else {
+                    // Replace placeholders from known locations
+                    String finalLocation = environment.resolvePlaceholders(location as String)
+                    resource = defaultResourceLoader.getResource(finalLocation)
+                }
 
-                Resource resource = defaultResourceLoader.getResource(finalLocation)
                 if (resource.exists()) {
-                    if (finalLocation.endsWith('.groovy')) {
+                    String fname = resource.filename
+                    if (fname.endsWith('.groovy')) {
                         propertySources = loadGroovyConfig(resource, encoding, currentProperties)
-                    } else if (finalLocation.endsWith('.yml')) {
+                    } else if (fname.endsWith('.yml') || fname.endsWith('.yaml')) {
                         environment.activeProfiles
                         propertySources = loadYamlConfig(resource)
                     } else {
@@ -71,13 +81,15 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
                         propertySources = loadPropertiesConfig(resource)
                     }
                 } else {
-                    log.debug("Config file {} not found", [finalLocation] as Object[])
+                    log.debug("Config file {} not found", [resource] as Object[])
                 }
             }
             propertySources.each {
                 environment.propertySources.addFirst(it)
             }
         }
+
+        // setMicronautConfigLocations(locations)
     }
 
     // Resolve final locations, taking into account user home prefix and file wildcards
@@ -87,10 +99,10 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         String environmentString = "environments.${Environment.current.name}.grails.config.locations"
         locations = environment.getProperty(environmentString, List, locations)
         locations.collectMany { Object location ->
-            if(location instanceof CharSequence) {
+            if (location instanceof CharSequence) {
                 location = replaceUserHomePrefix(location as String)
                 List<Object> expandedLocations = handleWildcardLocation(location as String)
-                if(expandedLocations) {
+                if (expandedLocations) {
                     return expandedLocations
                 }
             }
@@ -99,14 +111,14 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     }
 
     // Expands wildcards if any
-    List<Object> handleWildcardLocation(String location) {
-        if(location.startsWith('file:')) {
+    private List<Object> handleWildcardLocation(String location) {
+        if (location.startsWith('file:')) {
             String locationFileName = location.tokenize(separator)[-1]
-            if(locationFileName.contains('*')) {
+            if (locationFileName.contains('*')) {
                 String parentLocation = location - locationFileName
                 try {
                     Resource resource = defaultResourceLoader.getResource(parentLocation)
-                    if(resource.file.exists() && resource.file.isDirectory()) {
+                    if (resource.file.exists() && resource.file.isDirectory()) {
                         Path dir = resource.file.toPath()
                         DirectoryStream<Path> stream = Files.newDirectoryStream(dir, locationFileName)
 
@@ -119,9 +131,37 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
                 }
 
             }
+        } else if (location.startsWith('classpath') && (location.tokenize(separator)[-1]).contains('*') ) {
+            ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(defaultResourceLoader)
+            (resolver.pathMatcher as AntPathMatcher).setCaseSensitive(false)
+            List<Resource> resourceList = resolver.getResources(location).toList()
+            return resourceList as List<Object>
         }
         return null
     }
+
+    // Resource[] findResources(Resource baseResource , List<String> locationPatterns) {
+    //     Resource[] resources
+    //     ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(defaultResourceLoader)
+    //     (resolver.pathMatcher as AntPathMatcher).setCaseSensitive(false)
+    //     try {
+    //         // first load all ymls
+    //         List<Resource> resourceList = []
+    //         locationPatterns.each{
+    //             resourceList.addAll(resolver.getResources(it))
+    //         }
+    //
+    //         resources = resourceList as Resource[]
+    //         //filter them down
+    //         resources = resources.length > 0 ? filterResources(resources, suffix, locale) : resources
+    //
+    //     } catch (IOException e) {
+    //         log.error("IOException loading i18n yaml messages", e)
+    //     }
+    //
+    //     return resources
+    //
+    // }
 
     // Replace ~ with value from system property 'user.home' if set
     private String replaceUserHomePrefix(String location) {
@@ -167,7 +207,33 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         return propertiesPropertySourceLoader.load(resource.filename, resource)
     }
 
+    private void setMicronautConfigLocations(List<Object> newSources) {
+        List<String> sources = System.getProperty('micronaut.config.files', System.getenv('MICRONAUT_CONFIG_FILES') ?: '').tokenize(',')
+        sources.addAll(newSources.collect { it.toString() })
+        sources = filterMissingMicronautLocations(sources)
+        log.debug("---> Setting 'micronaut.config.files' to ${sources.join(',')}")
+        System.setProperty('micronaut.config.files', sources.join(',') )
+    }
+
+    private List<String> filterMissingMicronautLocations(List<String> sources) {
+        sources.findAll { String location ->
+            try {
+                def resource = defaultResourceLoader.getResource(location)
+                if (!resource.exists()) {
+                    log.debug("Configuration file ${location} not found, ignoring.")
+                    return false
+                }
+            } catch (FileNotFoundException ignore) {
+                log.debug("Configuration file ${location} not found, ignoring.")
+                return false
+            }
+            true
+        }
+    }
+
+
     static Map getCurrentConfig(ConfigurableEnvironment environment) {
         return new PropertySourcesConfig(environment.propertySources)
     }
+
 }

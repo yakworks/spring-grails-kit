@@ -132,7 +132,7 @@ For `.groovy` and `.yml` files the `environments` blocks in the config file are 
 
 **Wildcard support**
 
-It is possible to use `*` as wildcards in the filename part of the configuration:
+It is possible to use `*` as wildcards. classpath wildcards work for yml:
 
 ```
 grails:
@@ -140,6 +140,7 @@ grails:
         locations:
             - file:/etc/app/myconfig*.groovy
             - ~/.grails/myconfig*.groovy
+            - classpath*:core/*.yml
 ```
 or
 ```
