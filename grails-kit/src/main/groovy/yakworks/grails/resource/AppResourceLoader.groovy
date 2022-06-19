@@ -175,10 +175,10 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
      * @param create True if the directory should be created if missing.
      * @return the Path pointed to the dir for the key
      */
-    Path getPath(String key) {
+    Path getPath(String key, boolean create = false) {
         String dir = getProp(key)
         if (!dir) throw new IllegalArgumentException("app resource key '${key}' is not defined or returns an empty value.")
-        return checkPath(Paths.get(dir), false)
+        return checkPath(Paths.get(dir), create)
     }
 
     /**

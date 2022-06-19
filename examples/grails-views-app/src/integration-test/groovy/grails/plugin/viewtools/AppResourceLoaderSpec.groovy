@@ -18,6 +18,7 @@ class AppResourceLoaderSpec extends Specification {
 
     void cleanupSpec() {
         appResourceLoader.deleteDirectory("attachments.location")
+        appResourceLoader.deleteDirectory("tempDir")
     }
 
     def testCreateTempFile_empty() {
@@ -94,6 +95,7 @@ class AppResourceLoaderSpec extends Specification {
     def testGetLocation_absolute_scripts() {
         when:
         Path scripts = appResourceLoader.scripts
+        Files.createDirectories(scripts)
 
         then:
         Files.exists(scripts)
@@ -101,7 +103,7 @@ class AppResourceLoaderSpec extends Specification {
 
     def testGetLocation_relative_checkImages() {
         when:
-        Path checkImages = appResourceLoader.getPath('checkImage.location')
+        Path checkImages = appResourceLoader.getPath('checkImage.location', true)
 
         then:
         Files.exists(checkImages)
