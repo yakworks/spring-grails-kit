@@ -10,5 +10,4 @@ logging:
 
 app:
   resources:
-    rootLocation: ./build/rootLocation/virgin
-    tempDir: "./build/rootLocation/tempDir"
+    rootLocation: ./build/rootLocation
