@@ -16,10 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 
-import grails.config.Config
-import grails.core.GrailsApplication
-import grails.core.support.GrailsConfigurationAware
 import yakworks.commons.lang.Validate
+import yakworks.grails.support.ConfigAware
 
 /**
  * A place for file resource related functionality which may required an application context or logged-in user.
@@ -31,13 +29,10 @@ import yakworks.commons.lang.Validate
  */
 @Slf4j
 @CompileStatic
-class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
+class AppResourceLoader implements ResourceLoader, ConfigAware {
+
     @Autowired
-    GrailsApplication grailsApplication
-
     ResourceLoader resourceLoader
-
-    Config cfg
 
     /**
      * The path to resources config root. eg "nine.resources"
@@ -48,7 +43,11 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
 
     @PostConstruct
     void init() {
-        resourceLoader = grailsApplication.mainContext
+        String rootLoc = config.getProperty(buildResourceKey('rootLocation'), String)
+        if(rootLoc){
+            rootPath = Paths.get(rootLoc)
+            if(Files.notExists(rootPath)) Files.createDirectories(rootPath)
+        }
     }
 
     /**
@@ -108,9 +107,9 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
      *         if data is non-null will exist and will contain the data specified.
      */
     Path createTempFile(String originalFileName, Object data) {
-        String baseName = PathUtils.getBaseName(originalFileName)
+        String baseName = PathSupport.getBaseName(originalFileName)
         if (baseName.length() < 3) baseName = baseName + "tmp"
-        String extension = PathUtils.getExtension(originalFileName)
+        String extension = PathSupport.getExtension(originalFileName)
         extension = extension ? ".${extension}" : ''
 
         Path tmpDir = getTempDirectory()
@@ -119,10 +118,8 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
         if (data) {
             if (data instanceof String) {
                 tmpFilePath.write(data)
-                // FileUtils.writeStringToFile(tmpFile, data)
             } else if (data instanceof byte[]) {
                 tmpFilePath.setBytes(data)
-                // FileUtils.writeByteArrayToFile(tmpFile, data)
             } else if (data instanceof ByteArrayOutputStream) {
                 tmpFilePath.withOutputStream {
                     (data as ByteArrayOutputStream).writeTo(it)
@@ -188,7 +185,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     Path checkPath(Path directory, boolean create = false) {
         Path dirPath = directory
         if(!dirPath.isAbsolute()) dirPath = rootPath.resolve(dirPath)
-        if(create) PathUtils.createDirectories(dirPath)
+        if(create) PathSupport.createDirectories(dirPath)
         return dirPath
     }
 
@@ -204,7 +201,7 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
      * recursively deletes the dir for the short key. Used mostly for testing cleanup
      */
     boolean deleteDirectory(String key) {
-        PathUtils.deleteDirectory(getPath(key))
+        PathSupport.deleteDirectory(getPath(key))
     }
 
     /** Get a list of script locations as absolute files. */
@@ -242,17 +239,6 @@ class AppResourceLoader implements ResourceLoader, GrailsConfigurationAware {
     /** prepends resourcesConfigRootKey to subKey */
     public <T> T getConfigProperty(String subKey, Class<T> targetType, T defaultValue = null){
         String fullKey = buildResourceKey(subKey)
-        return defaultValue ? cfg.getProperty(fullKey, targetType, defaultValue) : cfg.getProperty(fullKey, targetType)
-    }
-
-
-    @Override
-    void setConfiguration(Config co) {
-        cfg = co
-        String rootLoc = co.getProperty(buildResourceKey('rootLocation'), String)
-        if(rootLoc){
-            rootPath = Paths.get(rootLoc)
-            if(Files.notExists(rootPath)) Files.createDirectories(rootPath)
-        }
+        return defaultValue ? config.getProperty(fullKey, targetType, defaultValue) : config.getProperty(fullKey, targetType)
     }
 }

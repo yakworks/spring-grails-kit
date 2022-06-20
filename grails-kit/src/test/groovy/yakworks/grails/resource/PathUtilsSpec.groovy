@@ -2,18 +2,15 @@ package yakworks.grails.resource
 
 import java.nio.file.Path
 
-import org.grails.testing.GrailsUnitTest
-import spock.lang.IgnoreRest
 import spock.lang.Specification
 import spock.lang.Unroll
-import yakworks.commons.io.FileUtil
 
-class PathUtilsSpec extends Specification implements GrailsUnitTest {
+class PathUtilsSpec extends Specification  {
 
     @Unroll
     void "test removeFileExtension"() {
         expect:
-        PathUtils.getBaseName(name) == result
+        PathSupport.getBaseName(name) == result
 
         where:
         name         | result
@@ -28,12 +25,12 @@ class PathUtilsSpec extends Specification implements GrailsUnitTest {
 
     void "test removeFileExtension strip all"() {
         expect:
-        PathUtils.removeFileExtension('foo.tar.gz', true) == 'foo'
+        PathSupport.removeFileExtension('foo.tar.gz', true) == 'foo'
     }
 
     void "test match extension"() {
         expect:
-        PathUtils.getExtension(name) == result
+        PathSupport.getExtension(name) == result
         // PathUtils.getExtension(Path.of('foo.tar.gz'), true) == 'tar.gz'
         // PathUtils.getExtension('foo') == null
         where:
@@ -51,12 +48,12 @@ class PathUtilsSpec extends Specification implements GrailsUnitTest {
 
     void "test match extension full"() {
         expect:
-        PathUtils.getExtension(Path.of('foo.tar.gz'), true) == 'tar.gz'
+        PathSupport.getExtension(Path.of('foo.tar.gz'), true) == 'tar.gz'
     }
 
     void "test extractMimeType"() {
         expect:
-        mimeType == PathUtils.extractMimeType(fileName)
+        mimeType == PathSupport.extractMimeType(fileName)
 
         where:
         fileName     |  mimeType
