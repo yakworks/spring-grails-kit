@@ -2,6 +2,7 @@ package grails.plugin.viewtools
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 
 import grails.testing.mixin.integration.Integration
 import org.apache.commons.io.FileUtils
@@ -112,7 +113,7 @@ class AppResourceLoaderSpec extends Specification {
 
     def "test get resource"() {
         setup:
-        byte[] data = Files.readAllBytes(Path.of('src/integration-test/resources/grails_logo.jpg'))
+        byte[] data = Files.readAllBytes(Paths.get('src/integration-test/resources/grails_logo.jpg'))
 
         Path viewsDirectory = appResourceLoader.getPath('views.location')
 

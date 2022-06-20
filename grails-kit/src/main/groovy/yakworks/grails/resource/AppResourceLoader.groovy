@@ -194,7 +194,7 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
      * if the dir passed in is absolute then will use that, otherwise just returns it.
      */
     Path checkPath(String directory) {
-        return checkPath(Path.of(directory))
+        return checkPath(Paths.get(directory))
     }
 
     /**
@@ -207,7 +207,7 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
     /** Get a list of script locations as absolute files. */
     Path getScripts() {
         String scriptsDir = getProp('scripts.locations', 'scripts')
-        return checkPath(Path.of(scriptsDir))
+        return checkPath(Paths.get(scriptsDir))
     }
 
     /**

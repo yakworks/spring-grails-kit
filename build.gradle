@@ -64,7 +64,8 @@ subprojects { subprj ->
         verbose = true
         // sets the path to sys properties so we can use it find grails-app/conf during AST
         //illegal-access=permit hides 'illegal reflective access operation has occurred'
-        forkOptions.jvmArgs = ['-Xmx1524m', '-Dgradle.projectDir=' + project.projectDir.absolutePath, '--illegal-access=permit']
+        // forkOptions.jvmArgs = ['-Xmx1524m', '-Dgradle.projectDir=' + project.projectDir.absolutePath, '--illegal-access=permit']
+        forkOptions.jvmArgs = ['-Xmx1524m', '-Dgradle.projectDir=' + project.projectDir.absolutePath]
       }
     }
   }

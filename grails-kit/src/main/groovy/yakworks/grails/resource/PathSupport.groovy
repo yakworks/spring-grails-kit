@@ -7,6 +7,7 @@ package yakworks.grails.resource
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 
 import groovy.transform.CompileStatic
 
@@ -42,7 +43,7 @@ abstract class PathSupport {
     }
 
     static String getBaseName(String filename) {
-        return getBaseName(Path.of(filename))
+        return getBaseName(Paths.get(filename))
     }
 
     /**
@@ -79,7 +80,7 @@ abstract class PathSupport {
      * @return null if nothing found of the extension
      */
     static String getExtension(String fileName) {
-        getExtension(Path.of(fileName))
+        getExtension(Paths.get(fileName))
     }
 
     static String getExtension(Path path, boolean wholeExtension = false) {
@@ -91,7 +92,7 @@ abstract class PathSupport {
     }
 
     static String extractMimeType(String filename) {
-        extractMimeType(Path.of(filename))
+        extractMimeType(Paths.get(filename))
     }
     /**
      * Gets mime type from file name

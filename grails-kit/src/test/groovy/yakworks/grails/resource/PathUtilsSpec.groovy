@@ -1,6 +1,7 @@
 package yakworks.grails.resource
 
 import java.nio.file.Path
+import java.nio.file.Paths
 
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -48,7 +49,7 @@ class PathUtilsSpec extends Specification  {
 
     void "test match extension full"() {
         expect:
-        PathSupport.getExtension(Path.of('foo.tar.gz'), true) == 'tar.gz'
+        PathSupport.getExtension(Paths.get('foo.tar.gz'), true) == 'tar.gz'
     }
 
     void "test extractMimeType"() {
