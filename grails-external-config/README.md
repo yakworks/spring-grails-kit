@@ -149,7 +149,6 @@ grails.config.locations = [
         "~/.grails/myconfig*.groovy",
 ]
 ```
-__Note__: that it only works for the `file:` and `~/` prefix. 
 
 __Note__: the wildcards are in the order they are found in the `locations` list, but the order of the expanded `locations` for each wildcard is not guaranteed, and is dependent on the OS used.
 
@@ -161,34 +160,4 @@ providedCompile files('external-config') // providedCompile to ensure that exter
 ```
 Alternatively, you can make a gradle script to move the external configuration file to your classpath (e.g. /build/classes)
 
-Scripts
------
-This plugin also includes two scripts, one for converting yml config, to groovy config,
-and one for converting groovy config to yml config. These scripts are not guaranteed to be 
-perfect, but you should report any edge cases for the yml to groovy config here:
-https://github.com/virtualdogbert/GroovyConfigWriter/issues
-
-grails yml-to-groovy-config has the following parameters:
-* ymlFile - The yml input file.
-* asClosure - An optional flag to set the output to be closure based or map based. The Default is closure based 
-* outputFile - The optional output file. If none is provided, then the output will go to System.out.
-* indent - Optional indent. The default is 4 spaces
-* escapeList - An optional CSV list of values to escape, with no spaces. The default is 'default'
-
-
-Sample usage:
-```
-grails yml-to-groovy-config [ymlFile] [optional asClosure] [optional outputFile] [optional indent] [optional escape list]
-```
-
-grails groovy-to-yml-config has the following parameters:
-* groovy - The groovy input file.'
-* outputFile - The optional output file. If none is provided, then the output will go to System.out.
-* indent' - Sets the optional indent level for a file. The default is 4
-* flow - Sets the optional style of BLOCK or FLOWS. The default is BLOCK.
-
-sample usage:
-```
-grails groovy-to-yml-config [ymlFile] [optional outputFile] [optional indent] [optinal flow]
-```
 

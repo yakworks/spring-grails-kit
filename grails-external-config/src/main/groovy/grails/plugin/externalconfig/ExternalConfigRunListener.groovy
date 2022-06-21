@@ -12,11 +12,11 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import org.grails.config.PropertySourcesConfig
-import org.grails.config.yaml.YamlPropertySourceLoader
 import org.springframework.boot.ConfigurableBootstrapContext
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.SpringApplicationRunListener
 import org.springframework.boot.env.PropertiesPropertySourceLoader
+import org.springframework.boot.env.YamlPropertySourceLoader
 import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.MapPropertySource
 import org.springframework.core.env.PropertySource
@@ -199,7 +199,7 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
 
     private List<PropertySource<?>> loadYamlConfig(Resource resource) {
         log.info("Loading YAML config file {}", resource.URI)
-        return yamlPropertySourceLoader.load(resource.filename, resource, null)
+        return yamlPropertySourceLoader.load(resource.filename, resource)
     }
 
     private List<PropertySource<?>> loadPropertiesConfig(Resource resource) {

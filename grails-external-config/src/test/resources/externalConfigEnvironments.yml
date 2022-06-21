@@ -1,9 +1,8 @@
 yml:
-  config: expected-value
-environments:
-    development:
-      yml:
-        config: expected-value-dev
-    test:
-      yml:
-        config: expected-value-test
+  config: expected-value-def
+---
+spring.config.activate.on-profile: test
+yml:
+  config: expected-value-test
+---
+

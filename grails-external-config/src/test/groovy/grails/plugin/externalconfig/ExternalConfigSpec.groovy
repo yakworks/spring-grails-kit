@@ -222,6 +222,7 @@ class ExternalConfigSpec extends Specification implements GrailsUnitTest {
         listener.environmentPrepared(null, environment)
 
         then:
+        getConfigProperty('spring.profiles.active') == 'test'
         getConfigProperty('yml.config') == 'expected-value-test'
     }
 

@@ -1,24 +1,23 @@
-
-apply plugin: "yakworks.grails-plugin"
+apply plugin: "yakworks.groovy-lib"
 
 dependencies {
+  compileOnly(platform("org.grails:grails-bom:$grailsVersion"))
 
-    implementation "org.springframework.boot:spring-boot-starter-logging"
-    implementation "org.springframework.boot:spring-boot-autoconfigure"
-    implementation "org.grails:grails-core"
-    implementation "org.grails:grails-dependencies"
+  compileOnly "org.grails:grails-core"
 
-    console "org.grails:grails-console"
-    profile "org.grails.profiles:plugin"
+  api "org.yaml:snakeyaml:$vSnakeyaml"
 
-    implementation "org.springframework.boot:spring-boot-starter-tomcat"
-    runtimeOnly 'com.virtualdogbert:GroovyConfigWriter:1.1'
-
-    api 'org.yaml:snakeyaml:1.30'
-
-    api project(':grails-kit')
-
-    testImplementation "org.grails:grails-web-testing-support"
-
+  // api project(':grails-kit')
+  testImplementation "org.grails:grails-testing-support"
+  testImplementation "org.slf4j:slf4j-simple:${vSlf4j}"
+  testImplementation "org.grails:grails-web-testing-support"
 
 }
+
+tasks.withType(Test) {
+  systemProperty 'TEST_HOME', 'home-value'
+  systemProperty 'user.home', System.getProperty('user.home')
+  systemProperty 'grails.env', 'test'
+  systemProperty 'spring.profiles.active', 'test'
+}
+
