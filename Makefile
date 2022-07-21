@@ -1,6 +1,6 @@
 # check for build/shipkit and clone if not there, this should come first
 SHIPKIT_DIR = build/shipkit
-$(shell [ ! -e $(SHIPKIT_DIR) ] && git clone -b v1.0.46 https://github.com/yakworks/shipkit.git $(SHIPKIT_DIR) >/dev/null 2>&1)
+$(shell [ ! -e $(SHIPKIT_DIR) ] && git clone -b v2.0.2 https://github.com/yakworks/shipkit.git $(SHIPKIT_DIR) >/dev/null 2>&1)
 # Shipkit.make first, which does all the lifting to create makefile.env for the BUILD_VARS
 include $(SHIPKIT_DIR)/Shipkit.make
 include $(SHIPKIT_DIR)/makefiles/vault.make
@@ -35,7 +35,7 @@ publish:
 	fi
 
 
-ifdef RELEASABLE_BRANCH_OR_DRY_RUN
+ifdef PUBLISHABLE_BRANCH_OR_DRY_RUN
 
 # removed  ship.docker kube.deploy for now
  ship.release: build publish
@@ -47,6 +47,7 @@ else
 	$(logr.done) "not on a RELEASABLE_BRANCH, nothing to do"
 
 endif # end RELEASABLE_BRANCH
+
 
 # ---- Docmark -------
 
@@ -70,9 +71,3 @@ gradle.dependencies:
 	# ./gradlew gorm-tools:dependencies --configuration compileClasspath runtimeClasspath
 	# ./gradlew rally-api:dependencies --configuration compileClasspath
 	./gradlew grails-kit:dependencies --configuration compileClasspath
-
-## start the restify example jar
-start.restify: # start.db
-	${gradlew} restify:assemble
-	cd examples/restify
-	java -server -Xmx2g -jar build/libs/restify.jar

@@ -20,13 +20,10 @@ bot:
 vault:
   repo: 9ci/vault
 
-version:
-  # after release, will set version.properties back to snapshot=true
-  set_snapshot: true
-
 release:
-  changelog: CHANGELOG.md
-  branch_regex: master|release/.+
+  # after release, will set version.properties back to snapshot=true or releasable=false
+  reset_flag: true
+  # changelog: CHANGELOG.md
 
 team:
   developers: ['basejump: Joshua Burnett']
