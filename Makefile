@@ -5,8 +5,7 @@ $(shell [ ! -e $(SHIPKIT_DIR) ] && git clone -b v2.0.11 https://github.com/yakwo
 include $(SHIPKIT_DIR)/Shipkit.make
 include $(SHIPKIT_MAKEFILES)/circle.make
 include $(SHIPKIT_MAKEFILES)/vault.make
-include $(SHIPKIT_MAKEFILES)/git-tools.make
-include $(SHIPKIT_MAKEFILES)/gradle-tools.make
+# spring common has the git and gradle targets
 include $(SHIPKIT_MAKEFILES)/spring-common.make
 include $(SHIPKIT_MAKEFILES)/ship-gh-pages.make
 
