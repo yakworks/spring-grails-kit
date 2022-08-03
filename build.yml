@@ -11,7 +11,7 @@ project:
   # this is needed for url in pom for jar lib, doesnt pick up defaults from git
   fullName: yakworks/spring-grails-kit
   # list of subproject dirs used to spin through, build the checksum and consolidate the test reports for circle
-  subprojects: grails-kit grails-jasper examples/grails-views-app examples/grails-views-plugin
+  subprojects: grails-external-config grails-freemarker grails-jasper grails-kit grails-view-tools
 
 bot:
   email: 9cibot@9ci.com
