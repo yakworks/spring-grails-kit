@@ -27,10 +27,8 @@ beans = {
 
     }
 
-    appResourceLoader(AppResourceLoader) {bean ->
-        resourcesConfigRootKey = "nine.resources"
-        bean.autowire = true
-    }
+    appResourceLoader(AppResourceLoader)
+
     tenantViewResourceLoader(TenantViewResourceLoader)
     configKeyAppResourceLoader(ConfigKeyAppResourceLoader) {
         baseAppResourceKey = "views.location"

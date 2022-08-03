@@ -8,13 +8,11 @@ import groovy.transform.CompileStatic
 
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory
 import org.springframework.context.ApplicationContext
-import org.springframework.context.ApplicationEvent
 import org.springframework.context.ApplicationEventPublisher
 
 import grails.config.Config
 import grails.core.GrailsApplication
 import grails.util.Holders
-// import yakworks.i18n.icu.ICUMessageSource
 
 /**
  * A static that uses the Holder to get the spring ApplicationContext it beans and the GrailsApplication
@@ -22,7 +20,7 @@ import grails.util.Holders
  * Obviously its highly recommended to not use this and use DI whenever possible.
  *
  * @author Joshua Burnett (@basejump)
- * @since 6.x
+ * @since 5.x
  */
 @CompileStatic
 class AppCtx {

@@ -7,7 +7,7 @@ package yakworks.grails
 import grails.plugins.Plugin
 import yakworks.grails.resource.AppResourceLoader
 
-class GrailsToolsGrailsPlugin extends Plugin {
+class GrailsKitGrailsPlugin extends Plugin {
 
     // the version or versions of Grails the plugin is designed for
     def grailsVersion = "3.1 > *"

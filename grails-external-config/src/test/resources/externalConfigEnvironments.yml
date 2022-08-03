@@ -1,0 +1,8 @@
+yml:
+  config: expected-value-def
+---
+spring.config.activate.on-profile: test
+yml:
+  config: expected-value-test
+---
+

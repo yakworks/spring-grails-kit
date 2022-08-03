@@ -26,12 +26,12 @@ class ConfigKeyAppResourceLoader implements ResourceLoader  {
 
     void setBaseAppResourceKey(String key) {
         Validate.notEmpty(key)
-        baseAppResourceKey = "config:" + key
+        baseAppResourceKey = key
     }
 
     @Override
     Resource getResource(String uri) {
-        return appResourceLoader.getResourceRelative(baseAppResourceKey, uri)
+        return appResourceLoader.getResource(baseAppResourceKey, uri)
     }
 
     @Override

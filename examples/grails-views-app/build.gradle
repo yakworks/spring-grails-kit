@@ -1,20 +1,30 @@
-version "0.1"
 
 apply plugin:"groovy"
 apply plugin:"war"
 apply plugin:"org.grails.grails-web"
 apply plugin:"org.grails.grails-gsp"
 
+
 dependencies {
+  console "org.grails:grails-console"
+  profile "org.grails.profiles:rest-api"
 
-  compile "org.grails.profiles:web"
-  compile("org.springframework.boot:spring-boot-starter-actuator"){ exclude module: 'micrometer-core' }
-  compile "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation("org.springframework.boot:spring-boot-starter-actuator"){ exclude module: 'micrometer-core' }
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
 
-  provided "org.codehaus.groovy:groovy-ant"
+  implementation "org.grails:grails-plugin-i18n"
+  implementation "org.grails:grails-plugin-rest"
+  implementation "org.grails:grails-plugin-url-mappings"
+  implementation "org.grails:grails-plugin-codecs"
+  implementation "org.grails:grails-plugin-interceptors"
+  implementation "org.grails:grails-web-boot"
+  implementation "org.grails:grails-web-url-mappings"
 
-  compile project(':grails-views-plugin')
-  compile project(':grails-view-tools')
+
+  implementation "org.codehaus.groovy:groovy-ant"
+
+  implementation project(':grails-views-plugin')
+  implementation project(':grails-view-tools')
 }
 /****** GEB *******
 Pass system properties through to the integrationTest task so we can pass in the 'geb.env' property to run tests
@@ -38,8 +48,12 @@ integrationTest {
 }
 
 bootRun {
-  //  ignoreExitValue true
-  jvmArgs('-Dspring.output.ansi.enabled=always', '-noverify', '-XX:TieredStopAtLevel=1', '-Xmx1024m')
+  ignoreExitValue true
+  jvmArgs(
+    '-Dspring.output.ansi.enabled=always',
+    '-noverify',
+    '-XX:TieredStopAtLevel=1',
+    '-Xmx1024m')
   sourceResources sourceSets.main
   String springProfilesActive = 'spring.profiles.active'
   systemProperty springProfilesActive, System.getProperty(springProfilesActive)

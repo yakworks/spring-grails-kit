@@ -1,0 +1,23 @@
+apply plugin: "yakworks.groovy-lib"
+
+dependencies {
+  compileOnly(platform("org.grails:grails-bom:$grailsVersion"))
+
+  compileOnly "org.grails:grails-core"
+
+  api "org.yaml:snakeyaml:$vSnakeyaml"
+
+  // api project(':grails-kit')
+  testImplementation "org.grails:grails-testing-support"
+  testImplementation "org.slf4j:slf4j-simple:${vSlf4j}"
+  testImplementation "org.grails:grails-web-testing-support"
+
+}
+
+tasks.withType(Test) {
+  systemProperty 'TEST_HOME', 'home-value'
+  systemProperty 'user.home', System.getProperty('user.home')
+  systemProperty 'grails.env', 'test'
+  systemProperty 'spring.profiles.active', 'test'
+}
+
