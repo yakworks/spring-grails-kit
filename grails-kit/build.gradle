@@ -10,7 +10,7 @@ dependencies {
 
   // implementation "org.codehaus.groovy:groovy-ant"
 
-  api("org.yakworks:commons:7.0.8-v.70")
+  api("org.yakworks:groovy-commons:$vYakCommons")
 
   api "commons-io:commons-io:$vCommonsIO"
 
