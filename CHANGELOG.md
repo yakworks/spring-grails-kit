@@ -1,3 +1,8 @@
+### v5.0.4
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.3...v5.0.4)
+-  bump commons and groovy (#3) [link](https://github.com/yakworks/spring-grails-kit/commit/c9cc9c8a7b25534425bcd914ea69d24815cc9678)
+
 ### v5.0.3
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.2...v5.0.3)
