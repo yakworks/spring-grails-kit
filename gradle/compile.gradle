@@ -1,0 +1,68 @@
+subprojects { subprj ->
+  // get prop with default if null, converts to boolean
+  Closure getProp = { pname, defualtv -> (subprj.findProperty(pname) ?: defualtv).toBoolean() }
+
+  ext {
+    // see gradle.properties in sub-projects
+    isPublishable = getProp('isPublishable', false)
+    isGrailsLibrary = getProp('isGrailsLibrary', true)
+    isExample = getProp('isExample', false)
+  }
+
+  // repository and compile and config settings.
+  repositories {
+    mavenLocal()
+    maven { url "https://repo.grails.org/grails/core" }
+    mavenCentral()
+    maven {
+      url "http://repo.9ci.com/oss-snapshots"
+      allowInsecureProtocol = true
+      mavenContent {
+        snapshotsOnly()
+      }
+    }
+  }
+
+  plugins.withId('java') {
+    sourceCompatibility = "$javaCompatibility"
+    targetCompatibility = "$javaCompatibility"
+    tasks.withType(JavaCompile) {
+      options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
+    configurations {
+      //includes the compileOnly in tests too so we don't have to list twice
+      testImplementation.extendsFrom compileOnly
+      all {
+        //when using SNAPSHOT deps
+        resolutionStrategy.cacheChangingModulesFor 60, 'seconds' //when changing = true this sets the cache time
+      }
+    }
+  }
+
+  plugins.withId('groovy') {
+    tasks.withType(GroovyCompile) {
+      // options.debug = true
+      configure(groovyOptions) {
+        // verbose = true
+        // sets the path to sys properties so we can use it find grails-app/conf during AST
+        forkOptions.jvmArgs = ['-Xmx1524m', '-Dgradle.projectDir=' + project.projectDir.absolutePath]
+        // '--illegal-access=permit', '--add-opens=java.base/java.lang.reflect=ALL-UNNAMED']
+      }
+    }
+  }
+
+  //deal with log4j thing
+  plugins.withId('java') {
+    dependencies {
+      constraints {
+        implementation("org.apache.logging.log4j:log4j-core") {
+          version {
+            strictly("[2.17, 3[")
+            prefer("2.17.0")
+          }
+          because("CVE-2021-44228, CVE-2021-45046, CVE-2021-45105: Log4j vulnerable to remote code execution and other critical security vulnerabilities")
+        }
+      }
+    }
+  }
+}

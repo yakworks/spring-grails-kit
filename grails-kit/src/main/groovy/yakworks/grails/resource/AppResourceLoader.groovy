@@ -15,6 +15,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
+import org.springframework.lang.NonNull
 
 import yakworks.commons.lang.Validate
 import yakworks.grails.support.ConfigAware
@@ -158,7 +159,9 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
     /**
      * gets the root dir Path
      */
+    @NonNull
     Path getRootPath() {
+        assert this.rootPath
         return this.rootPath
     }
 

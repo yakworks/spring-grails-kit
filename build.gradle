@@ -8,174 +8,42 @@ buildscript {
     classpath "org.grails:grails-gradle-plugin:$grailsGradlePluginVersion"
     classpath "org.yakworks:gradle-plugins:$vShipyak"
     classpath "io.github.gradle-nexus:publish-plugin:$vMavenNexus"
-    // classpath "org.grails.plugins:views-gradle:2.2.1"
     classpath "org.grails.plugins:views-gradle:$vViews"
     classpath "com.github.spotbugs.snom:spotbugs-gradle-plugin:4.7.9"
   }
 }
 
-group = "org.yakworks"
-
 //our opinionated defaults for gradle groovy & grails projects
+//NOTE: uses shipyak to pulls info for build from build.yml too.
 apply plugin: 'yakworks.shipyak'
 apply plugin: "io.github.gradle-nexus.publish-plugin"
 
-if(!isSnapshot) {
-  nexusPublishing {
-    repositories {
-      sonatype()
-    }
-  }
-}
+//reads props from each sub-project gradle.props and sets up repos and java and groovy compile settings
+apply from: "${rootProject.projectDir}/gradle/compile.gradle"
+//sets us the sonatype/nexus publishing for nexus:publish-plugin for any project that has isPublishable in gradle.props
+apply from: "${rootProject.projectDir}/gradle/publish.gradle"
 
 subprojects { subprj ->
 
-  group = "org.yakworks"
-
-  repositories {
-    mavenLocal()
-    maven { url "https://repo.grails.org/grails/core" }
-    mavenCentral()
-    // maven { url "http://repo.9ci.com/public-libs"; allowInsecureProtocol = true  }
-    // maven { url "http://repo.9ci.com/oss-snapshots"; allowInsecureProtocol = true  }
-  }
-  // get prop with default if null, converts to boolean
-  Closure getProp = { pname, defualtv -> (subprj.findProperty(pname)?:defualtv).toBoolean() }
-
-  ext { // see gradle.properties in sub-projects
-    //default true for isGormLibrary and isPublishable, set to false in gradle.props
-    isPublishable = getProp('isPublishable', true)
-    isGrailsLibrary = getProp('isGrailsLibrary', true)
-    isExample = getProp('isExample', false)
-  }
-
-  plugins.withId('java') {
-    sourceCompatibility = "$javaCompatibility"
-    targetCompatibility = "$javaCompatibility"
-    tasks.withType(JavaCompile) {
-      options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
-    }
-  }
-
-  plugins.withId('groovy') {
-    tasks.withType(GroovyCompile) {
-      options.debug = true
-      configure(groovyOptions) {
-        verbose = true
-        // sets the path to sys properties so we can use it find grails-app/conf during AST
-        //illegal-access=permit hides 'illegal reflective access operation has occurred'
-        // forkOptions.jvmArgs = ['-Xmx1524m', '-Dgradle.projectDir=' + project.projectDir.absolutePath, '--illegal-access=permit']
-        forkOptions.jvmArgs = ['-Xmx1524m', '-Dgradle.projectDir=' + project.projectDir.absolutePath]
-      }
-    }
-  }
-
-  // if its a lib then setup gpg signing, see signing.gnupg.keyName
-  if (isPublishable){
-    apply plugin: 'java-library'
-    // gpg signing required by nexus/sonatype
-    apply plugin: 'signing'
-    afterEvaluate {
-      if(!isSnapshot) {
-        signing {
-          required { gradle.taskGraph.hasTask("publish") }
-          useGpgCmd()
-          sign publishing.publications.javaLibrary
-        }
-      }
-    }
-
-  } // end isPublishable
-
   if (isGrailsLibrary) {
-    apply plugin: 'groovy'
-
-    dependencies {
-      // compileOnly "io.micronaut:micronaut-inject-groovy"
-      implementation "org.springframework.boot:spring-boot-starter-logging"
-      implementation "org.springframework.boot:spring-boot-autoconfigure"
-      implementation "org.grails:grails-core"
-      implementation "org.grails:grails-web-boot"
-      implementation "org.grails:grails-databinding"
-
-      implementation "org.apache.logging.log4j:log4j-to-slf4j:$vLog4j"
-      implementation "org.apache.logging.log4j:log4j-api:$vLog4j"
-
-      testImplementation"org.apache.commons:commons-lang3:$vCommonsLang3"
-      testImplementation "org.mockito:mockito-core"
-      testImplementation "org.grails:grails-web-testing-support"
-      testImplementation "org.grails.plugins:build-test-data:$vBuildTestData"
-
-    }
-
+    apply from: "${rootProject.projectDir}/gradle/grails-lib.gradle"
   }
+  apply from: "${rootProject.projectDir}/gradle/test-unit.gradle"
 
-  if (isExample) {
-    dependencies {
-      implementation "org.springframework.boot:spring-boot-starter-logging"
-      implementation "org.springframework.boot:spring-boot-starter-tomcat"
-      implementation "org.grails:grails-plugin-services"
-    }
+  // if (isExample) {
+  //   dependencies {
+  //     implementation "org.springframework.boot:spring-boot-starter-logging"
+  //     implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  //     implementation "org.grails:grails-plugin-services"
+  //   }
+  // }
 
-  }
 
-  configurations {
-    testCompile.extendsFrom compileOnly //includes the compileOnly in tests too so we don't have to list twice
-    testCompile.extendsFrom implementation
-    testImplementation.extendsFrom compileOnly
-    // compile.extendsFrom implementation
-    all {
-      resolutionStrategy.cacheChangingModulesFor 1, 'seconds' //when changing = true this sets the cache time
-    }
-  }
 
-  tasks.withType(Test) {
-    useJUnitPlatform()
-    //so that we can use in config and share resources/rootlocation across projects for testing
-    systemProperty "gradle.rootProjectDir", rootProject.projectDir.absolutePath
-    systemProperty "gradle.projectDir", project.projectDir.absolutePath
-  }
 }
 
+//how to gobal override codenarc with shipyak
 ext.codenarcRuleset= '''
   // getRule('Println').enabled = false
   // getRule('AbcMetric').enabled = false
 '''
-
-//logging
-subprojects { subprj ->
-  test {
-    // Defaults from https://github.com/radarsh/gradle-test-logger-plugin
-    testlogger {
-      logLevel 'quiet'
-      // theme 'standard'
-      showExceptions true
-      showStandardStreams = true //shows the printlns in console
-      showPassed false
-      showSkipped true
-      showFailed true
-      // slowThreshold 2000 //if tests take longer than this will show time it took
-      showSummary true
-      // showSimpleNames false
-      // showPassed true
-      // showSkipped true
-      // showFailed true
-      // showPassedStandardStreams true
-      // showSkippedStandardStreams true
-      // showFailedStandardStreams true
-    }
-  }
-
-  //deal with log4j thing
-  dependencies {
-    constraints {
-      implementation("org.apache.logging.log4j:log4j-core") {
-        version {
-          strictly("[2.17, 3[")
-          prefer("2.17.0")
-        }
-        because("CVE-2021-44228, CVE-2021-45046, CVE-2021-45105: Log4j vulnerable to remote code execution and other critical security vulnerabilities")
-      }
-    }
-  }
-}
