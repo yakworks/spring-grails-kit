@@ -2,7 +2,6 @@ apply plugin: "org.springframework.boot"
 apply plugin: "io.spring.dependency-management"
 apply plugin: "java"
 
-group = 'com.example'
 sourceCompatibility = '1.8'
 
 repositories {
@@ -10,13 +9,9 @@ repositories {
 }
 
 dependencies {
-	// tag::actuator[]
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
-	// end::actuator[]
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	// tag::tests[]
 	testImplementation('org.springframework.boot:spring-boot-starter-test')
-	// end::tests[]
 }
 
 test {
