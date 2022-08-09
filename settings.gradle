@@ -13,6 +13,8 @@ include 'examples/jasper-app'
 include 'examples/free-app'
 include 'examples/free-plugin'
 include 'examples/external-config-app'
+include 'examples/spring-boot'
+findProject(':examples/spring-boot').name = 'spring-boot-example'
 
 findProject(':examples/grails-views-app').name = 'grails-views-app'
 findProject(':examples/grails-views-plugin').name = 'grails-views-plugin'

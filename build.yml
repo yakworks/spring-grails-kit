@@ -1,11 +1,11 @@
 # used in the build.sh as well as gradle
 # see defaults options https://github.com/yakworks/gradle-plugins/tree/master/src/main/resources/configs/defaults.yml
-
 # shipkit converts these keys to uppercase and dots to underscore. for example app.name will be APP_NAME
 
 title: Spring Grails Kits
 description: Plugin tools for Spring and Grails
 author: Yak.Works
+group: org.yakworks
 
 project:
   # this is needed for url in pom for jar lib, doesnt pick up defaults from git

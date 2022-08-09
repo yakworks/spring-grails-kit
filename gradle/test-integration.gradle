@@ -1,0 +1,18 @@
+//logging for tests
+
+// see from https://github.com/radarsh/gradle-test-logger-plugin
+if (isGrailsLibrary) {
+  plugins.withId('com.adarshr.test-logger') {
+    integrationTest {
+      testlogger {
+        showPassed false
+        showExceptions true
+        showStandardStreams = true //shows the printlns in console
+        showPassed false
+        showSkipped true
+        showFailed true
+        showSummary true
+      }
+    }
+  }
+}
