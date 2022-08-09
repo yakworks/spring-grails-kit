@@ -1,3 +1,9 @@
+### v5.0.5
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.4...v5.0.5)
+- trigger [link](https://github.com/yakworks/spring-grails-kit/commit/850fa7240a43a993576280ca954988dcda9c5959)
+- bump yakcommons [link](https://github.com/yakworks/spring-grails-kit/commit/c8ba2d724dbe62e00fd6316718c617a00a54501c)
+
 ### v5.0.4
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.3...v5.0.4)
