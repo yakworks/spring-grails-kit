@@ -65,7 +65,10 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
 
         dr.toJrXml(new FileOutputStream(new File(folder, "${fname}.jrxml")))
 
-        "open build/jasper-tests/DynamicReportsServiceSpec/${fname}.html".execute()
+        //if running on a mac will open it.
+        if(System.getProperty("os.name").equals("Mac OS X")) {
+            "open build/jasper-tests/DynamicReportsServiceSpec/${fname}.html".execute()
+        }
     }
 
     void "simple sanity check"() {

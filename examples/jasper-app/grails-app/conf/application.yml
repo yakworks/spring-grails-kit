@@ -8,7 +8,8 @@ logging:
   level:
     root: WARN
     org.springframework: WARN
-    org.hibernate.orm.deprecation: OFF # turns off deprecation notices
+    org.hibernate.cfg.Environment: ERROR
+    org.hibernate.orm.deprecation: ERROR # turns off deprecation notices
 
 info:
   app:

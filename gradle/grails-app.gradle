@@ -1,0 +1,50 @@
+//copied in from Stock grails app from `grails create-app` and then modified for multi-project build.
+
+//adds the tweak from stock grails app, used for the spring-boot-devtools
+configurations {
+  developmentOnly
+  runtimeClasspath {
+    extendsFrom developmentOnly
+  }
+}
+
+dependencies {
+  developmentOnly("org.springframework.boot:spring-boot-devtools")
+  compileOnly "io.micronaut:micronaut-inject-groovy"
+  console "org.grails:grails-console"
+  implementation "org.springframework.boot:spring-boot-starter-logging"
+  implementation "org.springframework.boot:spring-boot-starter-validation"
+  implementation "org.springframework.boot:spring-boot-autoconfigure"
+  implementation "org.grails:grails-core"
+  implementation "org.springframework.boot:spring-boot-starter-actuator"
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation "org.grails:grails-web-boot"
+  implementation "org.grails:grails-logging"
+  implementation "org.grails:grails-plugin-rest"
+  implementation "org.grails:grails-plugin-databinding"
+  implementation "org.grails:grails-plugin-i18n"
+  implementation "org.grails:grails-plugin-services"
+  implementation "org.grails:grails-plugin-url-mappings"
+  implementation "org.grails:grails-plugin-interceptors"
+  implementation "org.grails.plugins:cache"
+  implementation "org.grails.plugins:async"
+  implementation "org.grails.plugins:scaffolding"
+  implementation "org.grails.plugins:events"
+
+  runtimeOnly "org.glassfish.web:el-impl:2.2.1-b05"
+  runtimeOnly "com.h2database:h2"
+  runtimeOnly "org.apache.tomcat:tomcat-jdbc"
+  runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
+  runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:3.4.6"
+  // gets rid of the "Error Initializing Native OS X File Event Watcher."
+  runtimeOnly "io.methvin:directory-watcher:0.16.1"
+
+  testImplementation("org.yakworks:gorm-tools-csv:$vGormTools")//{ changing = true }
+  testImplementation("org.yakworks:rally-domain:$vGormTools")//{ changing = true }
+  testImplementation "org.yakworks:gorm-test-support:$vGormTools"
+
+  testImplementation "io.micronaut:micronaut-inject-groovy"
+  testImplementation "org.grails:grails-gorm-testing-support"
+  testImplementation "org.mockito:mockito-core"
+  testImplementation "org.grails:grails-web-testing-support"
+}
