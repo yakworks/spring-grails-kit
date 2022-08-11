@@ -45,7 +45,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
         return list
     }
 
-    def saveToFiles(JasperReportBuilder dr, fname) {
+    boolean saveToFiles(JasperReportBuilder dr, fname) {
         //dr.toJrXml(new FileOutputStream( new File(folder,"${fname}.jrxml")))
         long start = System.currentTimeMillis();
         dr.toPdf(new FileOutputStream(new File(folder, "${fname}.pdf")))
@@ -69,6 +69,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
         if(System.getProperty("os.name").equals("Mac OS X")) {
             "open build/jasper-tests/DynamicReportsServiceSpec/${fname}.html".execute()
         }
+        return true
     }
 
     void "simple sanity check"() {
