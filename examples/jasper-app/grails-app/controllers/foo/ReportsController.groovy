@@ -30,4 +30,8 @@ class ReportsController {
         //render "hello"
         render(view:"testme.jrxml",model:rptModel)
     }
+
+    def foo() {
+        render "Hello foo is working!"
+    }
 }

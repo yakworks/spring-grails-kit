@@ -16,6 +16,9 @@ include 'examples/external-config-app'
 include 'examples/spring-boot'
 findProject(':examples/spring-boot').name = 'spring-boot-example'
 
+include 'examples/grails522'
+findProject(':examples/grails522').name = 'grails522-example'
+
 findProject(':examples/grails-views-app').name = 'grails-views-app'
 findProject(':examples/grails-views-plugin').name = 'grails-views-plugin'
 findProject(':examples/jasper-app').name = 'jasper-app'

@@ -1,27 +1,92 @@
 
 version "0.1"
 
-apply plugin: "groovy"
-apply plugin: "war"
-apply plugin: "org.grails.grails-web"
-apply plugin: "org.grails.grails-gsp"
+apply plugin:"war"
+apply plugin:"org.grails.grails-web"
+apply plugin:"org.grails.grails-gsp"
+apply plugin:"com.bertramlabs.asset-pipeline"
+
+configurations {
+  developmentOnly
+  runtimeClasspath {
+    extendsFrom developmentOnly
+  }
+}
 
 dependencies {
-    profile "org.grails.profiles:web"
+  developmentOnly("org.springframework.boot:spring-boot-devtools")
+  compileOnly "io.micronaut:micronaut-inject-groovy"
+  console "org.grails:grails-console"
+  implementation "org.springframework.boot:spring-boot-starter-logging"
+  implementation "org.springframework.boot:spring-boot-starter-validation"
+  implementation "org.springframework.boot:spring-boot-autoconfigure"
+  implementation "org.grails:grails-core"
+  implementation "org.springframework.boot:spring-boot-starter-actuator"
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation "org.grails:grails-web-boot"
+  implementation "org.grails:grails-logging"
+  implementation "org.grails:grails-plugin-rest"
+  implementation "org.grails:grails-plugin-databinding"
+  implementation "org.grails:grails-plugin-i18n"
+  implementation "org.grails:grails-plugin-services"
+  implementation "org.grails:grails-plugin-url-mappings"
+  implementation "org.grails:grails-plugin-interceptors"
+  implementation "org.grails.plugins:cache"
+  implementation "org.grails.plugins:async"
+  implementation "org.grails.plugins:scaffolding"
+  implementation "org.grails.plugins:events"
+  // implementation "org.grails.plugins:hibernate5"
+  // implementation "org.hibernate:hibernate-core:5.6.9.Final"
+  implementation "org.grails.plugins:gsp"
 
-    implementation "org.grails:grails-plugin-domain-class"
-    implementation "org.grails:grails-plugin-services"
+  implementation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation "org.grails.plugins:hibernate5:$vGormHibernate"
+  implementation "org.hibernate:hibernate-core:$vHibernate"
 
-    implementation "org.codehaus.groovy:groovy-ant"
+  implementation project(':grails-jasper')
 
-    implementation "org.grails.plugins:hibernate5:$vGormHibernate"
-    implementation "org.hibernate:hibernate-core:$vHibernate"
+  implementation("org.yakworks:gorm-tools:$vGormTools")//{ changing = true }
 
-    implementation project(':grails-jasper')
+  profile "org.grails.profiles:web"
+  runtimeOnly "org.glassfish.web:el-impl:2.2.1-b05"
+  runtimeOnly "com.h2database:h2"
+  runtimeOnly "org.apache.tomcat:tomcat-jdbc"
+  runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
+  runtimeOnly "com.bertramlabs.plugins:asset-pipeline-grails:3.4.6"
+
+
+  testImplementation("org.yakworks:gorm-tools-csv:$vGormTools")//{ changing = true }
+  testImplementation("org.yakworks:rally-domain:$vGormTools")//{ changing = true }
+  testImplementation "org.yakworks:gorm-test-support:$vGormTools"
+
+  testImplementation "io.micronaut:micronaut-inject-groovy"
+  testImplementation "org.grails:grails-gorm-testing-support"
+  testImplementation "org.mockito:mockito-core"
+  testImplementation "org.grails:grails-web-testing-support"
 }
+
+// dependencies {
+//   profile "org.grails.profiles:web"
+//   implementation "org.springframework.boot:spring-boot-starter-actuator"
+//   implementation "org.springframework.boot:spring-boot-starter-tomcat"
+//
+//   implementation "org.grails:grails-plugin-domain-class"
+//   implementation "org.grails:grails-plugin-services"
+//
+//   implementation "org.codehaus.groovy:groovy-ant"
+//
+//   implementation "org.grails.plugins:hibernate5:$vGormHibernate"
+//   implementation "org.hibernate:hibernate-core:$vHibernate"
+//
+//   implementation project(':grails-jasper')
+//
+//   // runtimeOnly "com.h2database:h2:$vH2"
+//   runtimeOnly "com.h2database:h2"
+//   runtimeOnly "org.apache.tomcat:tomcat-jdbc"
+//   // runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
+//   runtimeOnly 'io.methvin:directory-watcher:0.16.1'
+// }
 
 bootRun {
   ignoreExitValue true
@@ -33,4 +98,19 @@ bootRun {
   sourceResources sourceSets.main
   String springProfilesActive = 'spring.profiles.active'
   systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+}
+
+tasks.withType(GroovyCompile) {
+  configure(groovyOptions) {
+    forkOptions.jvmArgs = ['-Xmx1024m']
+  }
+}
+
+tasks.withType(Test) {
+  useJUnitPlatform()
+}
+
+assets {
+  minifyJs = true
+  minifyCss = true
 }

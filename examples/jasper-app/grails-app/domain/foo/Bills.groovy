@@ -1,9 +1,15 @@
 package foo
 
+import gorm.tools.hibernate.criteria.CreateCriteriaSupport
+import gorm.tools.repository.model.RepoEntity
 import grails.compiler.GrailsCompileStatic
+import grails.persistence.Entity
+import yakworks.commons.transform.IdEqualsHashCode
 
+@Entity
+@IdEqualsHashCode
 @GrailsCompileStatic
-class Bills {
+class Bills implements RepoEntity<Bills> {
 
     Customer customer
     Product product

@@ -4,6 +4,7 @@ import foo.Bills
 import foo.Customer
 import foo.Product
 import foo.ProductGroup
+import gorm.tools.utils.GormMetaUtils
 import grails.testing.gorm.DataTest
 import grails.testing.web.GrailsWebUnitTest
 import org.grails.datastore.mapping.model.PersistentEntity
@@ -21,7 +22,7 @@ class DomainMetaUtilsSpec extends Specification implements DataTest, GrailsWebUn
         def fooGrp = new ProductGroup(name:"Foo Group").save()
         assert ProductGroup.get(1).name == "Foo Group"
         assert grailsApplication.mappingContext.getPersistentEntity(ProductGroup.name)
-        def domainClass = grailsApplication.mappingContext.getPersistentEntity(ProductGroup.name)
+        def domainClass = GormMetaUtils.getPersistentEntity(ProductGroup.name)
         assert domainClass
         def colmap = DomainMetaUtils.getFieldMetadata(domainClass, ['name'])
 
@@ -62,15 +63,14 @@ class DomainMetaUtilsSpec extends Specification implements DataTest, GrailsWebUn
 
     }
 
-    void "findDomainClass"() {
+    void "findPersistentEntity"() {
         expect:
         grailsApplication.mappingContext.getPersistentEntity(Bills.name)
         grailsApplication.mappingContext.getPersistentEntity("foo.Bills")
-        DomainMetaUtils.findDomainClass("foo.Bills")
-        DomainMetaUtils.findDomainClass("Bills")
-        DomainMetaUtils.findDomainClass("bills")
-        DomainMetaUtils.findDomainClass("asfasfasdf") == null
-
+        GormMetaUtils.findPersistentEntity("foo.Bills")
+        GormMetaUtils.findPersistentEntity("Bills")
+        GormMetaUtils.findPersistentEntity("bills")
+        GormMetaUtils.findPersistentEntity("asfasfasdf") == null
     }
 
     void "getNaturalTitle"() {

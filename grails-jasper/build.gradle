@@ -1,56 +1,64 @@
-
 apply plugin: 'yakworks.grails-plugin'
 apply plugin: "org.grails.grails-gsp"
 
 apply from: "${rootProject.projectDir}/gradle/test-integration.gradle"
 
+// repositories {
+//   mavenCentral()
+//   maven { url "https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/" }
+// }
+
 dependencies {
-    profile "org.grails.profiles:web-plugin"
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  profile "org.grails.profiles:web-plugin"
+  implementation "org.springframework.boot:spring-boot-starter-actuator"
+  implementation "org.springframework.boot:spring-boot-starter-tomcat"
 
-    implementation "org.grails:grails-core"
-    implementation "org.grails:grails-dependencies"
-    implementation "org.grails:grails-web-boot"
+  implementation "org.grails:grails-core"
+  implementation "org.grails:grails-dependencies"
+  implementation "org.grails:grails-web-boot"
 
-    implementation "org.grails:grails-plugin-services"
-    implementation "org.grails:grails-plugin-domain-class"
+  implementation "org.grails:grails-plugin-services"
+  implementation "org.grails:grails-plugin-domain-class"
 
-    api project(':grails-view-tools')
+  api project(':grails-view-tools')
 
-    api 'org.apache.poi:poi:'+versionPoi
-    api('org.apache.poi:poi-ooxml:'+versionPoi) {
-      //  exclude module:"poi-ooxml-schemas"
-    }
-    //compile 'org.apache.poi:poi-ooxml-schemas:'+poiVersion
-    //compile 'org.apache.poi:ooxml-schemas:1.3'
+  api 'org.apache.poi:poi:' + versionPoi
+  api('org.apache.poi:poi-ooxml:' + versionPoi) {
+    //  exclude module:"poi-ooxml-schemas"
+  }
+  //compile 'org.apache.poi:poi-ooxml-schemas:'+poiVersion
+  //compile 'org.apache.poi:ooxml-schemas:1.3'
 
-    api("net.sf.jasperreports:jasperreports:$versionJasper"){
-        exclude module:'commons-logging'
-        exclude module:'olap4j'
-        exclude module:'jcommon'
-        exclude module: 'jfreechart' //<-charts
-        exclude module: 'itext' //exclude itext:2.1.7js5 which is not available in jcenter or maven central
-    }
+  api("net.sf.jasperreports:jasperreports:$versionJasper") {
+    exclude module: 'commons-logging'
+    exclude module: 'olap4j'
+    exclude module: 'jcommon'
+    exclude module: 'jfreechart' //<-charts
+    // exclude module: 'itext' //exclude itext:2.1.7js5 which is not available in jcenter or maven central
+  }
 
-    api group: 'com.lowagie', name: 'itext', version: versionItext
+  // api group: 'com.lowagie', name: 'itext', version: "2.1.7.js9"
 
-    //the DejaVu sans font which is the recomended pacaked font for Jasper reports and pdf exporting
-    api('net.sf.jasperreports:jasperreports-fonts:'+versionJasperFonts)
+  //the DejaVu sans font which is the recomended pacaked font for Jasper reports and pdf exporting
+  api('net.sf.jasperreports:jasperreports-fonts:' + versionJasperFonts)
 
-    api('net.sourceforge.dynamicreports:dynamicreports-core:'+versionDynamicReports){
-        exclude module:'jasperreports'
-        exclude module:'barcode4j'
-        exclude module: 'batik-bridge' //don't need the barcode stuff
-    }
+  api('net.sourceforge.dynamicreports:dynamicreports-core:' + versionDynamicReports) {
+    exclude module: 'jasperreports'
+    exclude module: 'barcode4j'
+    exclude module: 'batik-bridge' //don't need the barcode stuff
+  }
 
-    // testCompile "org.grails:grails-plugin-testing"
-    // runtime "com.h2database:h2"
-    // testCompile "org.grails:grails-plugin-testing"
-    // testCompile "org.grails:grails-web-testing-support"
+  implementation("org.yakworks:gorm-tools:$vGormTools") //{ changing = true }
+  implementation "org.grails.plugins:hibernate5:$vGormHibernate"
+  implementation "org.hibernate:hibernate-core:$vHibernate"
+
+  // testCompile "org.grails:grails-plugin-testing"
+  // runtime "com.h2database:h2"
+  // testCompile "org.grails:grails-plugin-testing"
+  // testCompile "org.grails:grails-web-testing-support"
 }
 
-ext.codenarcRuleset= '''
+ext.codenarcRuleset = '''
   getRule('CyclomaticComplexity').enabled = false
   getRule('NoWildcardImports').enabled = false
   getRule('CatchException').enabled = false
@@ -59,6 +67,6 @@ ext.codenarcRuleset= '''
 '''
 
 codenarcIntegrationTest {
-    exclude '**/*'
-    ignoreFailures = true
+  exclude '**/*'
+  ignoreFailures = true
 }

@@ -412,7 +412,7 @@ public abstract class AbstractJasperReportsView extends AbstractUrlBasedView {
      * overriding the {@link #fillReport} template method itself.
      * @return an instance of {@code JasperReport}
      */
-    protected JasperReport getReport() {
+    JasperReport getReport() {
         return this.report
     }
 

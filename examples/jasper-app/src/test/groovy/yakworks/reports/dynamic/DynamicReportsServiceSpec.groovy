@@ -4,24 +4,20 @@ import foo.Bills
 import foo.Customer
 import foo.Product
 import foo.ProductGroup
-import grails.test.hibernate.HibernateSpec
-import grails.testing.gorm.DataTest
+import gorm.tools.testing.hibernate.GormToolsHibernateSpec
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
-import yakworks.jasper.dynamic.DynamicReportsService
-import yakworks.reports.DomainMetaUtils
-import yakworks.reports.SeedData
-import spock.lang.Ignore
 import spock.lang.Shared
+import yakworks.jasper.dynamic.DynamicReportsService
+import yakworks.reports.SeedData
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.export
 
-//@Domain([ProductGroup,Bills,Customer,Product])
-class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
+class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
 
     List<Class> getDomainClasses() { [ProductGroup, Customer, Bills, Product] }
 
-    @Shared
-    DynamicReportsService dynamicReportsService = new DynamicReportsService()
+    // @Shared
+    private DynamicReportsService dynamicReportsService //= new DynamicReportsService()
     /**
      * TODO
      * - links to pages
@@ -34,20 +30,19 @@ class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
      */
     static folder = new File("build/jasper-tests/DynamicReportsServiceSpec/");
 
-    void setupSpec() {
-        mockDomains(ProductGroup, Customer, Bills, Product)
-
+    void setup() {
         dynamicReportsService = new DynamicReportsService()
         dynamicReportsService.grailsApplication = grailsApplication
         if (!folder.exists()) folder.mkdirs();
-
     }
 
-    List getData(orderBy) {
-        return Bills.createCriteria().list {
-            def o = DomainMetaUtils.orderNested(orderBy, delegate)
-            o()
-        }
+    List getData(List<String> groupFields) {
+        def list = Bills.query{
+            groupFields.each { fld ->
+                order(fld)
+            }
+        }.list()
+        return list
     }
 
     def saveToFiles(JasperReportBuilder dr, fname) {
@@ -73,7 +68,6 @@ class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
         "open build/jasper-tests/DynamicReportsServiceSpec/${fname}.html".execute()
     }
 
-    @Ignore("https://github.com/yakworks/grails-jasper-reports/issues/11")
     void "simple sanity check"() {
         when:
         Map cfg = [
@@ -92,7 +86,7 @@ class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
 //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
         ]
         def dr = dynamicReportsService.buildDynamicReport(cfg)
-        SeedData.seed()
+        new SeedData().seed()
         def list = getData(cfg.groups)
         dr.setDataSource(list)
 
