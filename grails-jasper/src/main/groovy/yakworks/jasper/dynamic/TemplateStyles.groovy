@@ -8,6 +8,7 @@ import java.awt.*
 
 import groovy.transform.CompileStatic
 
+import net.sf.dynamicreports.report.constant.Language
 import org.springframework.core.io.ResourceLoader
 
 import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter
@@ -57,6 +58,7 @@ public class TemplateStyles {
     public static ReportStyleBuilder groupFooterL3 = Styles.templateStyle("groupFooterL3")
     public static ReportStyleBuilder groupHeaderL3 = Styles.templateStyle("groupHeaderL3")
     public static ReportStyleBuilder subtotal = Styles.templateStyle("subtotal")
+    public static ReportStyleBuilder grandTotal = Styles.templateStyle("grandTotal")
 
     public static PenBuilder lineStyle = stl.penThin().setLineColor(Color.decode("#bbbbbb"))
     public static PenBuilder lineStyleLight = stl.penThin().setLineColor(Color.decode("#dddddd"))
@@ -72,14 +74,14 @@ public class TemplateStyles {
 
     public static ReportTemplateBuilder getReportTemplate() {
         DynamicReports.template()
-        //.setLanguage(Language.GROOVY)
-                .setLocale(Locale.ENGLISH)
-                .setColumnStyle(column)
-                .setColumnTitleStyle(columnTitle)
-                .setGroupStyle(group)
-        //.setGroupFooterStyle(groupFooterStyleL2)
-                .setGroupTitleStyle(groupTitle)
-                .setSubtotalStyle(subtotal)
+            .setLanguage(Language.GROOVY)
+            .setLocale(Locale.ENGLISH)
+            .setColumnStyle(column)
+            .setColumnTitleStyle(columnTitle)
+            .setGroupStyle(group)
+            //.setGroupFooterStyle(groupFooterStyleL2)
+            .setGroupTitleStyle(groupTitle)
+            .setSubtotalStyle(subtotal)
     }
 
     /**

@@ -48,6 +48,8 @@ class DynamicOrgReportSpec extends Specification {
     }
 
     boolean saveToFiles(JasperReportBuilder dr, String fname) {
+        def jrxmlos = new FileOutputStream( folder.resolve("${fname}.jrxml").toFile() )
+        dr.toJrXml(jrxmlos)
         //dr.toJrXml(new FileOutputStream( new File(folder,"${fname}.jrxml")))
         long start = System.currentTimeMillis();
         def os = new FileOutputStream( folder.resolve("${fname}.pdf").toFile() )
@@ -66,10 +68,6 @@ class DynamicOrgReportSpec extends Specification {
         )
         System.err.println("HTML time : " + (System.currentTimeMillis() - start));
 
-        def jrxmlos = new FileOutputStream( folder.resolve("${fname}.jrxml").toFile() )
-
-        dr.toJrXml(jrxmlos)
-
         //if running on a mac will open it.
         if(System.getProperty("os.name").equals("Mac OS X")) {
             def fpointer = folder.resolve("${fname}.html").toString()
@@ -83,10 +81,11 @@ class DynamicOrgReportSpec extends Specification {
         Map cfg = [
             title: "Org By Type",
             entityName              : 'Org',
-            fields                  : ['orgTypeId', 'num', 'name', 'calc.totalDue'],
-            groups                  : [],
-            // subtotals               : [totalDue: "sum"], //put these on all the group summaries
-            // subtotalsHeader         : [totalDue: "sum"], //put these on all the group summaries
+            fields                  : ['type', 'num', 'name', 'calc.totalDue'],
+            columnTitles            : ['calc.totalDue': 'Total Due'],
+            groups                  : ['type'],
+            subtotals               : ['calc.totalDue': 'sum'], //put these on all the group summaries
+            subtotalsHeader         : ['calc.totalDue': 'sum'], //put these on all the group summaries
             columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
             groupTotalLabels        : true, //puts a group total label on the subtotal footers
             // highlightDetailOddRows:true,
@@ -105,7 +104,7 @@ class DynamicOrgReportSpec extends Specification {
         assert dr
 
         //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-        saveToFiles(dr, 'bills')
+        saveToFiles(dr, 'Orgs')
 
         //dr.show()
         //sleep(5000)

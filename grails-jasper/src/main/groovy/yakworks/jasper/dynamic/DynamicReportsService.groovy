@@ -8,6 +8,8 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
+import net.sf.dynamicreports.report.builder.subtotal.SubtotalBuilder
+import net.sf.dynamicreports.report.constant.Position
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ResourceLoader
@@ -37,6 +39,7 @@ import yakworks.reports.DomainMetaUtils
 import yakworks.reports.FieldMetadata
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.hyperLink
+import static net.sf.dynamicreports.report.builder.DynamicReports.sbt;
 
 @Slf4j
 @CompileStatic
@@ -104,6 +107,10 @@ class DynamicReportsService implements ConfigAware{
             jrb.groupBy(groupBuilder.headerWithSubtotal()).subtotalsAtGroupFooter(groupBuilder, subtotalBuilders)
         }
 
+        List summaryBuilders = buildSummaryBands(fieldMetaMap, reportCfg)
+        jrb.subtotalsAtSummary(summaryBuilders as SubtotalBuilder[])
+        jrb.setSummaryBackgroundComponent(Components.text("Grand Total").setStyle(TemplateStyles.grandTotal))
+
         if (reportCfg.columnHeaderInFirstGroup) jrb.setShowColumnTitle(false)
         // if (reportCfg.showTableOfContents) jrb.tableOfContents()
 
@@ -136,7 +143,12 @@ class DynamicReportsService implements ConfigAware{
 
         fieldMap.each { /*key*/ String field, /*value*/ FieldMetadata fld ->
             ColumnBuilder colb
-            colb = Columns.column(field, DataTypes.detectType(fld.typeClass)).setAnchorName(field)
+            if(fld.typeClass == Object){
+                colb = Columns.column(field, new ObjectType()).setAnchorName(field)
+            } else {
+                colb = Columns.column(field, DataTypes.detectType(fld.typeClass)).setAnchorName(field)
+            }
+
             colb.setWidth(fld.width == null ? 4 : fld.width)
             //link symbols , 221e,260d, 2709 is email, 270e is pencil
             HyperLinkBuilder link = hyperLink(jrExp('"https://www.google.com/search?q=" + $F{' + field + '}'))
@@ -178,7 +190,7 @@ class DynamicReportsService implements ConfigAware{
                 group.setFooterStyle(TemplateStyles.group)
 
             } else if (index == 1) {
-                //group.setHeaderLayout(GroupHeaderLayout.VALUE)
+                group.setHeaderLayout(GroupHeaderLayout.VALUE)
                 group.setStyle(TemplateStyles.groupL2)
                 group.setHeaderStyle(TemplateStyles.groupHeaderL2)
                 group.setFooterStyle(TemplateStyles.groupFooterL2)
@@ -211,15 +223,22 @@ class DynamicReportsService implements ConfigAware{
 //            group.addFooterComponent(comp)
 
             //don't add it to the last group by default or if there is only 1 group
-            if (reportCfg.groupTotalLabels && sbtList && !isLastOrSingleGroup) {
+            if (reportCfg.groupTotalLabels && sbtList) {
                 //just add it to the first one
                 //sbtList[0].setLabel("${fieldMetaMap[field].title} Totals").setLabelPosition(Position.LEFT);
 
-                JasperExpression<String> label = jrExp("\$F{" + field + "} + \" Total\"", String)
-                //sbtList.add drb.sbt.first(label,fieldMetaMap[config.groupTotalLabels].builder)
-                group.setFooterBackgroundComponent(
+                boolean shoudlDoLabel = true
+                //if its the only group or top level one then only do totals if reportCfg.groupTotalLabelsOnLast
+                if(isLastOrSingleGroup && !reportCfg.groupTotalLabelsOnLast){
+                    shoudlDoLabel = false
+                }
+                if (shoudlDoLabel){
+                    JasperExpression<String> label = jrExp("\$F{" + field + "} + \" Total\"", String)
+                    //sbtList.add drb.sbt.first(label,fieldMetaMap[config.groupTotalLabels].builder)
+                    group.setFooterBackgroundComponent(
                         Components.text(label).setStyle(TemplateStyles.subtotal)
-                )
+                    )
+                }
             }
 
             //add the subtotals
@@ -228,6 +247,20 @@ class DynamicReportsService implements ConfigAware{
             groups[field].builder = group
         }
         return groups
+    }
+
+    // @CompileDynamic
+    List<AggregationSubtotalBuilder> buildSummaryBands(Map<String, FieldMetadata> fieldMetaMap, DynamicConfig reportCfg) {
+
+        Map<String, Map> subtotals = [:]
+        int subsSize = reportCfg.subtotals.size()
+        List<AggregationSubtotalBuilder> sbtList = []
+        reportCfg.subtotals?.each { grpField, calc ->
+            AggregationSubtotalBuilder subtot = createSubTotal(calc, fieldMetaMap[grpField].builder as ValueColumnBuilder)
+            subtot.setStyle(TemplateStyles.grandTotal)
+            sbtList.add subtot
+        }
+        return sbtList
     }
 
     @CompileDynamic

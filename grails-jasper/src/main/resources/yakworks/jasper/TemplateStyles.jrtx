@@ -42,6 +42,12 @@
 		</box>
 	</style>
 
+  <style name="grandTotal" style="bold" isBlankWhenNull="true" fontSize="12">
+		<box topPadding="3" leftPadding="5" bottomPadding="3" rightPadding="5">
+			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD" />
+		</box>
+	</style>
+
 	<style name="groupL2" style="group" forecolor="#2E4E6F" isBlankWhenNull="true" fontSize="12">
 		<box topPadding="0" bottomPadding="0"/>
 	</style>

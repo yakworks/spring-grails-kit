@@ -16,8 +16,9 @@ class DynamicConfig {
     List<String> groups // ['customer.name', 'product.group.name', 'color'],
     Map<String, String> subtotals // [qty: "sum", amount: "sum"], //put these on all the group summaries
     Map subtotalsHeader // [amount: "sum"], //put these on all the group summaries
-    boolean columnHeaderInFirstGroup = true //for each new primary group value the column header will be reprinted, if false they occur once per page
+    boolean columnHeaderInFirstGroup = false //for each new primary group value the column header will be reprinted, if false they occur once per page
     boolean groupTotalLabels = true //puts a group total label on the subtotal footers
+    boolean groupTotalLabelsOnLast = true //put total label on top level group, or if only one then should put it?
     boolean highlightDetailOddRows = false
     boolean showGridLines = true
     boolean tableOfContents = false

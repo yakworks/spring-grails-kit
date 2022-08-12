@@ -1,5 +1,6 @@
 package yakworks.reports.dynamic
 
+import spock.lang.IgnoreRest
 import yakworks.jasper.dynamic.DynamicConfig
 import yakworks.jasperapp.model.Bills
 import yakworks.jasperapp.model.Customer
@@ -85,6 +86,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
             subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
             columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
             groupTotalLabels        : true, //puts a group total label on the subtotal footers
+            groupTotalLabelsOnLast  : false, //whether to show total label and main group
             //highlightDetailOddRows:true,
             showGridLines           : true,
             //            tableOfContents:true,
@@ -113,7 +115,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
             title: "By Customer",
             entityName              : 'Bills',
             fields                  : ['customer.name', 'color', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
-            groups                  : ['customer.name'],
+            groups                  : ['customer.name', 'color'],
             subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
             subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
             columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
@@ -149,7 +151,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
             groups                  : [],
             subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
             subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
-            columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
+            columnHeaderInFirstGroup: false, //for each new primary group value the column header will be reprinted, if false they occur once per page
             groupTotalLabels        : true, //puts a group total label on the subtotal footers
             //highlightDetailOddRows:true,
             showGridLines           : true,
