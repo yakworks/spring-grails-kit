@@ -1,6 +1,5 @@
-package foo
+package yakworks.jasperapp.model
 
-import gorm.tools.hibernate.criteria.CreateCriteriaSupport
 import gorm.tools.repository.model.RepoEntity
 import grails.compiler.GrailsCompileStatic
 import grails.persistence.Entity

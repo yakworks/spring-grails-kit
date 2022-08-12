@@ -85,31 +85,32 @@ public class TemplateStyles {
     /**
      * Creates custom component which is possible to add to any report band component
      */
-    public static ComponentBuilder<?, ?> createTitleComponent(String label) {
-        HyperLinkBuilder link = hyperLink(exp.jasperSyntaxText("http://www.dynamicreports.org"))
+    public static ComponentBuilder<?, ?> createTitleComponent(String title , String rightTitle = "") {
+        // HyperLinkBuilder link = hyperLink(exp.jasperSyntaxText("https://dynamicreports.readthedocs.io/en/latest/"))
+        //TODO add sub title
         def dynamicReportsComponent =
                 cmp.horizontalList(
-                        cmp.image(new URL("http://9ci.github.io/www/assets/images/9ci-logo-orange.png")).setFixedDimension(60, 60),
+                        // cmp.image(new URL("https://www.9ci.com/www/assets/images/9ci-logo-orange.png")).setFixedDimension(60, 60),
                         cmp.verticalList(
-                                cmp.text(exp.jasperSyntaxText("DynamicReports Examples"))
+                                cmp.text(exp.jasperSyntaxText(title))
                                         .setStyle(bold22Centered)
                                         .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT),
-                                cmp.text(exp.jasperSyntaxText("http://www.dynamicreports.org"))
-                                        .setStyle(italic).setHyperLink(link)
+                                // cmp.text(exp.jasperSyntaxText("Docs"))
+                                //         .setStyle(italic).setHyperLink(link)
                         )
-                ).setFixedWidth(300)
+                ).setFixedWidth(400)
 
         return cmp.horizontalList()
-                .add(
+            .add(
                 dynamicReportsComponent,
-                cmp.text(exp.jasperSyntaxText(label))
-                        .setStyle(bold18Centered)
-                        .setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT)
-        )
-                .newRow()
-                .add(cmp.line())
-                .newRow()
-                .add(cmp.verticalGap(3))
+                cmp.text(exp.jasperSyntaxText(rightTitle))
+                    .setStyle(bold18Centered)
+                    .setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT)
+            )
+            .newRow()
+            .add(cmp.line())
+            .newRow()
+            .add(cmp.verticalGap(3))
     }
 
     public static ComponentBuilder<?, ?> createFooter() {

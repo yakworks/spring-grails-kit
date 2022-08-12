@@ -10,9 +10,9 @@ import groovy.util.logging.Slf4j
 
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.io.ResourceLoader
 
 import gorm.tools.utils.GormMetaUtils
-import grails.core.GrailsApplication
 import grails.util.GrailsUtil
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
 import net.sf.dynamicreports.report.builder.HyperLinkBuilder
@@ -32,6 +32,7 @@ import net.sf.dynamicreports.report.constant.GroupHeaderLayout
 import net.sf.dynamicreports.report.constant.PageOrientation
 import net.sf.dynamicreports.report.constant.PageType
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
+import yakworks.grails.support.ConfigAware
 import yakworks.reports.DomainMetaUtils
 import yakworks.reports.FieldMetadata
 
@@ -39,29 +40,30 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.hyperLink
 
 @Slf4j
 @CompileStatic
-class DynamicReportsService {
+class DynamicReportsService implements ConfigAware{
 
-    @Autowired GrailsApplication grailsApplication
+    @Autowired ResourceLoader resourceLoader
 
-    JasperReportBuilder buildDynamicReport(Map reportCfg) {
-        PersistentEntity entityClass = GormMetaUtils.findPersistentEntity(reportCfg.domain as String)
+    JasperReportBuilder buildDynamicReport(DynamicConfig reportCfg) {
+        PersistentEntity entityClass = GormMetaUtils.findPersistentEntity(reportCfg.entityName as String)
         assert entityClass
         buildDynamicReport(entityClass, reportCfg)
     }
 
     // @CompileDynamic
-    JasperReportBuilder buildDynamicReport(PersistentEntity domainClass, Map reportCfg, Map params = null) {
+    JasperReportBuilder buildDynamicReport(PersistentEntity domainClass, DynamicConfig reportCfg, Map params = null) {
         log.debug "doReport with $params"
 
         //TODO do some basic validation on reportCfg. maybe even setup domains for them
-        List fields = reportCfg["fields"] as List
+        List fields = reportCfg.fields
         //StyleStatics.init()
-
+        String rightTitle = reportCfg.rightTitle
+        String title = reportCfg.title
         //?: getPropertyValue(domainClass.clazz, 'reportColumns') ?: domainClass.properties.name - ['id', 'version']
         JasperReportBuilder jrb = new JasperReportBuilder()
-                .title(TemplateStyles.createTitleComponent("Group"))
+                .title(TemplateStyles.createTitleComponent(reportCfg.title))
                 .setTemplate(TemplateStyles.reportTemplate)
-                .templateStyles(TemplateStyles.loadStyles(grailsApplication.mainContext))
+                .templateStyles(TemplateStyles.loadStyles(resourceLoader))
 
 //        def res = grailsApplication.mainContext.getResource("classpath:yakworks/jasper/DefaultTemplate.jrxml")
 //        jrb.setTemplateDesign(res.inputStream)
@@ -103,7 +105,7 @@ class DynamicReportsService {
         }
 
         if (reportCfg.columnHeaderInFirstGroup) jrb.setShowColumnTitle(false)
-        if (reportCfg.showTableOfContents) jrb.tableOfContents()
+        // if (reportCfg.showTableOfContents) jrb.tableOfContents()
 
         return jrb
     }
@@ -144,7 +146,7 @@ class DynamicReportsService {
                 jrb.addField(field, Boolean) //drb.field(field,Boolean.class)
 
                 //? (char)0x2611 : (char)0x2610") //<- see http://dejavu.sourceforge.net/samples/DejaVuSans.pdf for more options
-                JasperExpression bool = jrExp('$F{' + field + '} ? (char)0x270e : ""')
+                JasperExpression bool = jrExp('$F{' + field + '} ? (char)0x2713 : ""')
                 colb = Columns.column(bool).setDataType(DataTypes.booleanType() as DRIDataType)
                 //do style
                 //def sb = new StyleBuilder()
@@ -159,19 +161,19 @@ class DynamicReportsService {
         return fieldMap
     }
 
-    @CompileDynamic
-    Map<String, Map> buildGroupBands(Map<String, FieldMetadata> fieldMetaMap, Map config) {
+    // @CompileDynamic
+    Map<String, Map> buildGroupBands(Map<String, FieldMetadata> fieldMetaMap, DynamicConfig reportCfg) {
 
         Map<String, Map> groups = [:]
-        int grpSize = (config.groups as Map).size()
-        config.groups.eachWithIndex { String field, Integer index ->
+        int grpSize = reportCfg.groups.size()
+        reportCfg.groups.eachWithIndex { String field, Integer index ->
             ColumnGroupBuilder group = Groups.group("Group_$field", fieldMetaMap[field].builder as ValueColumnBuilder)
             boolean isLastOrSingleGroup = (grpSize == index + 1)
             group.setPadding(3)
 
             if (index == 0) {
                 group.setHeaderLayout(GroupHeaderLayout.VALUE)
-                if (config?.columnHeaderInFirstGroup) group.showColumnHeaderAndFooter()
+                if (reportCfg?.columnHeaderInFirstGroup) group.showColumnHeaderAndFooter()
                 group.setStyle(TemplateStyles.group)
                 group.setFooterStyle(TemplateStyles.group)
 
@@ -190,9 +192,8 @@ class DynamicReportsService {
 
             List<AggregationSubtotalBuilder> sbtList = []
 
-            config.subtotals.each { grpField, calc ->
-                AggregationSubtotalBuilder subtot = Subtotals."${calc}"(fieldMetaMap[grpField].builder as ValueColumnBuilder)
-
+            reportCfg.subtotals?.each { grpField, calc ->
+                AggregationSubtotalBuilder subtot = createSubTotal(calc, fieldMetaMap[grpField].builder as ValueColumnBuilder)
                 sbtList.add subtot
             }
 //            def comp = drb.cmp.horizontalList()
@@ -210,7 +211,7 @@ class DynamicReportsService {
 //            group.addFooterComponent(comp)
 
             //don't add it to the last group by default or if there is only 1 group
-            if (config.groupTotalLabels && sbtList && !isLastOrSingleGroup) {
+            if (reportCfg.groupTotalLabels && sbtList && !isLastOrSingleGroup) {
                 //just add it to the first one
                 //sbtList[0].setLabel("${fieldMetaMap[field].title} Totals").setLabelPosition(Position.LEFT);
 
@@ -229,10 +230,15 @@ class DynamicReportsService {
         return groups
     }
 
+    @CompileDynamic
+    static AggregationSubtotalBuilder createSubTotal(String calc, ValueColumnBuilder colBuilder){
+        AggregationSubtotalBuilder subtot = Subtotals."${calc}"(colBuilder)
+        return subtot
+    }
+
     @SuppressWarnings(['UnusedPrivateMethod'])
     @CompileDynamic
     private Map loadConfig() {
-        def config = grailsApplication.config
         GroovyClassLoader classLoader = new GroovyClassLoader(getClass().classLoader)
         config.merge(new ConfigSlurper(GrailsUtil.environment).parse(classLoader.loadClass('DefaultDynamicJasperConfig')))
         try {

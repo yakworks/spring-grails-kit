@@ -1,10 +1,9 @@
 package yakworks.reports
 
-import foo.Bills
-import foo.Customer
-import foo.Product
-import foo.ProductGroup
-import grails.gorm.transactions.Transactional
+import yakworks.jasperapp.model.Bills
+import yakworks.jasperapp.model.Customer
+import yakworks.jasperapp.model.Product
+import yakworks.jasperapp.model.ProductGroup
 
 /**
  * Created by basejump on 10/18/16.

@@ -1,6 +1,7 @@
 package yakworks
 
 import gorm.tools.transaction.TrxService
+import yakworks.rally.testing.RallySeedData
 import yakworks.reports.SeedData
 
 class BootStrap {
@@ -10,7 +11,10 @@ class BootStrap {
         TrxService.bean().withTrx {
             new SeedData().seed()
         }
+        RallySeedData.init()
+        RallySeedData.fullMonty()
     }
+
     def destroy = {
     }
 

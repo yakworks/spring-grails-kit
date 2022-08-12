@@ -1,4 +1,4 @@
-package foo
+package yakworks.jasperapp
 
 import yakworks.reports.ReportFormat
 
@@ -9,7 +9,10 @@ class ReportsController {
             [city:"Chicago", id:1, name:"Joshua Burnett", street:"22 3rd", country:[name:"US"]]
     ]
 
-    def index() {
+    //defaults to the index.gsp
+    def index() {}
+
+    def generate() {
         render(view:"${params.id}.jrxml",model:[data:dataList, "ReportTitle":"Controller Report"])
     }
 

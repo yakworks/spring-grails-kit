@@ -1,9 +1,9 @@
 package yakworks.reports
 
-import foo.Bills
-import foo.Customer
-import foo.Product
-import foo.ProductGroup
+import yakworks.jasperapp.model.Bills
+import yakworks.jasperapp.model.Customer
+import yakworks.jasperapp.model.Product
+import yakworks.jasperapp.model.ProductGroup
 import gorm.tools.utils.GormMetaUtils
 import grails.testing.gorm.DataTest
 import grails.testing.web.GrailsWebUnitTest
@@ -66,8 +66,8 @@ class DomainMetaUtilsSpec extends Specification implements DataTest, GrailsWebUn
     void "findPersistentEntity"() {
         expect:
         grailsApplication.mappingContext.getPersistentEntity(Bills.name)
-        grailsApplication.mappingContext.getPersistentEntity("foo.Bills")
-        GormMetaUtils.findPersistentEntity("foo.Bills")
+        grailsApplication.mappingContext.getPersistentEntity("yakworks.jasperapp.model.Bills")
+        GormMetaUtils.findPersistentEntity("yakworks.jasperapp.model.Bills")
         GormMetaUtils.findPersistentEntity("Bills")
         GormMetaUtils.findPersistentEntity("bills")
         GormMetaUtils.findPersistentEntity("asfasfasdf") == null
@@ -77,7 +77,7 @@ class DomainMetaUtilsSpec extends Specification implements DataTest, GrailsWebUn
         expect:
         DomainMetaUtils.getNaturalTitle("Bills") == 'Bills'
         DomainMetaUtils.getNaturalTitle("bills") == 'Bills'
-        DomainMetaUtils.getNaturalTitle("foo.Bills") == 'Foo Bills'
+        DomainMetaUtils.getNaturalTitle("yakworks.jasperapp.model.Bills") == 'Yakworks Jasperapp Model Bills'
         DomainMetaUtils.getNaturalTitle("customer.name") == 'Customer'
         DomainMetaUtils.getNaturalTitle("customer.org.name") == 'Customer Org'
         DomainMetaUtils.getNaturalTitle("customer.org.id") == 'Customer Org Id'

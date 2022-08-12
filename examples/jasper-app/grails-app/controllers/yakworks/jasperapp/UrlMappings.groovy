@@ -1,4 +1,4 @@
-package foo
+package yakworks.jasperapp
 
 class UrlMappings {
 

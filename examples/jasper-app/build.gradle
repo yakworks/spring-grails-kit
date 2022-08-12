@@ -19,9 +19,22 @@ dependencies {
   implementation "org.grails.plugins:hibernate5:$vGormHibernate"
   implementation "org.hibernate:hibernate-core:$vHibernate"
 
+  implementation project(':grails-kit')
   implementation project(':grails-jasper')
 
-  implementation("org.yakworks:gorm-tools:$vGormTools")//{ changing = true }
+  // implementation("org.yakworks:gorm-tools:$vGormTools")//{ changing = true }
+  // implementation("org.yakworks:gorm-tools-rest:$vGormTools")
+  implementation("org.yakworks:rally-domain:$vGormTools")
+  // implementation("org.yakworks:gorm-tools-rest:$vGormTools")
+  // implementation("org.yakworks:rally-security:$vGormTools")
+  implementation("org.yakworks:gorm-test-domain:$vGormTools")
+
+  //??wtf
+  implementation "commons-lang:commons-lang:2.6"
+
+  runtimeOnly "com.h2database:h2:$vH2"
+  runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
+  runtimeOnly "com.zaxxer:HikariCP:$vHikari"
 
 }
 

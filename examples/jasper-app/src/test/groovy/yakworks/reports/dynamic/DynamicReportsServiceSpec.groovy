@@ -1,12 +1,12 @@
 package yakworks.reports.dynamic
 
-import foo.Bills
-import foo.Customer
-import foo.Product
-import foo.ProductGroup
+import yakworks.jasper.dynamic.DynamicConfig
+import yakworks.jasperapp.model.Bills
+import yakworks.jasperapp.model.Customer
+import yakworks.jasperapp.model.Product
+import yakworks.jasperapp.model.ProductGroup
 import gorm.tools.testing.hibernate.GormToolsHibernateSpec
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
-import spock.lang.Shared
 import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.reports.SeedData
 
@@ -32,7 +32,8 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
 
     void setup() {
         dynamicReportsService = new DynamicReportsService()
-        dynamicReportsService.grailsApplication = grailsApplication
+        dynamicReportsService.resourceLoader = grailsApplication.mainContext
+        dynamicReportsService.configuration = grailsApplication.config
         if (!folder.exists()) folder.mkdirs();
     }
 
@@ -45,7 +46,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
         return list
     }
 
-    boolean saveToFiles(JasperReportBuilder dr, fname) {
+    boolean saveToFiles(JasperReportBuilder dr, String fname) {
         //dr.toJrXml(new FileOutputStream( new File(folder,"${fname}.jrxml")))
         long start = System.currentTimeMillis();
         dr.toPdf(new FileOutputStream(new File(folder, "${fname}.pdf")))
@@ -72,37 +73,106 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
         return true
     }
 
-    void "simple sanity check"() {
+    void "grouped 3 levels"() {
         when:
         Map cfg = [
-                domain                  : 'Bills',
-                fields                  : ['customer.name', 'product.group.name', 'color', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
-                columns                 : ['tranProp': 'From Getter'],
-                groups                  : ['customer.name', 'product.group.name', 'color'],
-                subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
-                subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
-                columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
-                groupTotalLabels        : true, //puts a group total label on the subtotal footers
-                //highlightDetailOddRows:true,
-                showGridLines           : true,
-//            tableOfContents:true,
-//            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
-//            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
+            title: "By Customer/group/color",
+            entityName              : 'Bills',
+            fields                  : ['customer.name', 'product.group.name', 'color', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
+            // columns                 : ['tranProp': 'From Getter'],
+            groups                  : ['customer.name', 'product.group.name', 'color'],
+            subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
+            subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
+            columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
+            groupTotalLabels        : true, //puts a group total label on the subtotal footers
+            //highlightDetailOddRows:true,
+            showGridLines           : true,
+            //            tableOfContents:true,
+            //            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
+            //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
         ]
-        def dr = dynamicReportsService.buildDynamicReport(cfg)
+        def rptCfg = new DynamicConfig(cfg)
+        def dr = dynamicReportsService.buildDynamicReport(rptCfg)
         new SeedData().seed()
-        def list = getData(cfg.groups)
+        def list = getData(rptCfg.groups)
         dr.setDataSource(list)
 
         then:
         assert dr
 
         //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-        saveToFiles(dr, 'basic')
+        saveToFiles(dr, '3levels')
 
         //dr.show()
         //sleep(5000)
     }
+
+    void "Customer Group"() {
+        when:
+        Map cfg = [
+            title: "By Customer",
+            entityName              : 'Bills',
+            fields                  : ['customer.name', 'color', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
+            groups                  : ['customer.name'],
+            subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
+            subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
+            columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
+            groupTotalLabels        : true, //puts a group total label on the subtotal footers
+            //highlightDetailOddRows:true,
+            showGridLines           : true,
+            //            tableOfContents:true,
+            //            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
+            //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
+        ]
+        def rptCfg = new DynamicConfig(cfg)
+        def dr = dynamicReportsService.buildDynamicReport(rptCfg)
+        new SeedData().seed()
+        def list = getData(rptCfg.groups)
+        dr.setDataSource(list)
+
+        then:
+        assert dr
+
+        //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
+        saveToFiles(dr, 'singleGroup')
+
+        //dr.show()
+        //sleep(5000)
+    }
+
+    void "No Group"() {
+        when:
+        Map cfg = [
+            title: "No Group",
+            entityName              : 'Bills',
+            fields                  : ['customer.name', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
+            groups                  : [],
+            subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
+            subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
+            columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
+            groupTotalLabels        : true, //puts a group total label on the subtotal footers
+            //highlightDetailOddRows:true,
+            showGridLines           : true,
+            //            tableOfContents:true,
+            //            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
+            //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
+        ]
+        def rptCfg = new DynamicConfig(cfg)
+        def dr = dynamicReportsService.buildDynamicReport(rptCfg)
+        new SeedData().seed()
+        def list = getData(rptCfg.groups)
+        dr.setDataSource(list)
+
+        then:
+        assert dr
+
+        //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
+        saveToFiles(dr, 'noGroup')
+
+        //dr.show()
+        //sleep(5000)
+    }
+
 
 //    void "complex"() {
 //        when:
@@ -161,6 +231,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
                 <td width="10%">&nbsp;</td>
                 <td align=\"center\">
  ''').toString()
+
     String HTMLFooter = '''
                 </td>
                 <td width="10%">&nbsp;</td>
