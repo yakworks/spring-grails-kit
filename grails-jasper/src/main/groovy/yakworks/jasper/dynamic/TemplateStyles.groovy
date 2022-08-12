@@ -8,7 +8,6 @@ import java.awt.*
 
 import groovy.transform.CompileStatic
 
-import net.sf.dynamicreports.report.constant.Language
 import org.springframework.core.io.ResourceLoader
 
 import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter
@@ -25,6 +24,7 @@ import net.sf.dynamicreports.report.builder.style.TemplateStylesBuilder
 import net.sf.dynamicreports.report.constant.Evaluation
 import net.sf.dynamicreports.report.constant.HorizontalAlignment
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment
+import net.sf.dynamicreports.report.constant.Language
 import net.sf.dynamicreports.report.definition.ReportParameters
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.*

@@ -8,8 +8,6 @@ import groovy.transform.CompileDynamic
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
-import net.sf.dynamicreports.report.builder.subtotal.SubtotalBuilder
-import net.sf.dynamicreports.report.constant.Position
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.io.ResourceLoader
@@ -29,17 +27,19 @@ import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder
 import net.sf.dynamicreports.report.builder.group.GroupBuilder
 import net.sf.dynamicreports.report.builder.group.Groups
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder
+import net.sf.dynamicreports.report.builder.subtotal.SubtotalBuilder
 import net.sf.dynamicreports.report.builder.subtotal.Subtotals
 import net.sf.dynamicreports.report.constant.GroupHeaderLayout
 import net.sf.dynamicreports.report.constant.PageOrientation
 import net.sf.dynamicreports.report.constant.PageType
+import net.sf.dynamicreports.report.constant.Position
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
 import yakworks.grails.support.ConfigAware
 import yakworks.reports.DomainMetaUtils
 import yakworks.reports.FieldMetadata
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.hyperLink
-import static net.sf.dynamicreports.report.builder.DynamicReports.sbt;
+import static net.sf.dynamicreports.report.builder.DynamicReports.sbt
 
 @Slf4j
 @CompileStatic
@@ -233,7 +233,7 @@ class DynamicReportsService implements ConfigAware{
                     shoudlDoLabel = false
                 }
                 if (shoudlDoLabel){
-                    JasperExpression<String> label = jrExp("\$F{" + field + "} + \" Total\"", String)
+                    JasperExpression<String> label = jrExp("\"\" + \$F{" + field + "} + \" Total\"", String)
                     //sbtList.add drb.sbt.first(label,fieldMetaMap[config.groupTotalLabels].builder)
                     group.setFooterBackgroundComponent(
                         Components.text(label).setStyle(TemplateStyles.subtotal)
