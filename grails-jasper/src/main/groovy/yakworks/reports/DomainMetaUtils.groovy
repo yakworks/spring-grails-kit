@@ -10,9 +10,11 @@ import groovy.transform.CompileStatic
 import org.grails.datastore.mapping.model.PersistentEntity
 import org.grails.datastore.mapping.model.PersistentProperty
 import org.grails.datastore.mapping.model.types.Association
+import org.grails.datastore.mapping.query.api.Criteria
 
 import grails.util.GrailsNameUtils
 import grails.util.Holders
+import yakworks.commons.lang.NameUtils
 
 import static grails.util.GrailsClassUtils.isAssignableOrConvertibleFrom
 
@@ -38,7 +40,7 @@ class DomainMetaUtils {
      * @param columnTitles a list of overrides for titel labels, keyed off of the fields list
      */
     @SuppressWarnings(['ThrowRuntimeException'])
-    @CompileDynamic
+    // @CompileDynamic
     static Map<String, FieldMetadata> getFieldMetadata(PersistentEntity domainClass, List<String> fields, Map columnTitles = null) {
         Map<String, FieldMetadata> columns = [:]
         fields.each { propertyName ->
@@ -54,7 +56,7 @@ class DomainMetaUtils {
             Class dcPropType = property.type
             Class propertyType
             //assert Boolean.class.getName() == "foo"
-            List<Class> ctypes = [Boolean, Integer, Long, BigDecimal, Short, Float, Double, Byte, Character, Date, String, List]
+            List ctypes = [Boolean, Integer, Long, BigDecimal, Short, Float, Double, Byte, Character, Date, String, List] as List<Class>
 
             for (Class clazz : ctypes) {
                 if (isAssignableOrConvertibleFrom(clazz, dcPropType)) {
@@ -93,19 +95,19 @@ class DomainMetaUtils {
     /**
      * finds domain using either a simple name like "Product" or fully qualified name "com.foo.Product"
      */
-    @CompileDynamic
-    static PersistentEntity findDomainClass(String name) {
-
-        if (name.indexOf('.') == -1) {
-            String propertyName = GrailsNameUtils.getPropertyName(name)
-            Holders.grailsApplication.mappingContext.persistentEntities.find{
-                it.decapitalizedName == propertyName
-            }
-        } else {
-            return Holders.grailsApplication.mappingContext.getPersistentEntity(name)
-        }
-
-    }
+    // @CompileDynamic
+    // static PersistentEntity findDomainClass(String name) {
+    //
+    //     if (name.indexOf('.') == -1) {
+    //         String propertyName = GrailsNameUtils.getPropertyName(name)
+    //         Holders.grailsApplication.mappingContext.persistentEntities.find{
+    //             it.decapitalizedName == propertyName
+    //         }
+    //     } else {
+    //         return Holders.grailsApplication.mappingContext.getPersistentEntity(name)
+    //     }
+    //
+    // }
 
     @SuppressWarnings(['ThrowRuntimeException'])
     //See https://github.com/grails/grails-core/issues/10978
@@ -137,7 +139,7 @@ class DomainMetaUtils {
         // make foo.bar into fooBar so we can pass it through the getNaturalName
         text = text.replaceAll("(\\.)([A-Za-z0-9])") { Object[] it -> it[2].toUpperCase() }
         //text
-        return GrailsNameUtils.getNaturalName(text)
+        return NameUtils.getNaturalName(text)
 
     }
 
@@ -171,7 +173,7 @@ class DomainMetaUtils {
     }
 
     @CompileDynamic
-    static Closure orderNested(List groupFields, Closure callingDelegate) {
+    static Closure orderNestedList(List groupFields, Criteria callingDelegate) {
         return {
             groupFields.each {
                 def o = orderNested(it, 'asc')

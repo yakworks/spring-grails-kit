@@ -9,6 +9,7 @@ Install for grails 3.3.x
 compile "org.grails.plugins:jasper-reports:3.2.0"
 ```
 
+see https://github.com/dynamicreports/dynamicreports/tree/development/dynamicreports-examples
 
 ## Table of Contents
 <!-- this is using the Sublime MarkdownTOC plugin to auto update it -->

@@ -1,9 +1,9 @@
 package yakworks.reports
 
-import foo.Bills
-import foo.Customer
-import foo.Product
-import foo.ProductGroup
+import yakworks.jasperapp.model.Bills
+import yakworks.jasperapp.model.Customer
+import yakworks.jasperapp.model.Product
+import yakworks.jasperapp.model.ProductGroup
 
 /**
  * Created by basejump on 10/18/16.
@@ -12,7 +12,7 @@ class SeedData {
 
     static Random rand = new Random()
 
-    static seed(){
+    void seed(){
         def fooGrp = new ProductGroup(name:"Foo Group").save()
         def barGrp = new ProductGroup(name:"Bar Group").save()
 

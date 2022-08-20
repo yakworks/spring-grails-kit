@@ -14,6 +14,6 @@ dependencies {
   testImplementation"org.apache.commons:commons-lang3:$vCommonsLang3"
   testImplementation "org.mockito:mockito-core"
   testImplementation "org.grails:grails-web-testing-support"
-  testImplementation "org.grails.plugins:build-test-data:$vBuildTestData"
+  testImplementation "io.github.longwa:build-test-data:$vBuildTestData"
 
 }

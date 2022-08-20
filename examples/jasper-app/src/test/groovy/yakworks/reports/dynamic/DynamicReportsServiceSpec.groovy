@@ -1,27 +1,24 @@
 package yakworks.reports.dynamic
 
-import foo.Bills
-import foo.Customer
-import foo.Product
-import foo.ProductGroup
-import grails.test.hibernate.HibernateSpec
-import grails.testing.gorm.DataTest
+import spock.lang.IgnoreRest
+import yakworks.jasper.dynamic.DynamicConfig
+import yakworks.jasperapp.model.Bills
+import yakworks.jasperapp.model.Customer
+import yakworks.jasperapp.model.Product
+import yakworks.jasperapp.model.ProductGroup
+import gorm.tools.testing.hibernate.GormToolsHibernateSpec
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
 import yakworks.jasper.dynamic.DynamicReportsService
-import yakworks.reports.DomainMetaUtils
 import yakworks.reports.SeedData
-import spock.lang.Ignore
-import spock.lang.Shared
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.export
 
-//@Domain([ProductGroup,Bills,Customer,Product])
-class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
+class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
 
     List<Class> getDomainClasses() { [ProductGroup, Customer, Bills, Product] }
 
-    @Shared
-    DynamicReportsService dynamicReportsService = new DynamicReportsService()
+    // @Shared
+    private DynamicReportsService dynamicReportsService //= new DynamicReportsService()
     /**
      * TODO
      * - links to pages
@@ -34,23 +31,23 @@ class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
      */
     static folder = new File("build/jasper-tests/DynamicReportsServiceSpec/");
 
-    void setupSpec() {
-        mockDomains(ProductGroup, Customer, Bills, Product)
-
+    void setup() {
         dynamicReportsService = new DynamicReportsService()
-        dynamicReportsService.grailsApplication = grailsApplication
+        dynamicReportsService.resourceLoader = grailsApplication.mainContext
+        dynamicReportsService.configuration = grailsApplication.config
         if (!folder.exists()) folder.mkdirs();
-
     }
 
-    List getData(orderBy) {
-        return Bills.createCriteria().list {
-            def o = DomainMetaUtils.orderNested(orderBy, delegate)
-            o()
-        }
+    List getData(List<String> groupFields) {
+        def list = Bills.query{
+            groupFields.each { fld ->
+                order(fld)
+            }
+        }.list()
+        return list
     }
 
-    def saveToFiles(JasperReportBuilder dr, fname) {
+    boolean saveToFiles(JasperReportBuilder dr, String fname) {
         //dr.toJrXml(new FileOutputStream( new File(folder,"${fname}.jrxml")))
         long start = System.currentTimeMillis();
         dr.toPdf(new FileOutputStream(new File(folder, "${fname}.pdf")))
@@ -70,41 +67,114 @@ class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
 
         dr.toJrXml(new FileOutputStream(new File(folder, "${fname}.jrxml")))
 
-        "open build/jasper-tests/DynamicReportsServiceSpec/${fname}.html".execute()
+        //if running on a mac will open it.
+        if(System.getProperty("os.name").equals("Mac OS X")) {
+            "open build/jasper-tests/DynamicReportsServiceSpec/${fname}.html".execute()
+        }
+        return true
     }
 
-    @Ignore("https://github.com/yakworks/grails-jasper-reports/issues/11")
-    void "simple sanity check"() {
+    void "grouped 3 levels"() {
         when:
         Map cfg = [
-                domain                  : 'Bills',
-                fields                  : ['customer.name', 'product.group.name', 'color', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
-                columns                 : ['tranProp': 'From Getter'],
-                groups                  : ['customer.name', 'product.group.name', 'color'],
-                subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
-                subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
-                columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
-                groupTotalLabels        : true, //puts a group total label on the subtotal footers
-                //highlightDetailOddRows:true,
-                showGridLines           : true,
-//            tableOfContents:true,
-//            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
-//            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
+            title: "By Customer/group/color",
+            entityName              : 'Bills',
+            fields                  : ['customer.name', 'product.group.name', 'color', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
+            // columns                 : ['tranProp': 'From Getter'],
+            groups                  : ['customer.name', 'product.group.name', 'color'],
+            subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
+            subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
+            columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
+            groupTotalLabels        : true, //puts a group total label on the subtotal footers
+            groupTotalLabelsOnLast  : false, //whether to show total label and main group
+            //highlightDetailOddRows:true,
+            showGridLines           : true,
+            //            tableOfContents:true,
+            //            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
+            //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
         ]
-        def dr = dynamicReportsService.buildDynamicReport(cfg)
-        SeedData.seed()
-        def list = getData(cfg.groups)
+        def rptCfg = new DynamicConfig(cfg)
+        def dr = dynamicReportsService.buildDynamicReport(rptCfg)
+        new SeedData().seed()
+        def list = getData(rptCfg.groups)
         dr.setDataSource(list)
 
         then:
         assert dr
 
         //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-        saveToFiles(dr, 'basic')
+        saveToFiles(dr, '3levels')
 
         //dr.show()
         //sleep(5000)
     }
+
+    void "Customer Group"() {
+        when:
+        Map cfg = [
+            title: "By Customer",
+            entityName              : 'Bills',
+            fields                  : ['customer.name', 'color', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
+            groups                  : ['customer.name', 'color'],
+            subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
+            subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
+            columnHeaderInFirstGroup: true, //for each new primary group value the column header will be reprinted, if false they occur once per page
+            groupTotalLabels        : true, //puts a group total label on the subtotal footers
+            //highlightDetailOddRows:true,
+            showGridLines           : true,
+            //            tableOfContents:true,
+            //            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
+            //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
+        ]
+        def rptCfg = new DynamicConfig(cfg)
+        def dr = dynamicReportsService.buildDynamicReport(rptCfg)
+        new SeedData().seed()
+        def list = getData(rptCfg.groups)
+        dr.setDataSource(list)
+
+        then:
+        assert dr
+
+        //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
+        saveToFiles(dr, 'singleGroup')
+
+        //dr.show()
+        //sleep(5000)
+    }
+
+    void "No Group"() {
+        when:
+        Map cfg = [
+            title: "No Group",
+            entityName              : 'Bills',
+            fields                  : ['customer.name', 'product.name', 'isPaid', 'tranDate', 'qty', 'amount'],
+            groups                  : [],
+            subtotals               : [qty: "sum", amount: "sum"], //put these on all the group summaries
+            subtotalsHeader         : [amount: "sum"], //put these on all the group summaries
+            columnHeaderInFirstGroup: false, //for each new primary group value the column header will be reprinted, if false they occur once per page
+            groupTotalLabels        : true, //puts a group total label on the subtotal footers
+            //highlightDetailOddRows:true,
+            showGridLines           : true,
+            //            tableOfContents:true,
+            //            landscape:true //short cut for pageFormat:[size:'letter', landscape:true]
+            //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
+        ]
+        def rptCfg = new DynamicConfig(cfg)
+        def dr = dynamicReportsService.buildDynamicReport(rptCfg)
+        new SeedData().seed()
+        def list = getData(rptCfg.groups)
+        dr.setDataSource(list)
+
+        then:
+        assert dr
+
+        //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
+        saveToFiles(dr, 'noGroup')
+
+        //dr.show()
+        //sleep(5000)
+    }
+
 
 //    void "complex"() {
 //        when:
@@ -163,6 +233,7 @@ class DynamicReportsServiceSpec extends HibernateSpec implements DataTest {
                 <td width="10%">&nbsp;</td>
                 <td align=\"center\">
  ''').toString()
+
     String HTMLFooter = '''
                 </td>
                 <td width="10%">&nbsp;</td>

@@ -10,7 +10,5 @@ dependencies {
 
     implementation "org.codehaus.groovy:groovy-ant"
 
-    api("org.yakworks:groovy-commons:$vYakCommons")
-
     api project(':grails-kit')
 }

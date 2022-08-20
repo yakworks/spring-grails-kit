@@ -42,7 +42,7 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.dynamicreports.report.exception.DRException;
 import net.sf.jasperreports.engine.JRDataSource;
-import yakworks.jasper.dynamic.StyleStatics;
+import yakworks.jasper.templates.StyleStatics;
 
 /**
  * @author Ricardo Mariaca (dynamicreports@gmail.com)

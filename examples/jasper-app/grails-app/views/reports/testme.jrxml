@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.3.1.final using JasperReports Library version 6.3.1  -->
-<!-- 2016-10-06T23:05:12 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd"
-			  name="NestProps" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50" uuid="030574cb-2d4b-4281-8294-0f87619f0d7f">
+<!-- Created with Jaspersoft Studio version 6.20.0.final using JasperReports Library version 6.20.0-2bc7ab61c56f459e8176eb05c7705e145cd400ad  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="NestProps" pageWidth="595" pageHeight="842" columnWidth="515" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50" uuid="030574cb-2d4b-4281-8294-0f87619f0d7f">
 	<property name="net.sf.jasperreports.print.create.bookmarks" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
 	<style name="Sans_Normal" isDefault="true" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
@@ -10,17 +8,14 @@
 	<style name="Sans_Italic" fontName="DejaVu Sans" fontSize="12" isBold="false" isItalic="true" isUnderline="false" isStrikeThrough="false"/>
 	<parameter name="ReportTitle" class="java.lang.String"/>
 	<parameter name="DataFile" class="java.lang.String"/>
-
 	<field name="id" class="java.lang.Integer"/>
 	<field name="name" class="java.lang.String"/>
 	<field name="street" class="java.lang.String"/>
 	<field name="city" class="java.lang.String"/>
 	<field name="country.name" class="java.lang.String"/>
-
 	<variable name="CityNumber" class="java.lang.Integer" incrementType="Group" incrementGroup="CityGroup" calculation="Count">
 		<variableExpression><![CDATA[Boolean.TRUE]]></variableExpression>
 	</variable>
-
 	<group name="CityGroup" minHeightToStartNewPage="60">
 		<groupExpression><![CDATA[$F{city}]]></groupExpression>
 		<groupHeader>
@@ -108,7 +103,7 @@
 				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
 				<anchorNameExpression><![CDATA[$F{name} + " (" + $F{id} + ")"]]></anchorNameExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" hyperlinkType="Reference">
+			<textField textAdjust="StretchHeight" hyperlinkType="Reference">
 				<reportElement positionType="Float" x="50" y="0" width="200" height="15" uuid="b98b57f4-ebed-4a29-b69f-b243445bff2d"/>
 				<box leftPadding="10" rightPadding="10">
 					<leftPen lineWidth="0.5"/>
@@ -117,17 +112,8 @@
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 				<hyperlinkReferenceExpression><![CDATA["https://www.google.com/search?q=" + $F{name}]]></hyperlinkReferenceExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField textAdjust="StretchHeight">
 				<reportElement positionType="Float" x="250" y="0" width="265" height="15" uuid="f3f2f70e-3138-4834-840c-a87253f1dc30"/>
-				<box leftPadding="10" rightPadding="10">
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textFieldExpression><![CDATA[$F{country.name}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true">
-				<reportElement positionType="Float" x="515" y="0" width="15" height="15" />
 				<box leftPadding="10" rightPadding="10">
 					<leftPen lineWidth="0.5"/>
 					<bottomPen lineWidth="0.5"/>

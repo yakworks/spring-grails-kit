@@ -7,6 +7,7 @@ package yakworks.jasper
 import groovy.util.logging.Slf4j
 
 import grails.plugins.Plugin
+import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.jasper.spring.JasperView
 import yakworks.jasper.spring.JasperViewResolver
 
@@ -73,6 +74,10 @@ class JasperReportsGrailsPlugin extends Plugin {
                     cache = false
                 }
             }
+
+            jasperService(JasperService)
+            jasperViewService(JasperViewService)
+            dynamicReportsService(DynamicReportsService)
 
         }
     }

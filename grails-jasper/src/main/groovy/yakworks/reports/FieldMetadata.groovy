@@ -35,7 +35,7 @@ class FieldMetadata implements Serializable {
      * the java long qualified class name
      * ex: java.lang.String, java.math.BigDecimal etc...
      */
-    Class typeClass
+    Class typeClass = Object
 
     /**
      * the java long qualified class name

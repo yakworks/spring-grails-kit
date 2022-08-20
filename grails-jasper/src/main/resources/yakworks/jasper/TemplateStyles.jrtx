@@ -10,17 +10,19 @@
 	<style name="italic" style="root" isBlankWhenNull="true" isItalic="true"/>
 	<style name="bold18Centered" style="boldCentered" isBlankWhenNull="true" fontSize="18"/>
 
-	<style name="columnTitle" style="bold" mode="Opaque" forecolor="#4D545A" backcolor="#F9FAFB" hTextAlign="Center" isBlankWhenNull="true">
+	<style name="columnTitle" style="bold" mode="Opaque" forecolor="#4D545A" backcolor="#f1f5f6" isBlankWhenNull="true">
 		<box topPadding="5" leftPadding="5" bottomPadding="5" rightPadding="5">
-			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
-			<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
-			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
-			<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#BBBBBB"/>
+			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD"/>
+			<leftPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD"/>
+			<bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD"/>
+			<rightPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD"/>
 		</box>
 	</style>
+
 	<style name="column" style="root" vTextAlign="Middle" isBlankWhenNull="true">
 		<box topPadding="3" leftPadding="5" bottomPadding="3" rightPadding="5"/>
 	</style>
+
 	<style name="columnWithGridLines" style="column" isBlankWhenNull="true">
 		<box>
 			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD"/>
@@ -28,15 +30,25 @@
 		</box>
 	</style>
 
-	<style name="group" style="bold" forecolor="#2E4E6F" hTextAlign="Left" isBlankWhenNull="true" fontSize="13">
+  <style name="oddRowStyle" backcolor="#f1f5f6" />
+
+	<style name="group" style="bold" forecolor="#2E4E6F" hTextAlign="Left" isBlankWhenNull="true" fontSize="12">
 		<box topPadding="5" bottomPadding="5"/>
 	</style>
+
 	<style name="groupTitle" style="group" />
 
 	<style name="groupFooter" style="group" isBlankWhenNull="true">
 		<box topPadding="0" bottomPadding="0"/>
 	</style>
+
 	<style name="subtotal" style="bold" isBlankWhenNull="true" fontSize="10">
+		<box topPadding="3" leftPadding="5" bottomPadding="3" rightPadding="5">
+			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD" />
+		</box>
+	</style>
+
+  <style name="grandTotal" style="bold" isBlankWhenNull="true" fontSize="12">
 		<box topPadding="3" leftPadding="5" bottomPadding="3" rightPadding="5">
 			<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD" />
 		</box>

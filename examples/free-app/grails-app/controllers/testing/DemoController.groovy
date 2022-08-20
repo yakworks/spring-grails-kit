@@ -5,7 +5,7 @@ class DemoController {
     def freeMarkerViewService
 
     //just a sanity check to make sure the basics still work
-    def wtf(){
+    def sanity(){
         render "they work, you are sane"
     }
 

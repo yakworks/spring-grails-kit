@@ -1,36 +1,59 @@
 
 version "0.1"
 
-apply plugin: "groovy"
-apply plugin: "war"
-apply plugin: "org.grails.grails-web"
-apply plugin: "org.grails.grails-gsp"
+// apply plugin:"war"
+apply plugin:"org.grails.grails-web"
+apply plugin:"org.grails.grails-gsp"
+apply plugin:"com.bertramlabs.asset-pipeline"
+
+apply from: "${rootProject.projectDir}/gradle/grails-app.gradle"
 
 dependencies {
-    profile "org.grails.profiles:web"
 
-    implementation "org.grails:grails-plugin-domain-class"
-    implementation "org.grails:grails-plugin-services"
+  // implementation "org.grails.plugins:hibernate5"
+  // implementation "org.hibernate:hibernate-core:5.6.9.Final"
+  implementation "org.grails.plugins:gsp"
 
-    implementation "org.springframework.boot:spring-boot-starter-actuator"
-    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  implementation "org.codehaus.groovy:groovy-dateutil:$groovyVersion"
 
-    implementation "org.codehaus.groovy:groovy-ant"
+  implementation "org.grails.plugins:hibernate5:$vGormHibernate"
+  implementation "org.hibernate:hibernate-core:$vHibernate"
 
-    implementation "org.grails.plugins:hibernate5:$vGormHibernate"
-    implementation "org.hibernate:hibernate-core:$vHibernate"
+  implementation project(':grails-kit')
+  implementation project(':grails-jasper')
 
-    implementation project(':grails-jasper')
+  // implementation("org.yakworks:gorm-tools:$vGormTools")//{ changing = true }
+  // implementation("org.yakworks:gorm-tools-rest:$vGormTools")
+  implementation("org.yakworks:rally-domain:$vGormTools")
+  // implementation("org.yakworks:gorm-tools-rest:$vGormTools")
+  // implementation("org.yakworks:rally-security:$vGormTools")
+  implementation("org.yakworks:gorm-test-domain:$vGormTools")
+
+  //??wtf
+  implementation "commons-lang:commons-lang:2.6"
+
+  runtimeOnly "com.h2database:h2:$vH2"
+  runtimeOnly "javax.xml.bind:jaxb-api:2.3.1"
+  runtimeOnly "com.zaxxer:HikariCP:$vHikari"
+
 }
 
 bootRun {
   ignoreExitValue true
-  jvmArgs(
-    '-Dspring.output.ansi.enabled=always',
-    '-noverify',
-    '-XX:TieredStopAtLevel=1',
-    '-Xmx1024m')
+  jvmArgs('-Dspring.output.ansi.enabled=always', '-noverify', '-XX:TieredStopAtLevel=1', '-Xmx1024m')
   sourceResources sourceSets.main
   String springProfilesActive = 'spring.profiles.active'
   systemProperty springProfilesActive, System.getProperty(springProfilesActive)
+}
+
+bootJar.enabled = true
+bootJar.archiveFileName = 'jasper-app.jar'
+
+// tasks.withType(Test) {
+//   useJUnitPlatform()
+// }
+
+assets {
+  minifyJs = true
+  minifyCss = true
 }
