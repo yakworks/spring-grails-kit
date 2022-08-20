@@ -1,39 +1,44 @@
-package yakworks.reports
+package yakworks.jasper
 
-import yakworks.jasperapp.model.Bills
-import yakworks.jasperapp.model.Customer
-import yakworks.jasperapp.model.Product
-import yakworks.jasperapp.model.ProductGroup
+import gorm.tools.testing.hibernate.GormToolsHibernateSpec
 import gorm.tools.utils.GormMetaUtils
-import grails.testing.gorm.DataTest
+import grails.gorm.transactions.Transactional
 import grails.testing.web.GrailsWebUnitTest
 import org.grails.datastore.mapping.model.PersistentEntity
 import spock.lang.Ignore
-import spock.lang.Specification
+import yakworks.gorm.testing.model.KitchenSeedData
+import yakworks.gorm.testing.model.KitchenSink
+import yakworks.gorm.testing.model.SinkItem
+import yakworks.gorm.testing.model.Thing
+import yakworks.reports.DomainMetaUtils
 
-class DomainMetaUtilsSpec extends Specification implements DataTest, GrailsWebUnitTest {
+class DomainMetaUtilsSpec extends GormToolsHibernateSpec  { //implements GrailsWebUnitTest {
 
-    void setupSpec(){
-        mockDomains(ProductGroup,Bills,Customer,Product)
+    List<Class> getDomainClasses() { [KitchenSink, Thing, SinkItem] }
+
+    @Transactional
+    void setupSpec() {
+        KitchenSeedData.createKitchenSinks(10)
     }
 
-    void "buildColumnMap works for Bills"() {
-        when:
-        def fooGrp = new ProductGroup(name:"Foo Group").save()
-        assert ProductGroup.get(1).name == "Foo Group"
-        assert grailsApplication.mappingContext.getPersistentEntity(ProductGroup.name)
-        def domainClass = GormMetaUtils.getPersistentEntity(ProductGroup.name)
-        assert domainClass
-        def colmap = DomainMetaUtils.getFieldMetadata(domainClass, ['name'])
+    @Transactional
+    void cleanupSpec() {
+        KitchenSink.deleteAll()
+    }
 
-        then:
-        assert colmap['name']
+    void "buildColumnMap works for KitchenSink"() {
+        expect:
+        KitchenSink.get(1)
+        def pe = GormMetaUtils.getPersistentEntity(KitchenSink.name)
+        pe
+        DomainMetaUtils.getFieldMetadata(pe, ['name'])
+
     }
 
     @Ignore('https://github.com/yakworks/grails-jasper-reports/issues/11')
     void "buildColumnMap works with config on Bills and nested properties"() {
         given:
-        PersistentEntity domainClass = grailsApplication.mappingContext.getPersistentEntity(Bills.name)
+        PersistentEntity domainClass = grailsApplication.mappingContext.getPersistentEntity(KitchenSink.name)
         def fields = ['customer.name','product.group.name', 'color', 'product.name', 'qty', 'amount']
 
         Map cfg = ['product.name':'Flubber']
@@ -65,18 +70,16 @@ class DomainMetaUtilsSpec extends Specification implements DataTest, GrailsWebUn
 
     void "findPersistentEntity"() {
         expect:
-        grailsApplication.mappingContext.getPersistentEntity(Bills.name)
-        grailsApplication.mappingContext.getPersistentEntity("yakworks.jasperapp.model.Bills")
-        GormMetaUtils.findPersistentEntity("yakworks.jasperapp.model.Bills")
-        GormMetaUtils.findPersistentEntity("Bills")
-        GormMetaUtils.findPersistentEntity("bills")
+        datastore.mappingContext.getPersistentEntity(KitchenSink.name)
+        GormMetaUtils.findPersistentEntity("yakworks.gorm.testing.model.KitchenSink")
+        GormMetaUtils.findPersistentEntity("KitchenSink")
         GormMetaUtils.findPersistentEntity("asfasfasdf") == null
     }
 
     void "getNaturalTitle"() {
         expect:
-        DomainMetaUtils.getNaturalTitle("Bills") == 'Bills'
-        DomainMetaUtils.getNaturalTitle("bills") == 'Bills'
+        DomainMetaUtils.getNaturalTitle("Thing") == 'Thing'
+        DomainMetaUtils.getNaturalTitle("thing") == 'Thing'
         DomainMetaUtils.getNaturalTitle("yakworks.jasperapp.model.Bills") == 'Yakworks Jasperapp Model Bills'
         DomainMetaUtils.getNaturalTitle("customer.name") == 'Customer'
         DomainMetaUtils.getNaturalTitle("customer.org.name") == 'Customer Org'

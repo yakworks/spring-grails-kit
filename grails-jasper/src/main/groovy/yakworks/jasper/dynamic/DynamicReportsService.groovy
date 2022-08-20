@@ -32,14 +32,13 @@ import net.sf.dynamicreports.report.builder.subtotal.Subtotals
 import net.sf.dynamicreports.report.constant.GroupHeaderLayout
 import net.sf.dynamicreports.report.constant.PageOrientation
 import net.sf.dynamicreports.report.constant.PageType
-import net.sf.dynamicreports.report.constant.Position
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
 import yakworks.grails.support.ConfigAware
+import yakworks.jasper.templates.TemplateStyles
 import yakworks.reports.DomainMetaUtils
 import yakworks.reports.FieldMetadata
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.hyperLink
-import static net.sf.dynamicreports.report.builder.DynamicReports.sbt
 
 @Slf4j
 @CompileStatic

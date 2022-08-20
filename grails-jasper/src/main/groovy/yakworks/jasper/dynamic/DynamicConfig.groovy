@@ -4,6 +4,9 @@
 */
 package yakworks.jasper.dynamic
 
+import groovy.transform.CompileStatic
+
+@CompileStatic
 class DynamicConfig {
 
     /**
@@ -34,7 +37,7 @@ class DynamicConfig {
      * [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10,
      * basically any static in net.sf.dynamicreports.report.constant.PageType
      */
-    Map<String, Object> pageFormat = [size:'letter', landscape:true]
+    Map<String, Object> pageFormat = [size: 'letter', landscape: true] as Map<String, Object>
 
     String rightTitle
     String title
