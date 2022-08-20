@@ -52,7 +52,7 @@ dependencies {
     exclude module: 'batik-bridge'
   }
 
-  api("org.yakworks:gorm-tools:$vGormTools") //{ changing = true }
+  implementation "org.yakworks:gorm-tools:$vGormTools" //{ changing = true }
   implementation "org.grails.plugins:hibernate5:$vGormHibernate"
   implementation "org.hibernate:hibernate-core:$vHibernate"
 
