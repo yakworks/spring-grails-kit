@@ -31,7 +31,7 @@ while gradle is the build tool behind spring/grails, make is used for docker and
 
 - grails plugin for jasper and generating dynamic reports from gorm. gorm-tools dependency needs to be added to project.
 
-## grails-jasper
+## freemarker
 
 - Freemarker support
 
