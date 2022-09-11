@@ -1,8 +1,6 @@
 apply plugin: 'yakworks.grails-plugin'
 apply plugin: "org.grails.grails-gsp"
 
-apply from: "${rootProject.projectDir}/gradle/test-integration.gradle"
-
 // repositories {
 //   mavenCentral()
 //   maven { url "https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/" }
@@ -44,18 +42,29 @@ dependencies {
 
   api('net.sourceforge.dynamicreports:dynamicreports-core:' + versionDynamicReports) {
     exclude module: 'jasperreports'
-    exclude module: 'barcode4j'
-    exclude module: 'batik-bridge' //don't need the barcode stuff
+    exclude module: 'barcode4j' //don't need the barcode stuff
+    exclude module: 'batik-bridge'
   }
 
-  implementation("org.yakworks:gorm-tools:$vGormTools") //{ changing = true }
+  api('net.sourceforge.dynamicreports:dynamicreports-adhoc:' + versionDynamicReports) {
+    exclude module: 'jasperreports'
+    exclude module: 'barcode4j' //don't need the barcode stuff
+    exclude module: 'batik-bridge'
+  }
+
+  implementation "org.yakworks:gorm-tools:$vGormTools" //{ changing = true }
   implementation "org.grails.plugins:hibernate5:$vGormHibernate"
   implementation "org.hibernate:hibernate-core:$vHibernate"
 
-  // testCompile "org.grails:grails-plugin-testing"
-  // runtime "com.h2database:h2"
-  // testCompile "org.grails:grails-plugin-testing"
-  // testCompile "org.grails:grails-web-testing-support"
+  testRuntimeOnly "com.h2database:h2:$vH2"
+  testRuntimeOnly "com.zaxxer:HikariCP:$vHikari"
+  testImplementation "io.github.longwa:build-test-data:$vBuildTestData"
+  testImplementation("org.yakworks:gorm-test-support:$vGormTools")
+  testImplementation("org.yakworks:gorm-test-domain:$vGormTools") //kitchensink domains
+
+  // testImplementation "org.slf4j:slf4j-simple:${vSlf4j}"
+  // testImplementation "org.apache.logging.log4j:log4j-to-slf4j:$vLog4j"
+  // testImplementation "org.apache.logging.log4j:log4j-api:$vLog4j"
 }
 
 ext.codenarcRuleset = '''
@@ -64,9 +73,13 @@ ext.codenarcRuleset = '''
   getRule('CatchException').enabled = false
   getRule('AbcMetric').enabled = false
   getRule('MethodSize').enabled = false
+  getRule('VariableName').enabled = false
+  getRule('AssignCollectionSort').enabled = false
+  getRule('PropertyName').enabled = false
+  getRule('SystemErrPrint').enabled = false
 '''
 
-codenarcIntegrationTest {
-  exclude '**/*'
-  ignoreFailures = true
+//exclude the test jrxml views
+jar {
+  exclude('test**')
 }

@@ -1,3 +1,8 @@
+### v5.0.6
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.5...v5.0.6)
+- Adhoc jasper, bump to groovy 3.0.12 and grails 5.2.2 (#4) [link](https://github.com/yakworks/spring-grails-kit/commit/f4f49a9deccec292fb922cb433eeb14c030cc087)
+
 ### v5.0.5
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.4...v5.0.5)

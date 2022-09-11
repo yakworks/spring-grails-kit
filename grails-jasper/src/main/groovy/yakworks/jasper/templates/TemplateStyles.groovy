@@ -2,7 +2,7 @@
 * Copyright 2019 Yak.Works - Licensed under the Apache License, Version 2.0 (the "License")
 * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 */
-package yakworks.jasper.dynamic
+package yakworks.jasper.templates
 
 import java.awt.*
 
@@ -10,24 +10,20 @@ import groovy.transform.CompileStatic
 
 import org.springframework.core.io.ResourceLoader
 
-import net.sf.dynamicreports.report.base.expression.AbstractValueFormatter
 import net.sf.dynamicreports.report.builder.DynamicReports
-import net.sf.dynamicreports.report.builder.HyperLinkBuilder
 import net.sf.dynamicreports.report.builder.ReportTemplateBuilder
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder
-import net.sf.dynamicreports.report.builder.datatype.BigDecimalType
-import net.sf.dynamicreports.report.builder.style.PenBuilder
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder
 import net.sf.dynamicreports.report.builder.style.SimpleStyleBuilder
 import net.sf.dynamicreports.report.builder.style.Styles
 import net.sf.dynamicreports.report.builder.style.TemplateStylesBuilder
 import net.sf.dynamicreports.report.constant.Evaluation
-import net.sf.dynamicreports.report.constant.HorizontalAlignment
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment
 import net.sf.dynamicreports.report.constant.Language
-import net.sf.dynamicreports.report.definition.ReportParameters
 
-import static net.sf.dynamicreports.report.builder.DynamicReports.*
+import static net.sf.dynamicreports.report.builder.DynamicReports.cmp
+import static net.sf.dynamicreports.report.builder.DynamicReports.exp
+import static net.sf.dynamicreports.report.builder.DynamicReports.stl
 
 /**
  * A bunch of helpers, mostly for examples and tests. should be using TemplateStyles so its configurable
@@ -60,17 +56,19 @@ public class TemplateStyles {
     public static ReportStyleBuilder subtotal = Styles.templateStyle("subtotal")
     public static ReportStyleBuilder grandTotal = Styles.templateStyle("grandTotal")
 
-    public static PenBuilder lineStyle = stl.penThin().setLineColor(Color.decode("#bbbbbb"))
-    public static PenBuilder lineStyleLight = stl.penThin().setLineColor(Color.decode("#dddddd"))
+    // public static CurrencyType currencyType = new CurrencyType()
 
-    public static ReportTemplateBuilder reportTemplate
-    public static CurrencyType currencyType = new CurrencyType()
-    public static ComponentBuilder<?, ?> dynamicReportsComponent
-    public static ComponentBuilder<?, ?> footerComponent
+    //setDetailOddRowStyle requires a simpleStyleBuilder, cant use a ReportStyleBuilder for some reason.
+    public static SimpleStyleBuilder oddRowStyle = stl.simpleStyle().setBackgroundColor(Color.decode("#f1f5f6"))
+            // .setBottomBorder(stl.penThin().setLineColor(Color.decode("#dddddd")))
+            // .setTopBorder(stl.penThin().setLineColor(Color.decode("#dddddd")))
 
-    public static SimpleStyleBuilder oddRowStyle = stl.simpleStyle().setBackgroundColor(Color.decode("#f9fafb"))
-            .setBottomBorder(stl.penThin().setLineColor(Color.decode("#dddddd")))
-            .setTopBorder(stl.penThin().setLineColor(Color.decode("#dddddd")))
+    // public static PenBuilder lineStyle = stl.penThin().setLineColor(Color.decode("#bbbbbb"))
+    // public static PenBuilder lineStyleLight = stl.penThin().setLineColor(Color.decode("#dddddd"))
+    // public static ReportTemplateBuilder reportTemplate
+    // public static ComponentBuilder<?, ?> dynamicReportsComponent
+    // public static ComponentBuilder<?, ?> footerComponent
+
 
     public static ReportTemplateBuilder getReportTemplate() {
         DynamicReports.template()
@@ -82,6 +80,8 @@ public class TemplateStyles {
             //.setGroupFooterStyle(groupFooterStyleL2)
             .setGroupTitleStyle(groupTitle)
             .setSubtotalStyle(subtotal)
+            .highlightDetailOddRows()
+            .setDetailOddRowStyle(oddRowStyle)
     }
 
     /**
@@ -117,12 +117,12 @@ public class TemplateStyles {
 
     public static ComponentBuilder<?, ?> createFooter() {
         def pgOf = cmp.text(exp.jasperSyntax(' "Page "+$V{PAGE_NUMBER}+" of" '))
-                .setHorizontalAlignment(HorizontalAlignment.RIGHT)
+            .setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT)
 
         def pgTotal = cmp.text(exp.jasperSyntax(' " " + $V{PAGE_NUMBER}'))
-                .setEvaluationTime(Evaluation.REPORT)
-                .setHorizontalAlignment(HorizontalAlignment.LEFT)
-                .setWidth(10)
+            .setEvaluationTime(Evaluation.REPORT)
+            .setHorizontalTextAlignment(HorizontalTextAlignment.LEFT)
+            .setWidth(10)
 
         //def page = cmp.horizontalList().add(pgOf,pgTotal)
         def date = cmp.text(exp.jasperSyntax('new java.util.Date()')).setPattern('EEEEE dd MMMMM yyyy')
@@ -143,33 +143,34 @@ public class TemplateStyles {
         return Styles.loadStyles(resTemplateStyles.inputStream)
     }
 
-    public static CurrencyValueFormatter createCurrencyValueFormatter(String label) {
-        return new CurrencyValueFormatter(label)
-    }
+    // @CompileStatic
+    // public static class CurrencyType extends BigDecimalType {
+    //     private static final long serialVersionUID = 1L
+    //
+    //     @Override
+    //     public String getPattern() {
+    //         return "\$ #,###.00"
+    //     }
+    // }
 
-    @CompileStatic
-    public static class CurrencyType extends BigDecimalType {
-        private static final long serialVersionUID = 1L
+    // @CompileStatic
+    // private static class CurrencyValueFormatter extends AbstractValueFormatter<String, Number> {
+    //     private static final long serialVersionUID = 1L
+    //
+    //     private String label
+    //
+    //     public CurrencyValueFormatter(String label) {
+    //         this.label = label
+    //     }
+    //
+    //     @Override
+    //     public String format(Number value, ReportParameters reportParameters) {
+    //         return label + currencyType.valueToString(value, reportParameters.getLocale())
+    //     }
+    // }
+    //
+    // public static CurrencyValueFormatter createCurrencyValueFormatter(String label) {
+    //     return new CurrencyValueFormatter(label)
+    // }
 
-        @Override
-        public String getPattern() {
-            return "\$ #,###.00"
-        }
-    }
-
-    @CompileStatic
-    private static class CurrencyValueFormatter extends AbstractValueFormatter<String, Number> {
-        private static final long serialVersionUID = 1L
-
-        private String label
-
-        public CurrencyValueFormatter(String label) {
-            this.label = label
-        }
-
-        @Override
-        public String format(Number value, ReportParameters reportParameters) {
-            return label + currencyType.valueToString(value, reportParameters.getLocale())
-        }
-    }
 }

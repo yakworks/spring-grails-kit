@@ -1,13 +1,14 @@
-package yakworks.jasper
+package yakworks.jasperapp
 
 import grails.testing.mixin.integration.Integration
-import yakworks.jasper.spring.JasperViewResolver
-import yakworks.reports.ReportFormat
 import org.grails.web.servlet.mvc.GrailsWebRequest
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.mock.web.MockHttpServletResponse
 import spock.lang.Specification
+import yakworks.jasper.spring.JasperViewResolver
+import yakworks.reports.ReportFormat
 
+//FIXME old test format, needs new spock.
 @Integration
 class JasperViewResolverTests extends Specification {
 

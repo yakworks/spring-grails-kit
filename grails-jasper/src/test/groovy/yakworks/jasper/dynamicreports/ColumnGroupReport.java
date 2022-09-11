@@ -33,7 +33,7 @@ import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType;
 import net.sf.jasperreports.engine.JRDataSource;
-import yakworks.jasper.dynamic.StyleStatics;
+import yakworks.jasper.templates.StyleStatics;
 
 import java.io.File;
 import java.io.FileOutputStream;
