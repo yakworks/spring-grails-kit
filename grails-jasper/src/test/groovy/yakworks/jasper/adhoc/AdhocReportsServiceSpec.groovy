@@ -25,6 +25,8 @@ class AdhocReportsServiceSpec extends GormToolsHibernateSpec  { //implements Gra
     @Transactional
     void setupSpec() {
         ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
+        if (Files.notExists(folder)) Files.createDirectories(folder)
+
         KitchenSink.repo.createKitchenSinks(50)
     }
 

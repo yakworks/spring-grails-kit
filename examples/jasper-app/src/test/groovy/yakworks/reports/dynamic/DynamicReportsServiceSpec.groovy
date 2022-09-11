@@ -1,5 +1,6 @@
 package yakworks.reports.dynamic
 
+import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
@@ -42,7 +43,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
         dynamicReportsService.resourceLoader = grailsApplication.mainContext
         dynamicReportsService.environment = grailsApplication.mainContext.environment
 
-        if (!folder.exists()) folder.mkdirs()
+        if (Files.notExists(folder)) Files.createDirectories(folder)
     }
 
     List getData(List<String> groupFields) {

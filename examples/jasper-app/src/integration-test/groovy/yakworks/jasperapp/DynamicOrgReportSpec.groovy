@@ -28,6 +28,7 @@ class DynamicOrgReportSpec extends Specification {
 
     void setupSpec() {
         ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
+        if (Files.notExists(folder)) Files.createDirectories(folder)
     }
 
     def "sanity check seed data worked and we have services working"() {
