@@ -6,6 +6,7 @@ import java.nio.file.Path
 import grails.testing.spring.AutowiredTest
 import org.grails.testing.GrailsUnitTest
 import spock.lang.Specification
+import yakworks.spring.AppResourceLoader
 
 class AppResourceLoaderSpec extends Specification implements AutowiredTest, GrailsUnitTest {
 

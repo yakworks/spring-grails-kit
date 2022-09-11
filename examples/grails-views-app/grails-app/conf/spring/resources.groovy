@@ -1,4 +1,4 @@
-import yakworks.grails.resource.AppResourceLoader
+import yakworks.spring.AppResourceLoader
 import yakworks.grails.resource.ConfigKeyAppResourceLoader
 import foobar.*
 import yakworks.grails.mvc.ViewResourceLocator

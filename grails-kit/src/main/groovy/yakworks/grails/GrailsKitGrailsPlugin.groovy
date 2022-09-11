@@ -5,7 +5,7 @@
 package yakworks.grails
 
 import grails.plugins.Plugin
-import yakworks.grails.resource.AppResourceLoader
+import yakworks.spring.AppResourceLoader
 
 class GrailsKitGrailsPlugin extends Plugin {
 

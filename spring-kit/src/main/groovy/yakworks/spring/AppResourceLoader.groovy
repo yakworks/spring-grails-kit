@@ -2,7 +2,7 @@
 * Copyright 2019 Yak.Works - Licensed under the Apache License, Version 2.0 (the "License")
 * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 */
-package yakworks.grails.resource
+package yakworks.spring
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -19,7 +19,6 @@ import org.springframework.lang.NonNull
 
 import yakworks.commons.io.PathTools
 import yakworks.commons.lang.Validate
-import yakworks.spring.SpringEnvironment
 
 /**
  * A place for file resource related functionality which may required an application context or logged-in user.
