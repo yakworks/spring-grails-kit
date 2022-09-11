@@ -8,8 +8,6 @@ dependencies {
 
   api project(':spring-kit')
 
-  api("org.yakworks:groovy-commons:$vGroovyCommons")
-
   compileOnly "org.springframework:spring-test"
 }
 
