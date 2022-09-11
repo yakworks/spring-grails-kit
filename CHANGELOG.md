@@ -1,3 +1,9 @@
+### v5.0.7
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.6...v5.0.7)
+- spring-kit for yakworks.spring with only spring deps, jasper tweaks. (#5) [link](https://github.com/yakworks/spring-grails-kit/commit/e95696324ed4b21a746b3dbaa697378b8b21e5d1)
+- Update README.md [link](https://github.com/yakworks/spring-grails-kit/commit/2b8786a748d5e556e27e99a4939e16f0749248b1)
+
 ### v5.0.6
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.5...v5.0.6)
