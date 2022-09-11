@@ -42,9 +42,14 @@ class GrailsKitGrailsPlugin extends Plugin {
 
     Closure doWithSpring() {
         return {
+            xmlns([context:"http://www.springframework.org/schema/context"])
+            context.'component-scan'('base-package': 'yakworks.spring')
+
             appResourceLoader(AppResourceLoader) { bean ->
                 bean.autowire =  true
             }
+            //will not be injectd, here to make sure static setup works
+            // 'yakworks.spring.AppCtx'(yakworks.spring.AppCtx)
         }
     }
 

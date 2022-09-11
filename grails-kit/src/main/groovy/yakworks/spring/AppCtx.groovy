@@ -2,69 +2,52 @@
 * Copyright 2019 Yak.Works - Licensed under the Apache License, Version 2.0 (the "License")
 * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 */
-package yakworks.grails
+package yakworks.spring
 
 import groovy.transform.CompileStatic
 
+import grails.util.Holders
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationEventPublisher
-
-import grails.config.Config
-import grails.core.GrailsApplication
-import grails.util.Holders
+import org.springframework.stereotype.Component
 
 /**
  * A static that uses the Holder to get the spring ApplicationContext it beans and the GrailsApplication
  * when in those cases where its not practical or possible to inject them (such as Traits for a persitenceEntity)
- * Obviously its highly recommended to not use this and use DI whenever possible.
+ * Obviously its highly recommended to not use this and use injection whenever possible.
  *
  * @author Joshua Burnett (@basejump)
  * @since 5.x
  */
+@Component
 @CompileStatic
 class AppCtx {
 
-    private static GrailsApplication cachedGrailsApplication
-    //private static ApplicationContext cachedApplicationContext
+    private static ApplicationContext SPRING_CTX
 
-    /**
-     * @return the GrailsApplication
-     */
-    static GrailsApplication getGrails() {
-        if (!cachedGrailsApplication) {
-            cachedGrailsApplication = Holders.grailsApplication
-        }
-        return cachedGrailsApplication
+    @Autowired
+    AppCtx(ApplicationContext applicationContext) {
+        SPRING_CTX = applicationContext
     }
 
     /**
-     * Used in tests to assign the right GrailsApplication
+     * Used in tests to assign the spring applicationContext
      */
-    static void setGrailsApplication(GrailsApplication gapp) {
-        cachedGrailsApplication = gapp
+    static void setApplicationContext(ApplicationContext context) {
+        SPRING_CTX = context
     }
 
     /**
      * @return the spring ApplicationContext
      */
     static ApplicationContext getCtx() {
-//        if (!cachedApplicationContext) {
-//            cachedApplicationContext = Holders.applicationContext
-//        }
-        return Holders.findApplicationContext()
+        // if (!SPRING_CTX) {
+        //     SPRING_CTX = Holders.findApplicationContext()
+        // }
+        return SPRING_CTX
     }
-
-    /**
-     * @return the merged configs from application.yml, application.groovy, etc...
-     */
-    static Config getConfig() {
-        Holders.config
-    }
-
-    // static ICUMessageSource getMsgService() {
-    //     get('messageSource', ICUMessageSource)
-    // }
 
     /**
      * call the ApplicationContext.getBean
@@ -95,12 +78,11 @@ class AppCtx {
 
     /**
      * Publish events using spring appCtx.
-     * grails 4.x uses MicronautApplicationEventPublisher - which internally forwards all published events to micronaut
-     * which expects listeners to implement  io.micronaut.context.event.ApplicationEventListener.
+     * we do this because grails 4.x uses MicronautApplicationEventPublisher - which internally forwards all published events to micronaut
+     * which expects listeners to implement  io.micronaut.context.event.ApplicationEventListener, we dont want this.
      */
     static void publishEvent(Object event){
-        //we use the grails.mainContext here because the appCtx scrambles during tests and gets lost
-        ((ApplicationEventPublisher)getGrails().mainContext).publishEvent(event)
+        ((ApplicationEventPublisher)getCtx()).publishEvent(event)
     }
 
     /**
