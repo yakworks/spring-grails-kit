@@ -6,7 +6,7 @@ import yakworks.jasperapp.model.Bills
 import yakworks.jasperapp.model.Customer
 import yakworks.jasperapp.model.Product
 import yakworks.jasperapp.model.ProductGroup
-import gorm.tools.testing.hibernate.GormToolsHibernateSpec
+import yakworks.testing.gorm.GormToolsHibernateSpec
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
 import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.reports.SeedData
@@ -34,7 +34,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
     void setup() {
         dynamicReportsService = new DynamicReportsService()
         dynamicReportsService.resourceLoader = grailsApplication.mainContext
-        dynamicReportsService.configuration = grailsApplication.config
+        dynamicReportsService.environment = grailsApplication.mainContext.environment
         if (!folder.exists()) folder.mkdirs();
     }
 

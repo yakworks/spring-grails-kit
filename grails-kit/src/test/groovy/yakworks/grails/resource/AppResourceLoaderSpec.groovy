@@ -22,7 +22,7 @@ class AppResourceLoaderSpec extends Specification implements AutowiredTest, Grai
 
     void rootPath() {
         expect:
-        appResourceLoader.rootPath
+        appResourceLoader.rootPath.toString() == "./build/rootLocation"
     }
 
     void "getScripts"() {

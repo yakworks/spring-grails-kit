@@ -6,12 +6,13 @@ package yakworks.spring
 
 import groovy.transform.CompileStatic
 
-import grails.util.Holders
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory
 import org.springframework.context.ApplicationContext
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Component
+
+import grails.util.Holders
 
 /**
  * A static that uses the Holder to get the spring ApplicationContext it beans and the GrailsApplication
