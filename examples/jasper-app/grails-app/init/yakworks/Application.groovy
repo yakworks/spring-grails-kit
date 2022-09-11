@@ -5,7 +5,7 @@ import org.springframework.context.annotation.ComponentScan
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
 
-@ComponentScan(['gorm.tools.security', 'yakworks.rally'])
+@ComponentScan(['yakworks.security', 'yakworks.rally'])
 class Application extends GrailsAutoConfiguration {
     static void main(String[] args) {
         GrailsApp.run(Application, args)
@@ -23,6 +23,6 @@ class Application extends GrailsAutoConfiguration {
      */
     @Override
     Collection<String> packageNames() {
-        super.packageNames() + ['yakworks.rally', 'gorm.tools.security']
+        super.packageNames() + ['yakworks.rally', 'yakworks.security']
     }
 }
