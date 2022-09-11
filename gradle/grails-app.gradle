@@ -39,7 +39,7 @@ dependencies {
   // gets rid of the "Error Initializing Native OS X File Event Watcher."
   runtimeOnly "io.methvin:directory-watcher:0.16.1"
 
-  testImplementation("org.yakworks:gorm-tools-csv:$vGormTools")//{ changing = true }
+  testImplementation("org.yakworks:gorm-etl:$vGormTools")//{ changing = true }
   testImplementation("org.yakworks:rally-domain:$vGormTools")//{ changing = true }
   testImplementation "org.yakworks:gorm-test-support:$vGormTools"
 

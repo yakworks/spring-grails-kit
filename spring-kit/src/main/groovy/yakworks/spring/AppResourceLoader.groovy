@@ -2,7 +2,7 @@
 * Copyright 2019 Yak.Works - Licensed under the Apache License, Version 2.0 (the "License")
 * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
 */
-package yakworks.grails.resource
+package yakworks.spring
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -17,8 +17,8 @@ import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.lang.NonNull
 
+import yakworks.commons.io.PathTools
 import yakworks.commons.lang.Validate
-import yakworks.grails.support.ConfigAware
 
 /**
  * A place for file resource related functionality which may required an application context or logged-in user.
@@ -30,7 +30,7 @@ import yakworks.grails.support.ConfigAware
  */
 @Slf4j
 @CompileStatic
-class AppResourceLoader implements ResourceLoader, ConfigAware {
+class AppResourceLoader implements ResourceLoader, SpringEnvironment {
 
     @Autowired
     ResourceLoader resourceLoader
@@ -44,7 +44,8 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
 
     @PostConstruct
     void init() {
-        String rootLoc = config.getProperty(buildResourceKey('rootLocation'), String)
+        // String rootLoc = config.getProperty(buildResourceKey('rootLocation'), String)
+        String rootLoc = environment.getProperty(buildResourceKey('rootLocation'), String)
         if(rootLoc){
             rootPath = Paths.get(rootLoc)
             if(Files.notExists(rootPath)) Files.createDirectories(rootPath)
@@ -108,9 +109,9 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
      *         if data is non-null will exist and will contain the data specified.
      */
     Path createTempFile(String originalFileName, Object data) {
-        String baseName = PathSupport.getBaseName(originalFileName)
+        String baseName = PathTools.getBaseName(originalFileName)
         if (baseName.length() < 3) baseName = baseName + "tmp"
-        String extension = PathSupport.getExtension(originalFileName)
+        String extension = PathTools.getExtension(originalFileName)
         extension = extension ? ".${extension}" : ''
 
         Path tmpDir = getTempDirectory()
@@ -188,7 +189,7 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
     Path checkPath(Path directory, boolean create = false) {
         Path dirPath = directory
         if(!dirPath.isAbsolute()) dirPath = rootPath.resolve(dirPath)
-        if(create) PathSupport.createDirectories(dirPath)
+        if(create) PathTools.createDirectories(dirPath)
         return dirPath
     }
 
@@ -204,12 +205,12 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
      * recursively deletes the dir for the short key. Used mostly for testing cleanup
      */
     boolean deleteDirectory(String key) {
-        PathSupport.deleteDirectory(getPath(key))
+        PathTools.deleteDirectory(getPath(key))
     }
 
-    /** Get a list of script locations as absolute files. */
+    /** Get scripts location */
     Path getScripts() {
-        String scriptsDir = getProp('scripts.locations', 'scripts')
+        String scriptsDir = getProp('scripts.location', 'scripts')
         return checkPath(Paths.get(scriptsDir))
     }
 
@@ -242,6 +243,6 @@ class AppResourceLoader implements ResourceLoader, ConfigAware {
     /** prepends resourcesConfigRootKey to subKey */
     public <T> T getConfigProperty(String subKey, Class<T> targetType, T defaultValue = null){
         String fullKey = buildResourceKey(subKey)
-        return defaultValue ? config.getProperty(fullKey, targetType, defaultValue) : config.getProperty(fullKey, targetType)
+        return defaultValue ? environment.getProperty(fullKey, targetType, defaultValue) : environment.getProperty(fullKey, targetType)
     }
 }

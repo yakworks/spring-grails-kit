@@ -231,7 +231,6 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
         }
     }
 
-
     static Map getCurrentConfig(ConfigurableEnvironment environment) {
         return new PropertySourcesConfig(environment.propertySources)
     }

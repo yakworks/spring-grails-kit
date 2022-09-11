@@ -5,20 +5,16 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 import gorm.tools.metamap.MetaGormEntityBuilder
-import gorm.tools.testing.hibernate.GormToolsHibernateSpec
 import grails.gorm.transactions.Transactional
 import net.sf.dynamicreports.adhoc.configuration.AdhocCalculation
-import net.sf.dynamicreports.adhoc.configuration.AdhocReport
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
 import spock.lang.Ignore
-import spock.lang.IgnoreRest
-import yakworks.gorm.testing.model.KitchenSeedData
-import yakworks.gorm.testing.model.KitchenSink
-import yakworks.gorm.testing.model.SinkItem
-import yakworks.gorm.testing.model.Thing
-import yakworks.jasper.dynamic.DynamicConfig
 import yakworks.jasper.dynamic.ReportSaveUtils
 import yakworks.meta.MetaEntity
+import yakworks.testing.gorm.GormToolsHibernateSpec
+import yakworks.testing.gorm.model.KitchenSink
+import yakworks.testing.gorm.model.SinkItem
+import yakworks.testing.gorm.model.Thing
 
 class AdhocReportsServiceSpec extends GormToolsHibernateSpec  { //implements GrailsWebUnitTest {
 
@@ -28,7 +24,10 @@ class AdhocReportsServiceSpec extends GormToolsHibernateSpec  { //implements Gra
 
     @Transactional
     void setupSpec() {
-        KitchenSeedData.createKitchenSinks(50)
+        ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
+        if (Files.notExists(folder)) Files.createDirectories(folder)
+
+        KitchenSink.repo.createKitchenSinks(50)
     }
 
     @Transactional
@@ -41,7 +40,7 @@ class AdhocReportsServiceSpec extends GormToolsHibernateSpec  { //implements Gra
     void setup() {
         adhocReportsService = new AdhocReportsService()
         adhocReportsService.resourceLoader = grailsApplication.mainContext
-        adhocReportsService.configuration = grailsApplication.config
+        adhocReportsService.environment = grailsApplication.mainContext.environment
         if (Files.notExists(folder)) Files.createDirectories(folder)
     }
 

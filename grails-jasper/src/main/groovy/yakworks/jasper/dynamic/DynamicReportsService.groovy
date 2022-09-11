@@ -33,16 +33,16 @@ import net.sf.dynamicreports.report.constant.GroupHeaderLayout
 import net.sf.dynamicreports.report.constant.PageOrientation
 import net.sf.dynamicreports.report.constant.PageType
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
-import yakworks.grails.support.ConfigAware
 import yakworks.jasper.templates.TemplateStyles
 import yakworks.reports.DomainMetaUtils
 import yakworks.reports.FieldMetadata
+import yakworks.spring.SpringEnvironment
 
 import static net.sf.dynamicreports.report.builder.DynamicReports.hyperLink
 
 @Slf4j
 @CompileStatic
-class DynamicReportsService implements ConfigAware{
+class DynamicReportsService implements SpringEnvironment{
 
     @Autowired ResourceLoader resourceLoader
 
@@ -268,18 +268,18 @@ class DynamicReportsService implements ConfigAware{
         return subtot
     }
 
-    @SuppressWarnings(['UnusedPrivateMethod'])
-    @CompileDynamic
-    private Map loadConfig() {
-        GroovyClassLoader classLoader = new GroovyClassLoader(getClass().classLoader)
-        config.merge(new ConfigSlurper(GrailsUtil.environment).parse(classLoader.loadClass('DefaultDynamicJasperConfig')))
-        try {
-            config.merge(new ConfigSlurper(GrailsUtil.environment).parse(classLoader.loadClass('DynamicJasperConfig')))
-        } catch (Exception ignored) {
-            // ignore, just use the defaults
-        }
-        return new ConfigSlurper(GrailsUtil.environment).parse(new Properties()).merge(config.dynamicJasper)
-    }
+    // @SuppressWarnings(['UnusedPrivateMethod'])
+    // @CompileDynamic
+    // private Map loadConfig() {
+    //     GroovyClassLoader classLoader = new GroovyClassLoader(getClass().classLoader)
+    //     config.merge(new ConfigSlurper(GrailsUtil.environment).parse(classLoader.loadClass('DefaultDynamicJasperConfig')))
+    //     try {
+    //         config.merge(new ConfigSlurper(GrailsUtil.environment).parse(classLoader.loadClass('DynamicJasperConfig')))
+    //     } catch (Exception ignored) {
+    //         // ignore, just use the defaults
+    //     }
+    //     return new ConfigSlurper(GrailsUtil.environment).parse(new Properties()).merge(config.dynamicJasper)
+    // }
 
     def getPropertyValue(Class clazz, String propertyName) {
         clazz.metaClass.hasProperty(clazz, propertyName)?.getProperty(clazz)

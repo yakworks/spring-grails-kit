@@ -10,6 +10,7 @@ import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 
 import yakworks.commons.lang.Validate
+import yakworks.spring.AppResourceLoader
 
 /**
  * ConfigKeyAppResourceLoader provides ability to load resources from a directory configured as app resource location.

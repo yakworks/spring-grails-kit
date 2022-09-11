@@ -4,7 +4,6 @@
 */
 package yakworks.jasper.adhoc
 
-
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
@@ -17,15 +16,15 @@ import net.sf.dynamicreports.adhoc.configuration.AdhocReport
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
 import net.sf.dynamicreports.report.builder.DynamicReports
 import yakworks.commons.lang.LabelUtils
-import yakworks.grails.support.ConfigAware
 import yakworks.jasper.templates.TemplateStyles
 import yakworks.jasper.templates.Templates
 import yakworks.json.jackson.ObjectMapperWrapper
 import yakworks.meta.MetaEntity
+import yakworks.spring.SpringEnvironment
 
 @Slf4j
 @CompileStatic
-class AdhocReportsService implements ConfigAware{
+class AdhocReportsService implements SpringEnvironment{
 
     @Autowired ResourceLoader resourceLoader
 

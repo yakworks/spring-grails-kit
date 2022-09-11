@@ -5,12 +5,10 @@ import java.nio.file.Path
 import java.nio.file.Paths
 
 import grails.testing.mixin.integration.Integration
-import org.apache.commons.io.FileUtils
 import org.springframework.core.io.Resource
-import spock.lang.Ignore
 import spock.lang.Shared
 import spock.lang.Specification
-import yakworks.grails.resource.AppResourceLoader
+import yakworks.spring.AppResourceLoader
 
 @Integration
 class AppResourceLoaderSpec extends Specification {

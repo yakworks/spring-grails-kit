@@ -5,7 +5,6 @@
 package yakworks.grails.mvc
 
 import grails.plugins.Plugin
-import yakworks.grails.resource.AppResourceLoader
 
 class ViewToolsGrailsPlugin extends Plugin {
 

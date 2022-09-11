@@ -19,7 +19,8 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.export
 @CompileStatic
 class ReportSaveUtils {
 
-    static boolean OPEN_REPORTS_ON_SAVE = true
+    /** For testing, set to true to open reports in browser on save, only works on mac */
+    public static boolean OPEN_REPORTS_ON_SAVE = false
 
     /**
      * Saves the files in jrxml, pdf and html

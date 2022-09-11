@@ -1,16 +1,14 @@
 package yakworks.jasper
 
-import gorm.tools.testing.hibernate.GormToolsHibernateSpec
 import gorm.tools.utils.GormMetaUtils
 import grails.gorm.transactions.Transactional
-import grails.testing.web.GrailsWebUnitTest
 import org.grails.datastore.mapping.model.PersistentEntity
 import spock.lang.Ignore
-import yakworks.gorm.testing.model.KitchenSeedData
-import yakworks.gorm.testing.model.KitchenSink
-import yakworks.gorm.testing.model.SinkItem
-import yakworks.gorm.testing.model.Thing
+import yakworks.testing.gorm.model.KitchenSink
+import yakworks.testing.gorm.model.SinkItem
+import yakworks.testing.gorm.model.Thing
 import yakworks.reports.DomainMetaUtils
+import yakworks.testing.gorm.GormToolsHibernateSpec
 
 class DomainMetaUtilsSpec extends GormToolsHibernateSpec  { //implements GrailsWebUnitTest {
 
@@ -18,7 +16,7 @@ class DomainMetaUtilsSpec extends GormToolsHibernateSpec  { //implements GrailsW
 
     @Transactional
     void setupSpec() {
-        KitchenSeedData.createKitchenSinks(10)
+        KitchenSink.repo.createKitchenSinks(10)
     }
 
     @Transactional
@@ -71,7 +69,7 @@ class DomainMetaUtilsSpec extends GormToolsHibernateSpec  { //implements GrailsW
     void "findPersistentEntity"() {
         expect:
         datastore.mappingContext.getPersistentEntity(KitchenSink.name)
-        GormMetaUtils.findPersistentEntity("yakworks.gorm.testing.model.KitchenSink")
+        GormMetaUtils.findPersistentEntity("yakworks.testing.gorm.model.KitchenSink")
         GormMetaUtils.findPersistentEntity("KitchenSink")
         GormMetaUtils.findPersistentEntity("asfasfasdf") == null
     }

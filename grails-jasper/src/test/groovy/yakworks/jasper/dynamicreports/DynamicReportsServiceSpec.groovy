@@ -4,13 +4,13 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-import gorm.tools.testing.hibernate.GormToolsHibernateSpec
+import yakworks.testing.gorm.GormToolsHibernateSpec
 import grails.gorm.transactions.Transactional
 import spock.lang.IgnoreRest
-import yakworks.gorm.testing.model.KitchenSeedData
-import yakworks.gorm.testing.model.KitchenSink
-import yakworks.gorm.testing.model.SinkItem
-import yakworks.gorm.testing.model.Thing
+
+import yakworks.testing.gorm.model.KitchenSink
+import yakworks.testing.gorm.model.SinkItem
+import yakworks.testing.gorm.model.Thing
 import yakworks.jasper.dynamic.DynamicConfig
 import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.jasper.dynamic.ReportSaveUtils
@@ -20,9 +20,9 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec  { //implements G
 
     List<Class> getDomainClasses() { [KitchenSink, Thing, SinkItem] }
 
-    @Transactional
     void setupSpec() {
-        KitchenSeedData.createKitchenSinks(20)
+        ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
+        KitchenSink.repo.createKitchenSinks(20)
     }
 
     @Transactional
@@ -35,7 +35,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec  { //implements G
     void setup() {
         dynamicReportsService = new DynamicReportsService()
         dynamicReportsService.resourceLoader = grailsApplication.mainContext
-        dynamicReportsService.configuration = grailsApplication.config
+        // dynamicReportsService.configuration = grailsApplication.config
         if (Files.notExists(folder)) Files.createDirectories(folder)
     }
 
