@@ -1,7 +1,11 @@
 package yakworks.reports.dynamic
 
+import java.nio.file.Path
+import java.nio.file.Paths
+
 import spock.lang.IgnoreRest
 import yakworks.jasper.dynamic.DynamicConfig
+import yakworks.jasper.dynamic.ReportSaveUtils
 import yakworks.jasperapp.model.Bills
 import yakworks.jasperapp.model.Customer
 import yakworks.jasperapp.model.Product
@@ -29,13 +33,16 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
      * - how to use font awesome icons
      *
      */
-    static folder = new File("build/jasper-tests/DynamicReportsServiceSpec/");
+    static Path folder = Paths.get("build/jasper-tests/DynamicReportsServiceSpec/")
 
     void setup() {
+        ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
+
         dynamicReportsService = new DynamicReportsService()
         dynamicReportsService.resourceLoader = grailsApplication.mainContext
         dynamicReportsService.environment = grailsApplication.mainContext.environment
-        if (!folder.exists()) folder.mkdirs();
+
+        if (!folder.exists()) folder.mkdirs()
     }
 
     List getData(List<String> groupFields) {
@@ -45,33 +52,6 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
             }
         }.list()
         return list
-    }
-
-    boolean saveToFiles(JasperReportBuilder dr, String fname) {
-        //dr.toJrXml(new FileOutputStream( new File(folder,"${fname}.jrxml")))
-        long start = System.currentTimeMillis();
-        dr.toPdf(new FileOutputStream(new File(folder, "${fname}.pdf")))
-        System.err.println("PDF time : " + (System.currentTimeMillis() - start));
-
-        start = System.currentTimeMillis();
-        dr.ignorePagination()//.ignorePageWidth() //.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-                .rebuild()
-        //.toHtml(new FileOutputStream( new File(folder,"basic.html")))
-        def htmlRpt = new File(folder, "${fname}.html")
-        dr.toHtml(
-                export.htmlExporter(new FileOutputStream(htmlRpt))
-                        .setHtmlHeader(getHTMLHeader())
-                        .setHtmlFooter(HTMLFooter) //.setFramesAsNestedTables(true).setZoomRatio(200)
-        )
-        System.err.println("HTML time : " + (System.currentTimeMillis() - start));
-
-        dr.toJrXml(new FileOutputStream(new File(folder, "${fname}.jrxml")))
-
-        //if running on a mac will open it.
-        if(System.getProperty("os.name").equals("Mac OS X")) {
-            "open build/jasper-tests/DynamicReportsServiceSpec/${fname}.html".execute()
-        }
-        return true
     }
 
     void "grouped 3 levels"() {
@@ -94,16 +74,16 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
             //            pageFormat:[size:'letter', landscape:true] // [size:'letter',landscape:false] is the default. Size can be letter,legal, A0-C10, basically any static in net.sf.dynamicreports.report.constant.PageType
         ]
         def rptCfg = new DynamicConfig(cfg)
-        def dr = dynamicReportsService.buildDynamicReport(rptCfg)
+        def jrb = dynamicReportsService.buildDynamicReport(rptCfg)
         new SeedData().seed()
         def list = getData(rptCfg.groups)
-        dr.setDataSource(list)
+        jrb.setDataSource(list)
 
         then:
-        assert dr
+        assert jrb
 
         //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-        saveToFiles(dr, '3levels')
+        ReportSaveUtils.saveToFiles(jrb, folder, '3levels')
 
         //dr.show()
         //sleep(5000)
@@ -136,7 +116,8 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
         assert dr
 
         //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-        saveToFiles(dr, 'singleGroup')
+
+        ReportSaveUtils.saveToFiles(dr, folder, 'singleGroup')
 
         //dr.show()
         //sleep(5000)
@@ -169,8 +150,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
         assert dr
 
         //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-        saveToFiles(dr, 'noGroup')
-
+        ReportSaveUtils.saveToFiles(dr, folder, 'noGroup')
         //dr.show()
         //sleep(5000)
     }
@@ -218,28 +198,4 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
 //        //sleep(5000)
 //    }
 
-    String HTMLHeader = ('''
-<html>
-    <head>
-        <title></title>
-        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>
-        <style type=\"text/css\">
-            a {text-decoration: none}
-        </style>
-    </head>
-    <body text=\"#000000\" link=\"#000000\" alink=\"#000000\" vlink=\"#000000\">
-        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">
-            <tr>
-                <td width="10%">&nbsp;</td>
-                <td align=\"center\">
- ''').toString()
-
-    String HTMLFooter = '''
-                </td>
-                <td width="10%">&nbsp;</td>
-            </tr>
-        </table>
-    </body>
-</html>
-'''
 }

@@ -21,6 +21,7 @@ class DynamicReportsServiceSpec extends GormToolsHibernateSpec  { //implements G
     List<Class> getDomainClasses() { [KitchenSink, Thing, SinkItem] }
 
     void setupSpec() {
+        ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
         KitchenSink.repo.createKitchenSinks(20)
     }
 

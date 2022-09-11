@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import spock.lang.Specification
 import yakworks.jasper.dynamic.DynamicConfig
 import yakworks.jasper.dynamic.DynamicReportsService
+import yakworks.jasper.dynamic.ReportSaveUtils
 import yakworks.jasperapp.model.Bills
 import yakworks.rally.orgs.model.Org
 import yakworks.reports.SeedData
@@ -26,7 +27,7 @@ class DynamicOrgReportSpec extends Specification {
     static Path folder = Paths.get("build/jasper-tests/DynamicOrgReportSpec/")
 
     void setupSpec() {
-        if (Files.notExists(folder)) Files.createDirectories(folder)
+        ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
     }
 
     def "sanity check seed data worked and we have services working"() {
@@ -45,35 +46,6 @@ class DynamicOrgReportSpec extends Specification {
             }
         }.list()
         return list
-    }
-
-    boolean saveToFiles(JasperReportBuilder dr, String fname) {
-        def jrxmlos = new FileOutputStream( folder.resolve("${fname}.jrxml").toFile() )
-        dr.toJrXml(jrxmlos)
-        //dr.toJrXml(new FileOutputStream( new File(folder,"${fname}.jrxml")))
-        long start = System.currentTimeMillis();
-        def os = new FileOutputStream( folder.resolve("${fname}.pdf").toFile() )
-        dr.toPdf(os)
-        System.err.println("PDF time : " + (System.currentTimeMillis() - start));
-
-        start = System.currentTimeMillis();
-        dr.ignorePagination()//.ignorePageWidth() //.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-            .rebuild()
-        //.toHtml(new FileOutputStream( new File(folder,"basic.html")))
-        def htmlos = new FileOutputStream( folder.resolve("${fname}.html").toFile() )
-        dr.toHtml(
-            export.htmlExporter(htmlos)
-                .setHtmlHeader(getHTMLHeader())
-                .setHtmlFooter(HTMLFooter) //.setFramesAsNestedTables(true).setZoomRatio(200)
-        )
-        System.err.println("HTML time : " + (System.currentTimeMillis() - start));
-
-        //if running on a mac will open it.
-        if(System.getProperty("os.name").equals("Mac OS X")) {
-            def fpointer = folder.resolve("${fname}.html").toString()
-            "open ${fpointer}".execute()
-        }
-        return true
     }
 
     void "Org"() {
@@ -104,34 +76,10 @@ class DynamicOrgReportSpec extends Specification {
         assert dr
 
         //dr.setPageFormat(PageType.LETTER, PageOrientation.LANDSCAPE)
-        saveToFiles(dr, 'Orgs')
+        ReportSaveUtils.saveToFiles(dr, folder, 'Orgs')
 
         //dr.show()
         //sleep(5000)
     }
 
-    String HTMLHeader = ('''
-<html>
-    <head>
-        <title></title>
-        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>
-        <style type=\"text/css\">
-            a {text-decoration: none}
-        </style>
-    </head>
-    <body text=\"#000000\" link=\"#000000\" alink=\"#000000\" vlink=\"#000000\">
-        <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">
-            <tr>
-                <td width="10%">&nbsp;</td>
-                <td align=\"center\">
- ''').toString()
-
-    String HTMLFooter = '''
-                </td>
-                <td width="10%">&nbsp;</td>
-            </tr>
-        </table>
-    </body>
-</html>
-'''
 }
