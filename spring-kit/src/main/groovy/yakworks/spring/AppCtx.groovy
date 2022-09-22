@@ -17,6 +17,8 @@ import org.springframework.stereotype.Component
  * when in those cases where its not practical or possible to inject them (such as Traits for a persitenceEntity)
  * Obviously its highly recommended to not use this and use injection whenever possible.
  *
+ * see this https://tomcools.be/post/apr-2020-static-spring-bean/
+ *
  * @author Joshua Burnett (@basejump)
  * @since 5.x
  */
@@ -92,4 +94,14 @@ class AppCtx {
         getCtx().autowireCapableBeanFactory.autowireBeanProperties(obj, AutowireCapableBeanFactory.AUTOWIRE_NO, false)
         obj
     }
+
+    //BINDER Example, just here for adding a future use helper.
+    // void doBinderConfigProps(){
+    //     getApplicationContext()
+    //     ConfigurationPropertySource source = new MapConfigurationPropertySource(
+    //         TestPropertySourceUtils.convertInlinedPropertiesToMap(configuration.getPropertySourceProperties()))
+    //     Binder binder = new Binder(source);
+    //     def res = binder.bind("spring.main.web-application-type", Bindable.of(WebApplicationType.class))
+    //         .orElseGet(this::deduceWebApplicationType)
+    // }
 }

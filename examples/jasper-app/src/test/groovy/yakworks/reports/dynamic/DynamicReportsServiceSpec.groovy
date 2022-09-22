@@ -4,23 +4,20 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-import spock.lang.IgnoreRest
+import spock.lang.Specification
 import yakworks.jasper.dynamic.DynamicConfig
+import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.jasper.dynamic.ReportSaveUtils
 import yakworks.jasperapp.model.Bills
 import yakworks.jasperapp.model.Customer
 import yakworks.jasperapp.model.Product
 import yakworks.jasperapp.model.ProductGroup
-import yakworks.testing.gorm.GormToolsHibernateSpec
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
-import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.reports.SeedData
+import yakworks.testing.gorm.unit.GormHibernateTest
 
-import static net.sf.dynamicreports.report.builder.DynamicReports.export
+class DynamicReportsServiceSpec extends Specification implements GormHibernateTest {
 
-class DynamicReportsServiceSpec extends GormToolsHibernateSpec{
-
-    List<Class> getDomainClasses() { [ProductGroup, Customer, Bills, Product] }
+    static entityClasses = [ProductGroup, Customer, Bills, Product]
 
     // @Shared
     private DynamicReportsService dynamicReportsService //= new DynamicReportsService()
