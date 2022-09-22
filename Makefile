@@ -26,12 +26,12 @@ publish:
 		echo "🌮 dry_run ->  $(gradlew) publish"
 	else
 		if [ "$(IS_SNAPSHOT)" ]; then
-			$(logr) "publishing SNAPSHOT $VERSION"
+			$(logr) "publishing SNAPSHOT $(VERSION)"
 			$(gradlew) publishJavaLibraryPublicationToMavenRepository
 		else
-			$(logr) "publishing to repo.9ci $VERSION"
+			$(logr) "publishing to repo.9ci $(VERSION)"
 			$(gradlew) publishJavaLibraryPublicationToMavenRepository
-			$(logr) "publishing to Sonatype Maven Central $VERSION"
+			$(logr) "publishing to Sonatype Maven Central $(VERSION)"
 			$(gradlew) publishToSonatype closeAndReleaseSonatypeStagingRepository
 		fi
 		$(logr.done) "published"
