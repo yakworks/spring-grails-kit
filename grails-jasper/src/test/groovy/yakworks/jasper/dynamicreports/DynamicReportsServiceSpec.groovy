@@ -4,28 +4,27 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 
-import yakworks.testing.gorm.GormToolsHibernateSpec
 import grails.gorm.transactions.Transactional
 import spock.lang.IgnoreRest
-
-import yakworks.testing.gorm.model.KitchenSink
-import yakworks.testing.gorm.model.SinkItem
-import yakworks.testing.gorm.model.Thing
+import spock.lang.Specification
 import yakworks.jasper.dynamic.DynamicConfig
 import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.jasper.dynamic.ReportSaveUtils
+import yakworks.testing.gorm.model.KitchenSink
+import yakworks.testing.gorm.model.SinkItem
+import yakworks.testing.gorm.model.Thing
+import yakworks.testing.gorm.unit.GormHibernateTest
 
-class DynamicReportsServiceSpec extends GormToolsHibernateSpec  { //implements GrailsWebUnitTest {
+class DynamicReportsServiceSpec extends Specification implements GormHibernateTest { //implements GrailsWebUnitTest {
     static Path folder = Paths.get("build/jasper-tests/DynamicReportsServiceSpec/")
 
-    List<Class> getDomainClasses() { [KitchenSink, Thing, SinkItem] }
+    static entityClasses = [KitchenSink, Thing, SinkItem]
 
     void setupSpec() {
         ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
         KitchenSink.repo.createKitchenSinks(20)
     }
 
-    @Transactional
     void cleanupSpec() {
         KitchenSink.deleteAll()
     }

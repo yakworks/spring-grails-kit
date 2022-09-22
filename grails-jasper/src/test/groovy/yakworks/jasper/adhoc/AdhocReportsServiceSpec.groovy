@@ -9,20 +9,21 @@ import grails.gorm.transactions.Transactional
 import net.sf.dynamicreports.adhoc.configuration.AdhocCalculation
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder
 import spock.lang.Ignore
+import spock.lang.Specification
 import yakworks.jasper.dynamic.ReportSaveUtils
 import yakworks.meta.MetaEntity
-import yakworks.testing.gorm.GormToolsHibernateSpec
+
 import yakworks.testing.gorm.model.KitchenSink
 import yakworks.testing.gorm.model.SinkItem
 import yakworks.testing.gorm.model.Thing
+import yakworks.testing.gorm.unit.GormHibernateTest
 
-class AdhocReportsServiceSpec extends GormToolsHibernateSpec  { //implements GrailsWebUnitTest {
+class AdhocReportsServiceSpec extends Specification implements GormHibernateTest   { //implements GrailsWebUnitTest {
 
     static Path folder = Paths.get("build/jasper-tests/DynamicReportsServiceSpec/")
 
-    List<Class> getDomainClasses() { [KitchenSink, Thing, SinkItem] }
+    static entityClasses = [KitchenSink, Thing, SinkItem]
 
-    @Transactional
     void setupSpec() {
         ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
         if (Files.notExists(folder)) Files.createDirectories(folder)
@@ -30,7 +31,6 @@ class AdhocReportsServiceSpec extends GormToolsHibernateSpec  { //implements Gra
         KitchenSink.repo.createKitchenSinks(50)
     }
 
-    @Transactional
     void cleanupSpec() {
         KitchenSink.deleteAll()
     }

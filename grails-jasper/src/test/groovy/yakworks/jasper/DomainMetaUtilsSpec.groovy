@@ -4,22 +4,21 @@ import gorm.tools.utils.GormMetaUtils
 import grails.gorm.transactions.Transactional
 import org.grails.datastore.mapping.model.PersistentEntity
 import spock.lang.Ignore
+import spock.lang.Specification
 import yakworks.testing.gorm.model.KitchenSink
 import yakworks.testing.gorm.model.SinkItem
 import yakworks.testing.gorm.model.Thing
 import yakworks.reports.DomainMetaUtils
-import yakworks.testing.gorm.GormToolsHibernateSpec
+import yakworks.testing.gorm.unit.GormHibernateTest
 
-class DomainMetaUtilsSpec extends GormToolsHibernateSpec  { //implements GrailsWebUnitTest {
+class DomainMetaUtilsSpec extends Specification implements GormHibernateTest  { //implements GrailsWebUnitTest {
 
-    List<Class> getDomainClasses() { [KitchenSink, Thing, SinkItem] }
+    static entityClasses = [KitchenSink, Thing, SinkItem]
 
-    @Transactional
     void setupSpec() {
         KitchenSink.repo.createKitchenSinks(10)
     }
 
-    @Transactional
     void cleanupSpec() {
         KitchenSink.deleteAll()
     }
