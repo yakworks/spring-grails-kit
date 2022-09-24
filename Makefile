@@ -37,6 +37,17 @@ publish:
 		$(logr.done) "published"
 	fi
 
+## publish snapsot to repo.9ci
+publish.snapshot:
+	if [ "$(IS_SNAPSHOT)" ]; then
+		$(gradlew) publishJavaLibraryPublicationToMavenRepository
+		$(logr.done) "- libs with version $(VERSION)$(VERSION_SUFFIX) published to snapshot repo"
+	fi
+
+## Build snapshot and publishes to your local maven.
+snapshot:
+	$(gradlew) snapshot
+	$(logr.done) "- libs with version $(VERSION)$(VERSION_SUFFIX) published to local ~/.m2 maven"
 
 ifdef PUBLISHABLE_BRANCH_OR_DRY_RUN
 
@@ -62,12 +73,6 @@ docmark.build-prep: docmark.copy-readme
 PORT ?= 8080
 
 # -- helpers --
-
-ifdef IS_SNAPSHOT
-# publish snapsot to repo.9ci
- publish.snapshot.repo:
-	./gradlew publishJavaLibraryPublicationToMavenRepository
-endif
 
 # shows grails-kit:dependencies --configuration compileClasspath
 gradle.dependencies:

@@ -4,8 +4,11 @@
 
 Some common "kits" or plugins for spring and grails
 
-We use `make` to wrap `gradle`.
-after cloning run `make check`  `make` with no target to see help. 
+- We use `make` to wrap `gradle`.
+- after cloning run `make check`, `./gradlew check` will also work.   
+- `make` with no target to see help. 
+
+> **NOTE:** Make might need to be upgraded to a version later than 3.8. The console message should advise you on using brew.  
 
 while gradle is the build tool behind spring/grails, make is used for docker and setting up env for testing
 
