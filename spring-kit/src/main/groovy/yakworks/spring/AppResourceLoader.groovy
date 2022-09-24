@@ -47,9 +47,29 @@ class AppResourceLoader implements ResourceLoader, SpringEnvironment {
         // String rootLoc = config.getProperty(buildResourceKey('rootLocation'), String)
         String rootLoc = environment.getProperty(buildResourceKey('rootLocation'), String)
         if(rootLoc){
+            validatePath(rootLoc, 'rootLocation')
             rootPath = Paths.get(rootLoc)
             if(Files.notExists(rootPath)) Files.createDirectories(rootPath)
         }
+    }
+
+    /**
+     * makes sure path doesnt start with string "null"
+     * and that it starts with pattterns './', '/a-zA-Z0-9
+     * @return
+     */
+    String validatePath(String dir, String pathKey = "?"){
+        boolean valid = false
+        if(dir.startsWith("null/") || dir.startsWith("[:]")) {
+            valid = false
+        } else if(dir ==~ /^\.?\/?\.?[a-zA-Z0-9].*/) {
+            valid = true
+        }
+        if(!valid){
+            String message = "AppResourceLoader Problem $pathKey = $dir is not a valid path";
+            throw new IllegalArgumentException(message)
+        }
+        return dir
     }
 
     /**
@@ -146,7 +166,10 @@ class AppResourceLoader implements ResourceLoader, SpringEnvironment {
         String _tempDir = getProp("tempDir")
         // Path tempPath
         if(_tempDir){
+            validatePath(_tempDir, 'tempDir')
             tempPath = Paths.get(_tempDir)
+            //if it start with a ./ then use current working dir and resolve it
+            if(_tempDir.startsWith('./')) tempPath = tempPath.toAbsolutePath().normalize()
             //if its not absolute then make it relative to the rootPath
             if(!tempPath.isAbsolute()) tempPath = rootPath.resolve(_tempDir)
             if(Files.notExists(tempPath)) Files.createDirectories(tempPath)

@@ -24,6 +24,12 @@ import org.springframework.core.env.MapPropertySource
  * //then in the application.props or yaml
  * app.resources.rootLocation: "${project.rootProjectDir}/build/rootLocation"
  * ```
+ *
+ * see https://stackoverflow.com/a/29133241/6500859
+ * could also look into using the EnvironmentPostProcessor
+ * aslo example here
+ * https://github.com/spring-cloud/spring-cloud-sleuth/blob/2.2.x/spring-cloud-sleuth-core/src/main/java/org/springframework/cloud/sleuth/
+ *   autoconfig/TraceEnvironmentPostProcessor.java
  */
 @CompileStatic
 class ProjectDirEnvPreparedListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
