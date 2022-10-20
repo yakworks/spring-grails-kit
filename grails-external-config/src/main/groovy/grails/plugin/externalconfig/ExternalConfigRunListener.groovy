@@ -12,6 +12,7 @@ import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 
 import org.grails.config.PropertySourcesConfig
+import org.springframework.beans.factory.config.YamlMapFactoryBean
 import org.springframework.boot.ConfigurableBootstrapContext
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.SpringApplicationRunListener
@@ -36,7 +37,7 @@ import grails.util.Environment
 class ExternalConfigRunListener implements SpringApplicationRunListener {
 
     ResourceLoader defaultResourceLoader = new DefaultResourceLoader()
-    private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
+    // private YamlPropertySourceLoader yamlPropertySourceLoader = new YamlPropertySourceLoader()
     private PropertiesPropertySourceLoader propertiesPropertySourceLoader = new PropertiesPropertySourceLoader()
 
     private String userHome = System.properties.getProperty('user.home')
@@ -198,22 +199,32 @@ class ExternalConfigRunListener implements SpringApplicationRunListener {
     }
 
     private List<PropertySource<?>> loadYamlConfig(Resource resource) {
-        log.info("Loading YAML config file {}", resource.URI)
-        return yamlPropertySourceLoader.load(resource.filename, resource)
+        // log.info("Loading YAML config file {}", resource.URI)
+        // return yamlPropertySourceLoader.load(resource.filename, resource)
+        //Use the one in grails so it doesnt wreak havoc on the lists and maps
+        org.grails.config.yaml.YamlPropertySourceLoader propertySourceLoader = new org.grails.config.yaml.YamlPropertySourceLoader();
+        return propertySourceLoader.load(resource.filename, resource)
     }
+
+    // private List<PropertySource<?>> loadYamlMapConfig(Resource resource) {
+    //     log.info("MAP based, Loading YAML config file {}", resource.URI)
+    //     YamlMapFactoryBean yamlFactory = new YamlMapFactoryBean();
+    //     yamlFactory.setResources(resource)
+    //     return [new MapPropertySource(resource.filename, yamlFactory.getObject())] as List<PropertySource<?>>
+    // }
 
     private List<PropertySource<?>> loadPropertiesConfig(Resource resource) {
         log.info("Loading properties config file {}", resource.URI)
         return propertiesPropertySourceLoader.load(resource.filename, resource)
     }
 
-    private void setMicronautConfigLocations(List<Object> newSources) {
-        List<String> sources = System.getProperty('micronaut.config.files', System.getenv('MICRONAUT_CONFIG_FILES') ?: '').tokenize(',')
-        sources.addAll(newSources.collect { it.toString() })
-        sources = filterMissingMicronautLocations(sources)
-        log.debug("---> Setting 'micronaut.config.files' to ${sources.join(',')}")
-        System.setProperty('micronaut.config.files', sources.join(',') )
-    }
+    // private void setMicronautConfigLocations(List<Object> newSources) {
+    //     List<String> sources = System.getProperty('micronaut.config.files', System.getenv('MICRONAUT_CONFIG_FILES') ?: '').tokenize(',')
+    //     sources.addAll(newSources.collect { it.toString() })
+    //     sources = filterMissingMicronautLocations(sources)
+    //     log.debug("---> Setting 'micronaut.config.files' to ${sources.join(',')}")
+    //     System.setProperty('micronaut.config.files', sources.join(',') )
+    // }
 
     private List<String> filterMissingMicronautLocations(List<String> sources) {
         sources.findAll { String location ->

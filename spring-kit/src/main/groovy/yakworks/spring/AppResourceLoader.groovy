@@ -56,7 +56,7 @@ class AppResourceLoader implements ResourceLoader, SpringEnvironment {
     /**
      * makes sure path doesnt start with string "null"
      * and that it starts with pattterns './', '/a-zA-Z0-9
-     * @return
+     * @return the validated path.
      */
     String validatePath(String dir, String pathKey = "?"){
         boolean valid = false
