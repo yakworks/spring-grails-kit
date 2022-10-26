@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import net.sf.dynamicreports.adhoc.configuration.AdhocCalculation
 import net.sf.dynamicreports.adhoc.configuration.AdhocReport
 import spock.lang.Specification
+import yakworks.json.jackson.JacksonJson
 import yakworks.json.jackson.ObjectMapperWrapper
 
 class AdhocBindSpec extends Specification {
@@ -12,7 +13,7 @@ class AdhocBindSpec extends Specification {
     static ObjectMapper objectMapper
 
     void setupSpec(){
-        objectMapper = ObjectMapperWrapper.INSTANCE.objectMapper
+        objectMapper = JacksonJson.objectMapper
         //TODO just for testing, we probably dont want to do this so it fails if we have a bad prop.
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
     }
