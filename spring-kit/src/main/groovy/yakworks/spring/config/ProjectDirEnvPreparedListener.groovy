@@ -12,7 +12,7 @@ import org.springframework.core.env.ConfigurableEnvironment
 import org.springframework.core.env.MapPropertySource
 
 /**
- * add default or `.` used for testing and dev for project.rootProjectDir. W
+ * add default or `.` used for testing and dev for project.rootProjectDir.
  * in gradle you would set for test and bootRun which works fine but when running Application from intellij
  * it does not pick up the settings so this just makes the default `.`
  *
