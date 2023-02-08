@@ -1,10 +1,10 @@
 apply plugin: "yakworks.grails-plugin"
 
 dependencies {
-  profile "org.grails.profiles:web-plugin"
+  // profile "org.grails.profiles:web-plugin"
 
-  implementation "org.springframework.boot:spring-boot-starter-tomcat"
-  implementation "org.grails:grails-plugin-services"
+  // implementation "org.springframework.boot:spring-boot-starter-tomcat"
+  compileOnly "org.grails:grails-plugin-services"
 
   api project(':spring-kit')
 

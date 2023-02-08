@@ -48,6 +48,8 @@ subprojects { subprj ->
       codenarcRuleset = '''
         //getRule('CyclomaticComplexity').enabled = false
         //getRule('NoWildcardImports').enabled = false
+        getRule('FieldName').enabled = false
+        getRule('VariableName').enabled = false
       '''
   }
 

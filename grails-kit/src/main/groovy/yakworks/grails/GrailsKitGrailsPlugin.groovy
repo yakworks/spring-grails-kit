@@ -5,6 +5,7 @@
 package yakworks.grails
 
 import grails.plugins.Plugin
+import yakworks.spring.AppCtx
 import yakworks.spring.AppResourceLoader
 
 class GrailsKitGrailsPlugin extends Plugin {
@@ -44,6 +45,9 @@ class GrailsKitGrailsPlugin extends Plugin {
         return {
             xmlns([context:"http://www.springframework.org/schema/context"])
             context.'component-scan'('base-package': 'yakworks.spring')
+
+            //setup for statics, not meant for injection
+            appCtx(AppCtx, applicationContext)
 
             appResourceLoader(AppResourceLoader) { bean ->
                 bean.autowire =  true

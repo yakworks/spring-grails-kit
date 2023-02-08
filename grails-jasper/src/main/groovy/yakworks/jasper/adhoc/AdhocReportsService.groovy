@@ -18,6 +18,7 @@ import net.sf.dynamicreports.report.builder.DynamicReports
 import yakworks.commons.lang.LabelUtils
 import yakworks.jasper.templates.TemplateStyles
 import yakworks.jasper.templates.Templates
+import yakworks.json.jackson.JacksonJson
 import yakworks.json.jackson.ObjectMapperWrapper
 import yakworks.meta.MetaEntity
 import yakworks.spring.SpringEnvironment
@@ -82,7 +83,7 @@ class AdhocReportsService implements SpringEnvironment{
     }
 
     ObjectMapper getObjectMapper(){
-        def _objectMapper = ObjectMapperWrapper.INSTANCE.objectMapper
+        def _objectMapper = JacksonJson.objectMapper
         //TODO just for testing, we probably dont want to do this so it fails if we have a bad prop.
         _objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         return _objectMapper
