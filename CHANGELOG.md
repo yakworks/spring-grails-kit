@@ -1,3 +1,8 @@
+### v5.0.9
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.8...v5.0.9)
+- AppCtx, bump commons 3.10 (#7) [link](https://github.com/yakworks/spring-grails-kit/commit/cf39cbbe1e553168cbc3299bc04147404f22661e)
+
 ### v5.0.8
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.7...v5.0.8)
