@@ -48,17 +48,6 @@ environments:
         enabled-by-default: false
 
 ---
-# security off
-grails:
-  plugin:
-    springsecurity:
-      active: true
-      rest:
-        active: false
-      securityConfigType: InterceptUrlMap
-      interceptUrlMap: [ { pattern: '/**', access: ['IS_AUTHENTICATED_ANONYMOUSLY'] } ]
-
----
 grails:
   mime:
     disable:
@@ -113,8 +102,9 @@ grails:
 
 ---
 hibernate:
-  schema_management_tool: 'gorm.tools.hibernate.schema.CustomSchemaManagementTool'
+  schema_management_tool: 'yakworks.hibernate.schema.SimpleSchemaManagementTool'
   naming_strategy: 'org.hibernate.cfg.DefaultNamingStrategy'
+  dialect: 'yakworks.hibernate.h2.ExtendedH2Dialect'
   cache:
     queries: false
     use_second_level_cache: false
