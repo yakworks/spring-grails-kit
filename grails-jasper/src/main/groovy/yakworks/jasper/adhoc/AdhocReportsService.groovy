@@ -19,6 +19,7 @@ import yakworks.commons.lang.LabelUtils
 import yakworks.jasper.templates.TemplateStyles
 import yakworks.jasper.templates.Templates
 import yakworks.json.jackson.JacksonJson
+import yakworks.json.jackson.ObjectMapperWrapper
 import yakworks.meta.MetaEntity
 import yakworks.spring.SpringEnvironment
 
