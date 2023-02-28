@@ -11,79 +11,34 @@ import net.sf.dynamicreports.adhoc.configuration.AdhocComponent
 import net.sf.dynamicreports.adhoc.configuration.AdhocGroup
 import net.sf.dynamicreports.adhoc.configuration.AdhocReport
 import net.sf.dynamicreports.adhoc.configuration.AdhocSort
-import net.sf.dynamicreports.adhoc.report.AdhocReportCustomizer
 import net.sf.dynamicreports.adhoc.report.DefaultAdhocReportCustomizer
+import net.sf.dynamicreports.report.builder.DynamicReports
 import net.sf.dynamicreports.report.builder.ReportBuilder
 import net.sf.dynamicreports.report.builder.SortBuilder
 import net.sf.dynamicreports.report.builder.column.ColumnBuilder
 import net.sf.dynamicreports.report.builder.column.Columns
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder
+import net.sf.dynamicreports.report.builder.datatype.BooleanType
 import net.sf.dynamicreports.report.builder.datatype.DataTypes
+import net.sf.dynamicreports.report.builder.expression.Expressions
+import net.sf.dynamicreports.report.builder.expression.JasperExpression
 import net.sf.dynamicreports.report.builder.group.GroupBuilder
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
+import net.sf.dynamicreports.report.definition.expression.DRIExpression
 import net.sf.dynamicreports.report.exception.DRException
 import yakworks.meta.MetaEntity
 import yakworks.meta.MetaProp
 
 /**
- * <p>DefaultAdhocReportCustomizer class.</p>
- * Provides basic implementation for the {@link AdhocReportCustomizer#customize(ReportBuilder, AdhocReport)} method. The public methods can
- * be extended to provide further customization at runtime as shown;
- * <pre>
- *     {@code
- *      class ReportCustomizer extends DefaultAdhocReportCustomizer {
- *
- *         //@Override
- *         public void customize(ReportBuilder<?> report, AdhocReport adhocReport) throws DRException {
- *            super.customize(report, adhocReport);
- *            // default report values
- *            report.setTemplate(Templates.reportTemplate);
- *            report.title(Templates.createTitleComponent("AdhocCustomizer"));
- *            // a fixed page footer that user cannot change, this customization is not stored in the xml file
- *            report.pageFooter(Templates.footerComponent);
- *         }
- *
- *         //@Override
- *         protected DRIDataType<?, ?> getFieldType(String name) {
- *           if (name.equals("item")) {
- *             return type.stringType();
- *            }
- *           if (name.equals("orderdate")) {
- *             return type.dateType();
- *            }
- *            if (name.equals("quantity")) {
- *              return type.integerType();
- *            }
- *            if (name.equals("unitprice")) {
- *              return type.bigDecimalType();
- *            }
- *           return super.getFieldType(name);
- *          }
- *
- *         //@Override
- *         protected String getFieldLabel(String name) {
- *           if (name.equals("item")) {
- *              return "Item";
- *            }
- *            if (name.equals("orderdate")) {
- *              return "Order date";
- *            }
- *            if (name.equals("quantity")) {
- *               return "Quantity";
- *            }
- *            if (name.equals("unitprice")) {
- *               return "Unit price";
- *            }
- *            return name;
- *          }
- *       }
- *    }
- * </pre>
- *
- * @author Ricardo Mariaca
+ * This is the new WIP iteration on DynamicReports. Build on the adhoc but doesnt have all the features yet.
+ * The adhoc just provides the VO so that its easy to bind json as the setups, still uses the same underlying JasperReportBuilder
+ * the is core to all the "dynamic" reports.
+ * Still need to look at the metadata for the metaEntity to pick up formating for things like the boolean
+ * also, the group bands dont show the "{Field} Totals" on left of band like the Dynmaic reports enables.
  *
  */
+@SuppressWarnings(['AssignCollectionSort', 'EmptyCatchBlock'])
 @CompileStatic
 class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
 
@@ -98,6 +53,7 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
     /**
      * If you want to add some fixed content to a report that is not needed to store in the xml file.
      * For example you can add default page header, footer, default fonts,...
+     * Override IN ORDER TO show header
      */
     @Override
     void customize(ReportBuilder<?> report, AdhocReport adhocReport) throws DRException {
@@ -129,7 +85,8 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         int groupnum = 1
         for (AdhocGroup adhocGroup : adhocReport.getGroups()) {
             GroupBuilder<?> group = group(adhocGroup)
-            // if(groupnum == 1) group.showColumnHeaderAndFooter()
+            //shows header on group. commented out for now
+            //if(groupnum == 1) group.showColumnHeaderAndFooter()
             report.addGroup(group)
             groups.put(adhocGroup.getName(), group)
             groupnum++
@@ -145,12 +102,26 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         }
         addSubtotals()
         addComponents()
+        //adds the Grand Total label at end on the left instead of unbold above.
+        //report.setSummaryBackgroundComponent(Components.text("Grand Total").setStyle(TemplateStyles.grandTotal))
     }
 
     @Override
     protected ColumnBuilder<?, ?> column(AdhocColumn adhocColumn) {
+        DRIDataType<?, ?> ftype = getFieldType(adhocColumn.name);
+        def expr = getFieldExpression(adhocColumn.name)
+        TextColumnBuilder<?> column = Columns.column(expr)
+        //do boolean types to be checkmark
 
-        TextColumnBuilder<?> column = Columns.column(getFieldExpression(adhocColumn.name))
+        if(ftype instanceof BooleanType){
+            //add field as we changed the name to an expression in getFieldExpression
+            report.addField(adhocColumn.name, Boolean)
+            column.setDataType(DataTypes.booleanType() as DRIDataType)
+            //column.setWidth(adhocColumn.width == null ? 1 : adhocColumn.width)
+            column.width = 2
+        } else {
+            column.width = 4
+        }
 
         if (adhocColumn.title != null) {
             column.title = adhocColumn.title
@@ -169,6 +140,7 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         return column
     }
 
+    //Override to detect type
     @Override
     protected DRIDataType<?, ?> getFieldType(String name) {
         Class clazz= metaEntityFlat[name].classType
@@ -182,4 +154,23 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         return dt
     }
 
+    //
+    @Override
+    protected DRIExpression<?> getFieldExpression(String name) {
+        DRIDataType<?, ?> type = getFieldType(name);
+        if(type instanceof BooleanType){
+            //add field as we are changing the name
+            //report.addField(name, Boolean)
+            JasperExpression boolExpr = jrExp('$F{' + name + '} ? (char)0x2713 : ""')
+            return boolExpr
+        }
+        if (type != null) {
+            return DynamicReports.field(name, type).build();
+        }
+        return DynamicReports.field(name, Object.class).build();
+    }
+
+    static JasperExpression jrExp(String expression) {
+        return Expressions.jasperSyntax(expression)
+    }
 }

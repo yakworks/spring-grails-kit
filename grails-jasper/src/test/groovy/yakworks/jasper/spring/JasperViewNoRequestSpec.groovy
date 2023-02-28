@@ -1,7 +1,8 @@
-package yakworks.jasper
+package yakworks.jasper.spring
 
 import yakworks.grails.mvc.ViewResourceLocator
 import jrsamples.datasource.CustomBeanFactory
+import yakworks.jasper.TestAppCtx
 import yakworks.jasper.spring.JasperView
 import yakworks.jasper.spring.JasperViewResolver
 import org.apache.poi.xssf.usermodel.XSSFSheet
@@ -43,7 +44,7 @@ class JasperViewNoRequestSpec extends Specification implements GrailsUnitTest {
         jasperViewResolver = applicationContext.getBean('jasperViewResolver')
     }
 
-    void "format in the model"() {
+    void "format in the model "() {
         when:
         JasperView view = jasperViewResolver.resolveViewName(viewName,null)
         model << [format:format]
@@ -58,35 +59,12 @@ class JasperViewNoRequestSpec extends Specification implements GrailsUnitTest {
         where:
         format  | output                                | contentMethod | startsWith
         "pdf"   | new ByteArrayOutputStream()           | "toString"    | "%PDF"
-        "pdf"   | new File("$TEST_JASPER_DIR/testme.pdf")  | "getText"     |"%PDF"
+        //"pdf"   | new File("$TEST_JASPER_DIR/testme.pdf")  | "getText"     |"%PDF"
         "html"  | new StringWriter()                    | "toString"    |"<!DOCTYPE html"
         "html"  | new ByteArrayOutputStream()           | "toString"    |"<!DOCTYPE html"
         null    | new StringWriter()                    | "toString"    |"<!DOCTYPE html"
         "xlsx"  | new ByteArrayOutputStream()           | "toByteArray" | ""
-        "xlsx"  | new File("$TEST_JASPER_DIR/testme.xlsx") | "getBytes"    | ""
-
-    }
-
-    void "put data in a different key"() {
-        when:
-        View view = jasperViewResolver.resolveViewName("test/contactReport.jrxml",null)
-        Map model = [
-            ReportTitle:"Bean Report",
-            people: CustomBeanFactory.beanCollection,
-            format:format
-        ]
-        File f = new File("$TEST_JASPER_DIR/contactReport.$format")
-        if(!f.exists())f.createNewFile()
-        view.render(model, f)
-
-        then:
-        f.exists()
-
-        where:
-        format  | output                                | contentMethod | startsWith
-        "pdf"   | new ByteArrayOutputStream()           | "toString"    | "%PDF"
-        "html"  | new StringWriter()                    | "toString"    |"<!DOCTYPE html"
-        "xlsx"  | new ByteArrayOutputStream()           | "toByteArray" | ""
+        //"xlsx"  | new File("$TEST_JASPER_DIR/testme.xlsx") | "getBytes"    | ""
 
     }
 

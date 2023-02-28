@@ -44,6 +44,7 @@ import java.util.Date;
 import static net.sf.dynamicreports.report.builder.DynamicReports.*;
 
 /**
+ * COPIED IN FROM EXAMPLES TO GET STARTED, Probably not needed now.
  * @author Ricardo Mariaca (r.mariaca@dynamicreports.org)
  */
 public class ColumnGroupReport {
@@ -56,6 +57,7 @@ public class ColumnGroupReport {
 
 
 		try {
+            StyleStatics.init();
 			//field("item",(DRIDataType)type.detectType(String.class.getName()));
 			FieldBuilder itemField = field("item",String.class);
 
@@ -136,9 +138,9 @@ public class ColumnGroupReport {
 				.title(StyleStatics.createTitleComponent("Group"))
 				//.pageFooter(StyleTemplates.footerComponent)
 				.setDataSource(createDataSource())
-					.toJrXml(new FileOutputStream( new File("target/ColumnGroupReport.jrxml")))
-					.toPdf(new FileOutputStream( new File("target/ColumnGroupReport.pdf")))
-					.toHtml(new FileOutputStream( new File("target/ColumnGroupReport.html")))
+					.toJrXml(new FileOutputStream( new File("build/ColumnGroupReport.jrxml")))
+					.toPdf(new FileOutputStream( new File("build/ColumnGroupReport.pdf")))
+					.toHtml(new FileOutputStream( new File("build/ColumnGroupReport.html")))
 				.show();
 
 		} catch (Exception e) {

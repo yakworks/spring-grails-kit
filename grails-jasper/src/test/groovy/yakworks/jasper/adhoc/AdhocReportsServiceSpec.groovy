@@ -64,13 +64,13 @@ class AdhocReportsServiceSpec extends Specification implements GormHibernateTest
     void "adhoc_simple No Group"() {
         when:
         Map cfg = [
-            columns: ['num', 'name', 'thing.name', 'amount'],
+            columns: ['num', 'name', 'thing.name', 'inactive', 'amount'],
             subtotals:[
-                [name: "amount", calculation: AdhocCalculation.SUM],
+                [name: "amount", label: "Totals", calculation: AdhocCalculation.SUM],
             ]
         ]
 
-        def mentity = MetaGormEntityBuilder.build(KitchenSink, ['num', 'name', 'thing.name', 'amount'])
+        def mentity = MetaGormEntityBuilder.build(KitchenSink, ['num', 'name', 'thing.name', 'amount', 'inactive'])
         JasperReportBuilder jrb = buildReport(mentity, cfg)
 
         then:
@@ -82,15 +82,15 @@ class AdhocReportsServiceSpec extends Specification implements GormHibernateTest
         when:
         Map cfg = [
             //columns: If cols not specifed will use the keys from flatten in metaEntity
-            groups:["kind"],
-            subtotals:[
+            groups:[ "kind" ],
+            subtotals: [
                 //the group sum
-                [name: "amount", groupName:"kind", calculation: "SUM", position: "GROUP_FOOTER" ],
+                [name: "amount", label: "Kind Totals" , groupName:"kind", calculation: "SUM", position: "GROUP_FOOTER" ],
                 //if groupName not speced then main summary (Grand Total)
-                [name: "amount", calculation: "SUM", position: "SUMMARY"],
+                [name: "amount", label: "Grand Total" , calculation: "SUM", position: "SUMMARY"],
             ]
         ]
-        def mentity = MetaGormEntityBuilder.build(KitchenSink, ["id", "kind", "num", "name", "amount"])
+        def mentity = MetaGormEntityBuilder.build(KitchenSink, ["kind", "num", "name", "inactive", "amount"])
         JasperReportBuilder jrb = buildReport(mentity, cfg)
 
         then:
@@ -105,7 +105,7 @@ class AdhocReportsServiceSpec extends Specification implements GormHibernateTest
             groups:["kind", "status"],
             subtotals:[
                 //the group sum
-                [name: "amount", groupName:"kind", calculation: "SUM", position: "GROUP_FOOTER" ],
+                [name: "amount", label: "Kind TOTALS", groupName:"kind", calculation: "SUM", position: "GROUP_FOOTER" ],
                 //if groupName not speced then main summary (Grand Total)
                 [name: "amount", calculation: "SUM", position: "SUMMARY"],
             ]

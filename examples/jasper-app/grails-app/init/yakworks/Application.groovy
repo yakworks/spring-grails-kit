@@ -1,11 +1,14 @@
 package yakworks
 
 import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Import
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
+import yakworks.rally.RallyConfiguration
 
-@ComponentScan(['yakworks.security', 'yakworks.rally'])
+@Import([RallyConfiguration])
+// @ComponentScan(['yakworks.security', 'yakworks.rally'])
 class Application extends GrailsAutoConfiguration {
     static void main(String[] args) {
         GrailsApp.run(Application, args)

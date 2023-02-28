@@ -15,6 +15,9 @@ import yakworks.jasperapp.model.ProductGroup
 import yakworks.reports.SeedData
 import yakworks.testing.gorm.unit.GormHibernateTest
 
+/**
+ * AdHoc builder is replacing this, this is kept here for reference.
+ */
 class DynamicReportsServiceSpec extends Specification implements GormHibernateTest {
 
     static entityClasses = [ProductGroup, Customer, Bills, Product]

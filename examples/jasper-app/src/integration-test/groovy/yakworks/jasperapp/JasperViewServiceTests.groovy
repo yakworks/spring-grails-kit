@@ -3,7 +3,7 @@ package yakworks.jasperapp
 import grails.testing.mixin.integration.Integration
 import spock.lang.Specification
 import yakworks.grails.web.GrailsWebEnvironment
-import yakworks.jasper.JasperViewService
+import yakworks.jasper.spring.JasperViewService
 
 @Integration
 class JasperViewServiceTests extends Specification {
