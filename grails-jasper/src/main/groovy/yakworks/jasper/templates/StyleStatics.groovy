@@ -24,11 +24,17 @@ import net.sf.dynamicreports.report.constant.HorizontalTextAlignment
 import net.sf.dynamicreports.report.constant.VerticalTextAlignment
 import net.sf.dynamicreports.report.definition.ReportParameters
 
-import static net.sf.dynamicreports.report.builder.DynamicReports.*
+import static net.sf.dynamicreports.report.builder.DynamicReports.cmp
+import static net.sf.dynamicreports.report.builder.DynamicReports.exp
+import static net.sf.dynamicreports.report.builder.DynamicReports.hyperLink
+import static net.sf.dynamicreports.report.builder.DynamicReports.stl
+import static net.sf.dynamicreports.report.builder.DynamicReports.tableOfContentsCustomizer
+import static net.sf.dynamicreports.report.builder.DynamicReports.template
 
 /**
  * A bunch of helpers, mostly for examples and tests. should be using TemplateStyles so its configurable
  */
+@SuppressWarnings(['AbcMetric', 'NoWildcardImports', 'MethodSize'])
 @CompileStatic
 public class StyleStatics {
     public static StyleBuilder rootStyle

@@ -5,6 +5,7 @@ import java.nio.file.Path
 import java.nio.file.Paths
 import javax.sql.DataSource
 
+import org.grails.io.support.FileSystemResource
 import org.springframework.beans.factory.annotation.Autowired
 
 import grails.gorm.transactions.Rollback
@@ -13,6 +14,7 @@ import net.sf.jasperreports.engine.JasperCompileManager
 import net.sf.jasperreports.engine.JasperExportManager
 import net.sf.jasperreports.engine.JasperReport
 import spock.lang.Specification
+import yakworks.commons.util.BuildSupport
 import yakworks.jasper.JRDataSourceJDBC
 import yakworks.jasper.JasperUtils
 import yakworks.jasper.dynamic.DynamicConfig
@@ -27,44 +29,33 @@ import yakworks.rally.orgs.model.Org
 @Integration
 @Rollback
 class DataSourceReportSpec extends Specification {
-    static Path folder = Paths.get("build/jasper-tests/")
+    static Path exportFolder = Paths.get("build/jasper-tests/")
 
     @Autowired DynamicReportsService dynamicReportsService
     @Autowired DataSource dataSource
 
-    // JasperReport getReport(){
-    //     return JasperCompileManager.compileReport("../jasperstudio-project/Orgs-list.jrxml")
+    // void setupSpec() {
+    //     ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
+    //     if (Files.notExists(folder)) Files.createDirectories(folder)
     // }
 
-    void setupSpec() {
-        ReportSaveUtils.OPEN_REPORTS_ON_SAVE = false //SET TO TRUE TO OPEN THE REPORTS IN BROWSER FOR TESTING
-        if (Files.notExists(folder)) Files.createDirectories(folder)
-    }
-
     def "sanity check seed data worked and we have services working"() {
-        when:
-        def orgCount = Org.count()
-
-        then:
+        expect:
+        Org.count() == 100
         dataSource
-        //getReport()
-        orgCount == 100
-        dynamicReportsService
     }
 
     def "test fill report pdf with datasource"() {
         when:
-        def report = JasperCompileManager.compileReport("../jasperstudio-project/Orgs-list.jrxml")
-        def jprint = JasperUtils.fillReport(report, ["ReportTitle":"Orgs"], dataSource)
-        //ByteArrayOutputStream os = new ByteArrayOutputStream();
-        def os = new FileOutputStream(folder.resolve("org-list.pdf").toFile())
-        JasperExportManager.exportReportToPdfStream(jprint, os)
-        // JasperUtils.renderAsPdf(getReport(), parameters, dataList, os)
-        // byte[] output = os.toByteArray()
+        Path rpt = BuildSupport.rootProjectPath.resolve("examples/jasperstudio-project/Orgs-list.jrxml")
+        def report = JasperUtils.loadReport(rpt)
+        def jprint = JasperUtils.fillReport(report, ["ReportTitle":"Orgs Test"], dataSource)
+        Path pdf = exportFolder.resolve("org-list.pdf")
+        JasperUtils.exportPDF(jprint, pdf)
 
         then:
         jprint
-        Files.exists(folder.resolve("org-list.pdf"))
+        Files.exists(pdf)
         //output.length > 0
         //new String(os.toByteArray(), "US-ASCII").startsWith("%PDF")
     }

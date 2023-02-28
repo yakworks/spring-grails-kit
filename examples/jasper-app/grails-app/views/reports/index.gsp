@@ -15,7 +15,7 @@
                     <li class="controller">
                         <g:link controller="reports" action="generate" id="testme">testme html</g:link>
                         <g:link controller="reports" action="generate" id="testme" params="[format: 'pdf']"> pdf</g:link>
-                        <g:link controller="reports" action="generate" id="testme" params="[format: 'xls']"> xls</g:link>
+                        <g:link controller="reports" action="generate" id="testme" params="[format: 'xlsx']"> xlsx</g:link>
                     </li>
                 </ul>
             </div>

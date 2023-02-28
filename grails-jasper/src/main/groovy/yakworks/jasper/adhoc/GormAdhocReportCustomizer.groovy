@@ -11,7 +11,6 @@ import net.sf.dynamicreports.adhoc.configuration.AdhocComponent
 import net.sf.dynamicreports.adhoc.configuration.AdhocGroup
 import net.sf.dynamicreports.adhoc.configuration.AdhocReport
 import net.sf.dynamicreports.adhoc.configuration.AdhocSort
-import net.sf.dynamicreports.adhoc.report.AdhocReportCustomizer
 import net.sf.dynamicreports.adhoc.report.DefaultAdhocReportCustomizer
 import net.sf.dynamicreports.report.builder.DynamicReports
 import net.sf.dynamicreports.report.builder.ReportBuilder
@@ -20,7 +19,6 @@ import net.sf.dynamicreports.report.builder.column.ColumnBuilder
 import net.sf.dynamicreports.report.builder.column.Columns
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder
-import net.sf.dynamicreports.report.builder.component.Components
 import net.sf.dynamicreports.report.builder.datatype.BooleanType
 import net.sf.dynamicreports.report.builder.datatype.DataTypes
 import net.sf.dynamicreports.report.builder.expression.Expressions
@@ -29,7 +27,6 @@ import net.sf.dynamicreports.report.builder.group.GroupBuilder
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
 import net.sf.dynamicreports.report.definition.expression.DRIExpression
 import net.sf.dynamicreports.report.exception.DRException
-import yakworks.jasper.templates.TemplateStyles
 import yakworks.meta.MetaEntity
 import yakworks.meta.MetaProp
 
@@ -41,6 +38,7 @@ import yakworks.meta.MetaProp
  * also, the group bands dont show the "{Field} Totals" on left of band like the Dynmaic reports enables.
  *
  */
+@SuppressWarnings(['AssignCollectionSort', 'EmptyCatchBlock'])
 @CompileStatic
 class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
 

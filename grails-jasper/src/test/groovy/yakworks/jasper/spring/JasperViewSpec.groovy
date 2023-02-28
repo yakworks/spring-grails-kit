@@ -1,9 +1,5 @@
-package yakworks.jasper
+package yakworks.jasper.spring
 
-import yakworks.grails.mvc.ViewResourceLocator
-import grails.testing.web.GrailsWebUnitTest
-import grails.util.BuildSettings
-import yakworks.jasper.spring.JasperViewResolver
 import org.apache.poi.xssf.usermodel.XSSFSheet
 import org.apache.poi.xssf.usermodel.XSSFWorkbook
 import org.grails.plugins.web.GroovyPagesGrailsPlugin
@@ -11,7 +7,13 @@ import org.springframework.core.io.Resource
 import org.springframework.core.io.ResourceLoader
 import org.springframework.core.io.UrlResource
 import org.springframework.web.servlet.View
+
+import grails.testing.web.GrailsWebUnitTest
+import grails.util.BuildSettings
 import spock.lang.Specification
+import yakworks.grails.mvc.ViewResourceLocator
+import yakworks.jasper.TestAppCtx
+import yakworks.jasper.spring.JasperViewResolver
 
 /**
  * Playground for various features.

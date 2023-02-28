@@ -10,6 +10,7 @@ import grails.plugins.Plugin
 import yakworks.jasper.dynamic.DynamicReportsService
 import yakworks.jasper.spring.JasperView
 import yakworks.jasper.spring.JasperViewResolver
+import yakworks.jasper.spring.JasperViewService
 
 @Slf4j
 class JasperReportsGrailsPlugin extends Plugin {
@@ -70,9 +71,9 @@ class JasperReportsGrailsPlugin extends Plugin {
                 viewClass = JasperView
                 order = 10
                 //don't cache in dev mode
-                if (!application.warDeployed) { // <- grails2
-                    cache = false
-                }
+                // if (!application.warDeployed) { // <- grails2
+                //     cache = false
+                // }
             }
 
             jasperService(JasperService)
