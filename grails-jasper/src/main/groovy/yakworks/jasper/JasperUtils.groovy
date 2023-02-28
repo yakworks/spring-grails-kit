@@ -265,6 +265,7 @@ class JasperUtils {
     public static JasperReport loadReport(String reportFilePath) {
         loadReport(new UrlResource(reportFilePath))
     }
+
     /**
      * Loads a {@code JasperReport} from the specified {@code Resource}.
      * If the {@code Resource} points to an uncompiled report design file then
@@ -333,13 +334,13 @@ class JasperUtils {
     /**
      * By default, this method will use any {@code JRDataSource} instance
      * (or wrappable {@code Object}) that can be located using {@code data} as a key,
-     * a lookup for type {@code JRDataSource} or DataSrouce, regardless of key will take place if not found with report Key
+     * a lookup for type {@code JRDataSource} or DataSource, regardless of key will take place if not found with report Key
      * @param model the model for this request
      * @param reportDataKey the dataKey to use to find the datasource
      * @return the JRDataSource instance to use
      */
     public
-    static JRDataSource extractJasperDataSrouce(Map<String, Object> model, String reportDataKey = null) throws Exception {
+    static JRDataSource extractJasperDataSource(Map<String, Object> model, String reportDataKey = null) throws Exception {
         // Determine main report.
 
         JRDataSource jrDataSource = null
@@ -369,13 +370,12 @@ class JasperUtils {
 
     }
 
-    public
-    static JasperPrint fillReport(JasperReport report, Map<String, Object> model, DataSource dataSource) throws DataAccessException {
+    static JasperPrint fillReport(JasperReport report, Map<String, Object> params, DataSource dataSource) throws DataAccessException {
 
         Connection con = DataSourceUtils.getConnection(dataSource)
         try {
 
-            return JasperFillManager.fillReport(report, model, con)
+            return JasperFillManager.fillReport(report, params, con)
         }
         catch (SQLException ex) {
             // Release Connection early, to avoid potential connection pool deadlock

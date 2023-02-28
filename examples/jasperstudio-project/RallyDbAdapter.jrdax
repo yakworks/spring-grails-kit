@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<jdbcDataAdapter class="net.sf.jasperreports.data.jdbc.JdbcDataAdapterImpl">
+  <name>prodDb</name>
+  <classpath>/Users/basejump/github/yak/spring-grails-kit/examples/jasperstudio-project/h2-1.4.200.jar</classpath>
+  <driver>org.h2.Driver</driver>
+  <username>sa</username>
+  <password></password>
+  <url>jdbc:h2:/Users/basejump/github/yak/spring-grails-kit/examples/jasper-app/rallyDb;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE</url>
+  <database></database>
+  <savePassword>true</savePassword>
+  <serverAddress></serverAddress>
+</jdbcDataAdapter>

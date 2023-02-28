@@ -360,7 +360,7 @@ public abstract class AbstractJasperReportsView extends AbstractUrlBasedView {
                     "specify a 'url' on this view or override 'getReport()' or 'fillReport(Map)'")
         }
 
-        JRDataSource jrDataSource = JasperUtils.extractJasperDataSrouce(model, this.reportDataKey)
+        JRDataSource jrDataSource = JasperUtils.extractJasperDataSource(model, this.reportDataKey)
         DataSource jdbcDataSourceToUse = null
 
         if (!jrDataSource && this.jdbcDataSource) {

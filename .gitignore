@@ -157,3 +157,5 @@ Session.vim
 .env
 .DS_Store
 grails-jasper/src/test/resources/jasper
+rallyDb.trace.db
+rallyDb.mv.db

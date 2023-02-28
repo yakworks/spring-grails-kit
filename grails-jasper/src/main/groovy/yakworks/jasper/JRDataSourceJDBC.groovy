@@ -13,7 +13,8 @@ import net.sf.jasperreports.engine.JRException
 import net.sf.jasperreports.engine.JRField
 
 /**
- * Simple container class so we can pass the jdbc connection around as a JRDataSource
+ * Simple container class so we can pass the jdbc DataSource around as a JRDataSource
+ * Used with the views so only 1 type needs to be checked
  */
 @CompileStatic
 class JRDataSourceJDBC implements JRDataSource {
