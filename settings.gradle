@@ -27,3 +27,6 @@ findProject(':examples/jasper-app').name = 'jasper-app'
 findProject(':examples/free-app').name = 'free-app'
 findProject(':examples/free-plugin').name = 'free-plugin'
 findProject(':examples/external-config-app').name = 'external-config-app'
+
+include 'examples/rally-simple'
+findProject(':examples/rally-simple').name = 'rally-simple'

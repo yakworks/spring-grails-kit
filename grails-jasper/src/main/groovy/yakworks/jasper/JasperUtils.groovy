@@ -106,6 +106,15 @@ class JasperUtils {
      * @param jprint the print object
      * @param resource the WritableResource
      */
+    static void exportPDF(JasperPrint jprint, OutputStream outputStream) {
+        JasperExportManager.exportReportToPdfStream(jprint, outputStream)
+    }
+
+    /**
+     * Exports PDF to the specified resource
+     * @param jprint the print object
+     * @param resource the WritableResource
+     */
     static void exportPDF(JasperPrint jprint, WritableResource resource) {
         JasperExportManager.exportReportToPdfStream(jprint, resource.outputStream)
     }

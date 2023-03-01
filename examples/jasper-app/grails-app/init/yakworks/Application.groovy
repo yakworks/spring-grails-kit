@@ -1,11 +1,13 @@
 package yakworks
 
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Import
 
 import grails.boot.GrailsApp
 import grails.boot.config.GrailsAutoConfiguration
 import yakworks.rally.RallyConfiguration
+import yakworks.spring.AppResourceLoader
 
 @Import([RallyConfiguration])
 // @ComponentScan(['yakworks.security', 'yakworks.rally'])
@@ -27,5 +29,10 @@ class Application extends GrailsAutoConfiguration {
     @Override
     Collection<String> packageNames() {
         super.packageNames() + ['yakworks.rally', 'yakworks.security']
+    }
+
+    @Bean
+    AppResourceLoader appResourceLoader(){
+        return new AppResourceLoader()
     }
 }
