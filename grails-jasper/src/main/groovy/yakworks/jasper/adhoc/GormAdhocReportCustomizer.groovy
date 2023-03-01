@@ -11,6 +11,7 @@ import net.sf.dynamicreports.adhoc.configuration.AdhocComponent
 import net.sf.dynamicreports.adhoc.configuration.AdhocGroup
 import net.sf.dynamicreports.adhoc.configuration.AdhocReport
 import net.sf.dynamicreports.adhoc.configuration.AdhocSort
+import net.sf.dynamicreports.adhoc.configuration.AdhocSubtotal
 import net.sf.dynamicreports.adhoc.report.DefaultAdhocReportCustomizer
 import net.sf.dynamicreports.report.builder.DynamicReports
 import net.sf.dynamicreports.report.builder.ReportBuilder
@@ -18,12 +19,15 @@ import net.sf.dynamicreports.report.builder.SortBuilder
 import net.sf.dynamicreports.report.builder.column.ColumnBuilder
 import net.sf.dynamicreports.report.builder.column.Columns
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder
+import net.sf.dynamicreports.report.builder.column.ValueColumnBuilder
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder
 import net.sf.dynamicreports.report.builder.datatype.BooleanType
 import net.sf.dynamicreports.report.builder.datatype.DataTypes
 import net.sf.dynamicreports.report.builder.expression.Expressions
 import net.sf.dynamicreports.report.builder.expression.JasperExpression
 import net.sf.dynamicreports.report.builder.group.GroupBuilder
+import net.sf.dynamicreports.report.builder.subtotal.SubtotalBuilder
+import net.sf.dynamicreports.report.builder.subtotal.Subtotals
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
 import net.sf.dynamicreports.report.definition.expression.DRIExpression
 import net.sf.dynamicreports.report.exception.DRException
@@ -65,10 +69,16 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         report.setGroupStyle(style(adhocReport.getGroupStyle()));
         report.setGroupTitleStyle(style(adhocReport.getGroupTitleStyle()));
         report.setSubtotalStyle(style(adhocReport.getSubtotalStyle()));
-        report.setDetailOddRowStyle(simpleStyle(adhocReport.getDetailOddRowStyle()));
-        report.setHighlightDetailOddRows(adhocReport.getHighlightDetailOddRows());
-        report.setDetailEvenRowStyle(simpleStyle(adhocReport.getDetailEvenRowStyle()));
-        report.setHighlightDetailEvenRows(adhocReport.getHighlightDetailEvenRows());
+
+        //TODO these add the CUSTOM_VALUES that make it hard to edit in the jasper designer.
+        // report.setDetailOddRowStyle(simpleStyle(adhocReport.getDetailOddRowStyle()));
+        // report.setHighlightDetailOddRows(adhocReport.getHighlightDetailOddRows());
+        // report.setDetailEvenRowStyle(simpleStyle(adhocReport.getDetailEvenRowStyle()));
+        // report.setHighlightDetailEvenRows(adhocReport.getHighlightDetailEvenRows());
+        //put above back in and remove the false settings below to get alt row colors back on.
+        report.setHighlightDetailOddRows(false)
+        report.setHighlightDetailEvenRows(false)
+
         report.setIgnorePagination(adhocReport.getIgnorePagination());
         report.setTableOfContents(adhocReport.getTableOfContents());
         page(report, adhocReport.getPage());
@@ -124,11 +134,11 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         }
 
         if (adhocColumn.title != null) {
-            column.title = adhocColumn.title
+            column.title = Expressions.jasperSyntaxText(adhocColumn.title)
         } else {
             String columnTitle = getFieldLabel(adhocColumn.getName())
             if (columnTitle != null) {
-                column.setTitle(columnTitle)
+                column.setTitle(Expressions.jasperSyntaxText(adhocColumn.title) )
             }
         }
         if (adhocColumn.getWidth() != null) {
@@ -154,7 +164,7 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         return dt
     }
 
-    //
+    //@Override so we can do booleans
     @Override
     protected DRIExpression<?> getFieldExpression(String name) {
         DRIDataType<?, ?> type = getFieldType(name);
@@ -172,5 +182,16 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
 
     static JasperExpression jrExp(String expression) {
         return Expressions.jasperSyntax(expression)
+    }
+
+    //@Override so we can set jasper expressions and it doesnt do the CUSTOM_VALUES stuff
+    @Override
+    protected SubtotalBuilder<?, ?> subtotal(AdhocSubtotal adhocSubtotal) {
+        SubtotalBuilder sb = super.subtotal(adhocSubtotal)
+        if (adhocSubtotal.label != null) {
+            sb.setLabel("");
+            sb.label = Expressions.jasperSyntaxText(adhocSubtotal.label)
+        }
+        return sb
     }
 }
