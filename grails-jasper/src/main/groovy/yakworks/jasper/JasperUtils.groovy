@@ -18,7 +18,6 @@ import groovy.util.logging.Slf4j
 import org.springframework.context.ApplicationContextException
 import org.springframework.core.io.FileSystemResource
 import org.springframework.core.io.Resource
-import org.springframework.core.io.UrlResource
 import org.springframework.core.io.WritableResource
 import org.springframework.dao.DataAccessException
 import org.springframework.dao.DataRetrievalFailureException
