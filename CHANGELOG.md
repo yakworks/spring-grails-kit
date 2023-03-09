@@ -1,3 +1,9 @@
+### v5.0.10
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.9...v5.0.10)
+- lint fix (#10) [link](https://github.com/yakworks/spring-grails-kit/commit/7176666a00918d95af1134c53dbf838b1abc6a0d)
+- Jasper merge (#9) [link](https://github.com/yakworks/spring-grails-kit/commit/45acf9c943277550ed40a2580477f10fb80fdc95)
+
 ### v5.0.9
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.8...v5.0.9)
