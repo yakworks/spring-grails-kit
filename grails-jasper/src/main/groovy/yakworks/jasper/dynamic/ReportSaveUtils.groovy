@@ -16,6 +16,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.export
  * Helpers for testing reports
  * Some of this should be moved to a common helper in the jasper plugin.
  */
+@SuppressWarnings(['SystemErrPrint'])
 @CompileStatic
 class ReportSaveUtils {
 

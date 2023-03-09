@@ -47,13 +47,12 @@ class DynamicReportsServiceSpec extends Specification implements GormHibernateTe
         return list
     }
 
-    @IgnoreRest
     void "No Group"() {
         when:
         Map cfg = [
             title: "No Group",
             entityName              : 'KitchenSink',
-            fields                  : ['name', 'num', 'kind', 'amount'],
+            fields                  : ['name', 'num', 'kind', 'inactive', 'amount'],
             groups                  : ['kind'],
             subtotals               : [amount: "sum"], //put these on all the group summaries
             subtotalsHeader         : [amount: "sum"], //put these on all the group summaries

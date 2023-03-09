@@ -50,6 +50,8 @@ subprojects { subprj ->
         //getRule('NoWildcardImports').enabled = false
         getRule('FieldName').enabled = false
         getRule('VariableName').enabled = false
+        getRule('UnnecessaryDotClass').enabled = false
+        getRule('FieldName').enabled = false
       '''
   }
 

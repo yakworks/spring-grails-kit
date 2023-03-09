@@ -90,7 +90,7 @@ public class JasperView extends AbstractJasperReportsView {
      */
     public void render(Map<String, Object> model, Object output) {
         setupFormat(model)
-        //TODO should we still in case stuff was set that we want passed through?
+        //TODO should we still do in case stuff was set that we want passed through?
         //Map<String, Object> mergedModel = createMergedOutputModel(model, request, response)
         //prepareResponse(request, response)
 

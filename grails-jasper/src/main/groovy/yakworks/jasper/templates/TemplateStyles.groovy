@@ -28,6 +28,7 @@ import static net.sf.dynamicreports.report.builder.DynamicReports.stl
 /**
  * A bunch of helpers, mostly for examples and tests. should be using TemplateStyles so its configurable
  */
+@SuppressWarnings(['NoWildcardImports'])
 @CompileStatic
 public class TemplateStyles {
     public static ReportStyleBuilder root = Styles.templateStyle("root")
