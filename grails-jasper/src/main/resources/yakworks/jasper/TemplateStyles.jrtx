@@ -33,7 +33,10 @@
   <style name="oddRowStyle" backcolor="#f1f5f6" />
 
 	<style name="group" style="bold" forecolor="#2E4E6F" hTextAlign="Left" isBlankWhenNull="true" fontSize="12">
-		<box topPadding="5" bottomPadding="5"/>
+    <box topPadding="10" bottomPadding="5">
+      <topPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD" />
+      <bottomPen lineWidth="0.5" lineStyle="Solid" lineColor="#DDDDDD" />
+    </box>
 	</style>
 
 	<style name="groupTitle" style="group" />

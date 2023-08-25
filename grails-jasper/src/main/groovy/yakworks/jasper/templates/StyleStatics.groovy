@@ -102,6 +102,7 @@ public class StyleStatics {
         //this is one the columns
         subtotalStyle = stl.style(boldStyle).setName("style_subtotalDefault").setPadding(3).setLeftPadding(5).setRightPadding(5)
                 .setTopBorder(lineStyleLight)
+                .setBottomBorder(lineStyleLight)
                 .setFontSize(10)
 
         /** Group Styles **/

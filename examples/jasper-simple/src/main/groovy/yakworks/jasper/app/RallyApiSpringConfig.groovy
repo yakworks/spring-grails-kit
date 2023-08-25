@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Lazy
@@ -51,10 +52,12 @@ import static org.springframework.security.config.Customizer.withDefaults
 @CompileStatic
 @Configuration
 @Import([RallyConfiguration])
+@ComponentScan
 class RallyApiSpringConfig {
 
     @Bean
     AppInfoBuilder appInfoBuilder() {
         return new AppInfoBuilder()
     }
+
 }

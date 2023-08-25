@@ -20,7 +20,7 @@ import yakworks.testing.gorm.unit.GormHibernateTest
 
 class AdhocReportsServiceSpec extends Specification implements GormHibernateTest   { //implements GrailsWebUnitTest {
 
-    static Path folder = Paths.get("build/jasper-tests/DynamicReportsServiceSpec/")
+    static Path folder = Paths.get("build/jasper-tests/AdhocReportsServiceSpec/")
 
     static entityClasses = [KitchenSink, Thing, SinkItem]
 
@@ -84,8 +84,11 @@ class AdhocReportsServiceSpec extends Specification implements GormHibernateTest
             //columns: If cols not specifed will use the keys from flatten in metaEntity
             groups:[ "kind" ],
             subtotals: [
-                //the group sum
-                [name: "amount", label: "Kind Totals" , groupName:"kind", calculation: "SUM", position: "GROUP_FOOTER" ],
+                //the group sum with label
+                //[name: "amount", label: "Kind Totals" , groupName:"kind", calculation: "SUM", position: "GROUP_FOOTER" ],
+                //the group sum without label, then can use the component one with label on left
+                [name: "amount", groupName:"kind", calculation: "SUM", position: "GROUP_FOOTER" ],
+
                 //if groupName not speced then main summary (Grand Total)
                 [name: "amount", label: "Grand Total" , calculation: "SUM", position: "SUMMARY"],
             ]

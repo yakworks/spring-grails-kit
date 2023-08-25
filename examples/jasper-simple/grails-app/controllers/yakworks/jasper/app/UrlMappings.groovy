@@ -10,23 +10,23 @@ class UrlMappings {
 
     static mappings = {
         println "parsing restify UrlMappings"
-        "/"(controller: 'application', action:'index')
-        RepoApiMappingsService repoApiMappingsService = getApplicationContext().getBean('repoApiMappingsService', RepoApiMappingsService)
-        repoApiMappingsService.createNestedMappings('rally', 'org', 'orgId', 'contact', delegate)
-
+        // "/"(controller: 'application', action:'index')
+        // RepoApiMappingsService repoApiMappingsService = getApplicationContext().getBean('repoApiMappingsService', RepoApiMappingsService)
+        // repoApiMappingsService.createNestedMappings('rally', 'org', 'orgId', 'contact', delegate)
+        //
         "/$controller/$action?/$id?(.$format)?"{
             constraints {
                 // apply constraints here
             }
         }
-
-        "/"(view:"/index")
-        "500"(view:'/error')
-        "404"(view:'/notFound')
+        //
+        // "/"(view:"/index")
+        // "500"(view:'/error')
+        // "404"(view:'/notFound')
     }
 
-    static void runClosure(Closure mappingClosure, Object delegate) {
-        mappingClosure.delegate = delegate
-        mappingClosure()
-    }
+    // static void runClosure(Closure mappingClosure, Object delegate) {
+    //     mappingClosure.delegate = delegate
+    //     mappingClosure()
+    // }
 }

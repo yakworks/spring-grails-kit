@@ -29,6 +29,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseBody
 
 import net.sf.jasperreports.engine.JasperPrint
@@ -43,24 +44,11 @@ import yakworks.security.user.UserInfo
  */
 @Controller
 @CompileStatic
-// @RequestMapping(value="/")
-class IndexController {
+@RequestMapping(value = "/reports")
+class ReportsController {
 
     @Autowired ApplicationContext applicationContext
     @Autowired DataSource dataSource
-
-    @GetMapping("/")
-    String home() {
-        // var auth = SecurityContextHolder.getContext().getAuthentication()
-        // println "************************************** user ${auth.principal}"
-        "index"
-    }
-
-    @GetMapping("/about")
-    @ResponseBody String about(ModelMap model) {
-        model.addAttribute('info', 'test info')
-        "just a string"
-    }
 
     @GetMapping("/pdf1")
     void pdf1(HttpServletResponse response) {
@@ -75,6 +63,37 @@ class IndexController {
 
         response.setContentType("application/pdf");
         response.setHeader("Content-disposition", "inline; filename=${rptName}.pdf")
+        final OutputStream outStream = response.getOutputStream()
+        JasperUtils.exportPDF(jprint, outStream)
+    }
+
+    @GetMapping("/pdf2")
+    void pdf2(HttpServletResponse response,
+              @RequestParam(required=false) Long orgTypeId,
+              @RequestParam Map<String,String> params) {
+        String rptName = "Orgs-list-filter"
+        Resource rpt = applicationContext.getResource("classpath:reports/${rptName}.jrxml")
+        assert rpt.exists()
+        JasperReport report = JasperUtils.loadReport(rpt)
+        Map jasParams = ["ReportTitle":"Orgs Test", orgTypeId: orgTypeId] as Map<String, Object>
+
+        JasperPrint jprint = JasperUtils.fillReport(report, jasParams, dataSource)
+        writeReport(response, jprint, rptName)
+    }
+
+    @GetMapping()
+    String home() {
+        "index"
+    }
+
+    @GetMapping("/about")
+    @ResponseBody String about(@RequestParam Map<String,String> params) {
+        "just a string with params ${params}"
+    }
+
+    void writeReport(HttpServletResponse response, JasperPrint jprint, String name){
+        response.setContentType("application/pdf");
+        response.setHeader("Content-disposition", "inline; filename=${name}.pdf")
         final OutputStream outStream = response.getOutputStream()
         JasperUtils.exportPDF(jprint, outStream)
     }

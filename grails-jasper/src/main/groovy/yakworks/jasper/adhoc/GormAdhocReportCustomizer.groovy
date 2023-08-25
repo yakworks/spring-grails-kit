@@ -20,6 +20,7 @@ import net.sf.dynamicreports.report.builder.column.ColumnBuilder
 import net.sf.dynamicreports.report.builder.column.Columns
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder
 import net.sf.dynamicreports.report.builder.component.ComponentBuilder
+import net.sf.dynamicreports.report.builder.component.Components
 import net.sf.dynamicreports.report.builder.datatype.BooleanType
 import net.sf.dynamicreports.report.builder.datatype.DataTypes
 import net.sf.dynamicreports.report.builder.expression.Expressions
@@ -29,6 +30,7 @@ import net.sf.dynamicreports.report.builder.subtotal.SubtotalBuilder
 import net.sf.dynamicreports.report.definition.datatype.DRIDataType
 import net.sf.dynamicreports.report.definition.expression.DRIExpression
 import net.sf.dynamicreports.report.exception.DRException
+import yakworks.jasper.templates.TemplateStyles
 import yakworks.meta.MetaEntity
 import yakworks.meta.MetaProp
 
@@ -69,13 +71,14 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         report.setSubtotalStyle(style(adhocReport.getSubtotalStyle()));
 
         //TODO these add the CUSTOM_VALUES that make it hard to edit in the jasper designer.
-        // report.setDetailOddRowStyle(simpleStyle(adhocReport.getDetailOddRowStyle()));
-        // report.setHighlightDetailOddRows(adhocReport.getHighlightDetailOddRows());
-        // report.setDetailEvenRowStyle(simpleStyle(adhocReport.getDetailEvenRowStyle()));
-        // report.setHighlightDetailEvenRows(adhocReport.getHighlightDetailEvenRows());
+        report.setDetailOddRowStyle(simpleStyle(adhocReport.getDetailOddRowStyle()));
+        report.setHighlightDetailOddRows(adhocReport.getHighlightDetailOddRows());
+        report.setDetailEvenRowStyle(simpleStyle(adhocReport.getDetailEvenRowStyle()));
+        report.setHighlightDetailEvenRows(adhocReport.getHighlightDetailEvenRows());
+
         //put above back in and remove the false settings below to get alt row colors back on.
-        report.setHighlightDetailOddRows(false)
-        report.setHighlightDetailEvenRows(false)
+        // report.setHighlightDetailOddRows(false)
+        // report.setHighlightDetailEvenRows(false)
 
         report.setIgnorePagination(adhocReport.getIgnorePagination());
         report.setTableOfContents(adhocReport.getTableOfContents());
@@ -98,6 +101,13 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
             report.addGroup(group)
             groups.put(adhocGroup.getName(), group)
             groupnum++
+            var subTot = adhocReport.getSubtotals().find { it.groupName == adhocGroup.name}
+
+            //adds the Total label at end on the left
+            if(subTot && !subTot.label){
+                report.setGroupFooterBackgroundComponent(group, Components.text("Total").setStyle(TemplateStyles.grandTotal))
+            }
+
         }
 
         for (AdhocSort adhocSort : adhocReport.getSorts()) {
@@ -110,8 +120,8 @@ class GormAdhocReportCustomizer extends DefaultAdhocReportCustomizer {
         }
         addSubtotals()
         addComponents()
-        //adds the Grand Total label at end on the left instead of unbold above.
-        //report.setSummaryBackgroundComponent(Components.text("Grand Total").setStyle(TemplateStyles.grandTotal))
+        //adds the Grand Total label at end on the left
+        report.setSummaryBackgroundComponent(Components.text("Grand Total").setStyle(TemplateStyles.grandTotal))
     }
 
     @Override
