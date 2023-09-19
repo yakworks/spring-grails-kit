@@ -25,9 +25,27 @@ apply from: "${rootProject.projectDir}/gradle/compile.gradle"
 //sets us the sonatype/nexus publishing for nexus:publish-plugin for any project that has isPublishable in gradle.props
 apply from: "${rootProject.projectDir}/gradle/publish.gradle"
 
+allprojects {
+  repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url "https://repo.grails.org/grails/core" }
+    maven { url "https://repo.spring.io/snapshot" }
+    maven {
+      url "http://repo.9ci.com/oss-snapshots"
+      allowInsecureProtocol = true
+      mavenContent {
+        snapshotsOnly()
+      }
+    }
+    maven { url "http://repo.9ci.com/public-libs"; allowInsecureProtocol = true }
+  }
+}
+
 subprojects { subprj ->
 
   repositories {
+
     maven { url "https://jaspersoft.jfrog.io/jaspersoft/third-party-ce-artifacts/" }
   }
 

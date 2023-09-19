@@ -13,7 +13,7 @@ import yakworks.commons.util.BuildSupport
 import yakworks.jasper.JasperUtils
 import yakworks.reports.ReportFormat
 
-class ReportsController {
+class GrailsReportsController {
 
     @Autowired ApplicationContext applicationContext
     @Autowired DataSource dataSource

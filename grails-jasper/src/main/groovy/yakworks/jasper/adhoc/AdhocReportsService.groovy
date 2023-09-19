@@ -75,7 +75,7 @@ class AdhocReportsService implements SpringEnvironment{
 
         styleCustom(jrb, title ?: metaEntity.title)
         //or example from net.sf.dynamicreports.examples that has alternating row colors
-        // styleStock(jrb, title ?: metaEntity.title)
+        //styleStock(jrb, title ?: metaEntity.title)
 
         // jrb.setSummaryBackgroundComponent(Components.text("Grand Total").setStyle(TemplateStyles.grandTotal))
         return jrb
