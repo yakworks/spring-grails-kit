@@ -1,3 +1,14 @@
+### v5.1
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.10...v5.1)
+- release 5.1 [link](https://github.com/yakworks/spring-grails-kit/commit/13689544fe024fbe13b081b1f6476bb05bbb7138)
+- merge release 5.1 [link](https://github.com/yakworks/spring-grails-kit/commit/85d1a9f5ca23fa7fa3714454d990f00328a87880)
+- gradle repositories to match whats in gorm-tools. [link](https://github.com/yakworks/spring-grails-kit/commit/19f398e7bf53f853377f4e1451f85c524abc3d85)
+- groovy-commons-3.12 [link](https://github.com/yakworks/spring-grails-kit/commit/df426e3eeec329b571d451fe46d7621ee07759dc)
+- add base classes for config classes, for cron and enabled. [link](https://github.com/yakworks/spring-grails-kit/commit/4206605cdbedc83d8837821a87c4251c6087d51e)
+- tigger [link](https://github.com/yakworks/spring-grails-kit/commit/67bc63cc2537cb46bbcedd253760907448e4da57)
+- tweaks to AdhocReportsService to make  it work with labels and jasper-sample [link](https://github.com/yakworks/spring-grails-kit/commit/28b05bc0d9e010befd91ceee01ad2ce768546bf8)
+
 ### v5.0.10
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.9...v5.0.10)
