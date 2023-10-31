@@ -9,7 +9,7 @@ import groovy.transform.CompileStatic
 import org.springframework.scheduling.annotation.Scheduled
 
 /**
- * Base class for jobs, extends on the enabler class
+ * Base class for jobs
  */
 @CompileStatic
 class CronJobProps {
@@ -26,7 +26,7 @@ class CronJobProps {
      * A time zone for which the cron expression will be resolved.
      * By default, this attribute is the empty String (i.e. the server's local time zone will be used).
      */
-    String zone = ''
+    TimeZone timeZone
 
     boolean isEnabled(){
         return cron && cron != Scheduled.CRON_DISABLED
