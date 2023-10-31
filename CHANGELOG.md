@@ -1,3 +1,12 @@
+### v5.2
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.1...v5.2)
+- release 5.2 [link](https://github.com/yakworks/spring-grails-kit/commit/6fba93c211ebbce3733bc848c67a1194202b743c)
+- Merge pull request #12 from yakworks/dev [link](https://github.com/yakworks/spring-grails-kit/commit/9ae413dbd71f686aada91f004eb583ed7b3c680f)
+- CronJobProps timezone. [link](https://github.com/yakworks/spring-grails-kit/commit/aa0527e6f1f91886685a4ef79310e924c906406e)
+- add zone and rename to CronJobProps [link](https://github.com/yakworks/spring-grails-kit/commit/7b20ad2e7e32825bd146a178860b9221fc31c969)
+- gtools 7.3.55 [link](https://github.com/yakworks/spring-grails-kit/commit/1a4d292d44bf4903c1500976aa754fa85d19a71e)
+
 ### v5.1
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.0.10...v5.1)
