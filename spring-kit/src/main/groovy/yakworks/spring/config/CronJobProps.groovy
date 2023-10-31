@@ -9,15 +9,24 @@ import groovy.transform.CompileStatic
 import org.springframework.scheduling.annotation.Scheduled
 
 /**
- * Base class for jobs, extends on the enabler class
+ * Base class for jobs
  */
 @CompileStatic
-class CronConfig {
+class CronJobProps {
+
     /**
      * CRON expression for the job
      * default is "-" which is springs way of disabling the job.
      */
     String cron = Scheduled.CRON_DISABLED
+
+    /**
+     * Timezone for the cron expressions. UTC is default.
+     * Should use the region. so for CST set the "America/Chicago" and EST "America/New_York", etc..
+     * A time zone for which the cron expression will be resolved.
+     * By default, this attribute is the empty String (i.e. the server's local time zone will be used).
+     */
+    TimeZone timeZone
 
     boolean isEnabled(){
         return cron && cron != Scheduled.CRON_DISABLED
