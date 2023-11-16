@@ -4,6 +4,8 @@
 */
 package yakworks.spring.config
 
+import java.time.ZoneId
+
 import groovy.transform.CompileStatic
 
 import org.springframework.scheduling.annotation.Scheduled
@@ -26,7 +28,12 @@ class CronJobProps {
      * A time zone for which the cron expression will be resolved.
      * By default, this attribute is the empty String (i.e. the server's local time zone will be used).
      */
-    TimeZone timeZone
+    TimeZone timeZone = TimeZone.getDefault()
+
+    /** makes it easier to set @Scheduled */
+    ZoneId getZoneId(){
+        return timeZone?.toZoneId()
+    }
 
     boolean isEnabled(){
         return cron && cron != Scheduled.CRON_DISABLED
