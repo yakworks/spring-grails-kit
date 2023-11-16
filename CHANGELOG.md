@@ -1,3 +1,8 @@
+### v5.3
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.2...v5.3)
+- adds thread to logging, zoneId in the CronJobProps (#13) [link](https://github.com/yakworks/spring-grails-kit/commit/1e887fe9f524ed316ad34bf1b1ebb1d74d74f925)
+
 ### v5.2
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.1...v5.2)
