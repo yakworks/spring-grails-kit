@@ -2,6 +2,9 @@
 > The changes in https://github.com/sbglasius/external-config after 2.0 is causing configs to load twice. 
 > This is a fork from 2.0 tag
 
+> NOTE:  
+> THIS HAS BEEN DEPRECATED in favor of using stock spring and its  Kept here for reference. 
+
 External-Config
 ===============
 [![Build Status](https://travis-ci.org/sbglasius/external-config.svg?branch=master)](https://travis-ci.org/sbglasius/external-config)
