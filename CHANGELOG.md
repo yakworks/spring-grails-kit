@@ -1,3 +1,9 @@
+### v5.4
+
+[Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.3...v5.4)
+- release 5.4 [link](https://github.com/yakworks/spring-grails-kit/commit/b87bf9e94dc4f2516ace31b1196a26f1adbcea1b)
+- setup autoconfigure for spring-kit so we dont need grails-kit  anymore (#14) [link](https://github.com/yakworks/spring-grails-kit/commit/28262d7bb14590ce29d8abd21bd11d326d089204)
+
 ### v5.3
 
 [Full Changelog](https://github.com/yakworks/spring-grails-kit/compare/v5.2...v5.3)
